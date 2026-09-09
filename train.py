@@ -540,10 +540,11 @@ def main():
         kde = dino_cfg["kde_loss_weight"] * k_scale * sum(kde_loss(x, dino_cfg["kde_concentration"]) for x in sg["cls"].chunk(train_cfg["global_views"]))
         meta_loss = sg["cls"].new_zeros(())
         if meta is not None:
-            # FINO uses signed gradient gates on normalized CLS: prototype CE for discrete metadata,
-            # MLP regression for continuous metadata, and EMA teacher features to update prototypes.
+            # Subtype prototypes stay on CLS; molecular heads can use pooled registers so
+            # patient-level targets shape a separate channel through shared self-attention.
             gamma, discrete, continuous = meta
             student_cls = F.normalize(sg["cls"].float(), dim=-1)
+            molecular = F.normalize(sg["registers"].float().mean(1), dim=-1) if fino_cfg["continuous_registers"] else student_cls
             teacher_cls = F.normalize(t["cls"].float(), dim=-1)
             terms = []
             with torch.autocast(device_type="cuda", enabled=False):
@@ -564,7 +565,7 @@ def main():
                     values = continuous[factor].repeat(train_cfg["global_views"], 1)
                     keep = ~torch.isnan(values).any(1)
                     if keep.any():
-                        prediction = predictors[factor](GradScale.apply(student_cls[keep], sign * gamma))
+                        prediction = predictors[factor](GradScale.apply(molecular[keep], sign * gamma))
                         target = values[keep]
                         if train_cfg["fino_bag_loss"]:
                             # Keep global views separate; missing metadata removes complete case bags.

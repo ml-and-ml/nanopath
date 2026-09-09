@@ -43,19 +43,22 @@ W&B can run online or offline, but set that up before submitting a noninteractiv
 
 This worktree uses the saved `robust-norm-huelocal` recipe (`run_sub_8a160bb2d9`) with the current v2 evaluator. All arms share `train.py`, `model.py`, and `dataloader.py`; only their YAML settings differ. The earlier local WSI-loader work is preserved in commit `75ac863` on `backup/pre-noble-20260909`, and live loading remains available through `data.input_mode: wsi` with `wsi_dir` and `target_mpp_range`.
 
-| Config | Intervention | Matched comparison | Mean probe | v2 score |
-|---|---|---|---:|---:|
-| `configs/main.yaml` | Huelocal reproduction with calibration included in the sample/compute accounting | Shared reference | 0.680479 | 0.675552 |
-| `configs/case-control.yaml` | Patient-balanced sampling: 32 patients × four distinct mapped tiles; original per-tile molecular loss | Main | 0.671066 | 0.666571 |
-| `configs/case-fino.yaml` | Bag-mean molecular supervision: average predictions before MSE, separately for each global view | Case control | 0.672069 | 0.668121 |
-| `configs/cls-context.yaml` | CLS-context JEPA: prepend masked student CLS to the predictor and discard its output token | Main | 0.680590 | 0.675516 |
-| `configs/ungated-readout.yaml` | Ungated frozen readout: disable typicality shrinkage on the same final weights | Main | 0.675236 | 0.665912 |
+| Config | Intervention | Matched comparison | Labless v2 |
+|---|---|---|---:|
+| `configs/main.yaml` | Huelocal reproduction with calibration included in sample/compute accounting | Shared reference | 0.675552 |
+| `configs/case-control.yaml` | Patient-balanced sampling: 32 patients × four distinct mapped tiles; original per-tile molecular loss | Main | 0.666571 |
+| `configs/case-fino.yaml` | Bag-mean molecular supervision: average predictions before MSE, separately for each global view | Case control | 0.668121 |
+| `configs/cls-context.yaml` | CLS-context JEPA: prepend masked student CLS to the predictor and discard its output token | Main | 0.675516 |
+| `configs/ungated-readout.yaml` | Ungated frozen readout: disable typicality shrinkage on the same final weights | Main | 0.665912 |
+| `configs/register-fino.yaml` | Molecular register routing: expression/FGA heads use the normalized mean of the four existing register tokens | Main | Pending |
 
-These are unvalidated seed-7777 results on the full 20-dataset suite. CLS context gains +0.000111 mean probe over the reference; bag-mean supervision gains +0.001004 over its sampling control. The frozen ablation preserves the original checkpoint and gives identical segmentation and CRoMa scores; its classification gains are offset by lower progression and mutation scores.
+Completed rows are unvalidated seed-7777 results on the full 20-dataset suite. CLS context changes v2 by -0.000036 versus the reference; bag-mean supervision gains +0.001550 over its sampling control. The frozen ablation preserves the original checkpoint and gives identical segmentation and CRoMa scores; its classification gains are offset by lower progression and mutation scores.
+
+`fino.continuous_registers` moves only continuous molecular supervision to pooled registers from the same masked student forward. Subtype prototypes, DINO/KDE on CLS, JEPA patches, and inference readouts retain their original paths. `configs/register-fino.yaml` keeps the reference sampler, seed, targets, and budgets; it adds no tokens, parameters, or backbone passes and writes to `/data/$USER/nanopath/register-fino-20260909/full`.
 
 Case bags use the TCGA-clinical DX-slide mapping and existing expr512 targets, preserving NanoPath's patient split and target encoding. This is patient-level bulk supervision; the mapping does not establish same-section RNA measurements. Subtype FINO, DINO, KDE, hue augmentation, and model readouts stay fixed. All arms follow the standard 16-CPU, 16-training-worker allocation; four validation workers limit competing prefetch. Calibration reserves its actual source-tile presentations before optimization; its views contribute compute without multiplying tile counts.
 
-Submit each full config with `./submit/train_1gpu.sbatch <config>`. Outputs live under `/data/$USER/nanopath/noble-20260909/`. Reproduce `configs/main.yaml` first: frozen evaluation requires its final `base/latest.pt`, `summary.json`, and source snapshot. Then run the selected YAML inside a standard one-H100/16-CPU SLURM allocation, with the virtualenv activated:
+Submit each full config with `./submit/train_1gpu.sbatch <config>`. The first five outputs live under `/data/$USER/nanopath/noble-20260909/`. Reproduce `configs/main.yaml` first: frozen evaluation requires its final `base/latest.pt`, `summary.json`, and source snapshot. Then run the selected YAML inside a standard one-H100/16-CPU SLURM allocation, with the virtualenv activated:
 
 ```bash
 python train.py configs/ungated-readout.yaml
@@ -63,7 +66,7 @@ python train.py configs/ungated-readout.yaml
 
 Alternatively, `./submit/train_1gpu.sbatch configs/ungated-readout.yaml` schedules that evaluation with the usual Labless login and auto-submit flow. It performs no training and records inherited training costs, the parent checkpoint SHA-256, and the evaluated source/config. Its output is `ungated-readout/`; the original `gate-off/` results and parent checkpoint are preserved.
 
-`summary.mean_probe_score` is the unweighted mean of linear, KNN, few-shot, segmentation, progression, mutation, survival, and robustness means on the v2 suite. It is a diagnostic alongside the official weighted `final_score`; it is not comparable to the earlier v1 mean. Apply the +0.006 mean-probe threshold only when comparing against a previously validated run. For unvalidated runs, report the observed score differences and validation status.
+`summary.mean_probe_score` is the unweighted mean of linear, KNN, few-shot, segmentation, progression, mutation, survival, and robustness means on the v2 suite. It remains an auxiliary diagnostic; use only the official weighted `final_score` for experiment rankings and reporting. For unvalidated runs, report observed v2 differences and validation status; the user's 0.006 threshold applies only against previously validated comparators.
 
 ## Leaderboard
 

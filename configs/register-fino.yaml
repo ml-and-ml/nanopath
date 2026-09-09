@@ -1,10 +1,10 @@
-# Shared Huelocal recipe; named experiment configs change only the declared intervention.
-# Keep the fixed v2 probe suite identical across all arms.
+# Molecular register routing: expression/FGA use the normalized mean of four registers.
+# Retain the reference sampler, CLS subtype supervision, image objectives, and v2 probes.
 project:
-  name: noble-base
+  name: register-fino
   family: nanopath
-  recipe_id: dinov2-vits14-reg-robust-norm
-  output_dir: /data/$USER/nanopath/noble-20260909/base
+  recipe_id: dinov2-vits14-reg-robust-norm-register-fino
+  output_dir: /data/$USER/nanopath/register-fino-20260909/full
   wandb_dir: /data/$USER/nanopath/wandb
 
 data:
@@ -80,7 +80,7 @@ dino:
 fino:
   enabled: true
   gamma_max: 0.7
-  continuous_registers: false
+  continuous_registers: true
   discrete: [[subtype, 1]]
   continuous: [[expr512, 3], [fga, 3]]
 
