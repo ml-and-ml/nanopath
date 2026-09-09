@@ -6,7 +6,7 @@
 # a strict load.
 #
 # DINOHead is the small MLP + weight-normed classifier used by train.py for the
-# DINO CLS / iBOT patch self-distillation losses. It is intentionally trivial
+# DINO CLS self-distillation loss. It is intentionally trivial
 # (~15 lines) so we have zero runtime dependency on the dinov2 codebase.
 
 import torch
@@ -22,6 +22,7 @@ VIT_VARIANTS = {
     "dinov2_vitl14_reg": (1024, 24, 16, 37, 14, "mlp", True, "https://dl.fbaipublicfiles.com/dinov2/dinov2_vitl14/dinov2_vitl14_reg4_pretrain.pth"),
     "dinov2_vitg14_reg": (1536, 40, 24, 37, 14, "swiglu", True, "https://dl.fbaipublicfiles.com/dinov2/dinov2_vitg14/dinov2_vitg14_reg4_pretrain.pth"),
 }
+VIT_VARIANTS["robust_norm_dinov2_vits14_reg"] = VIT_VARIANTS["dinov2_vits14_reg"]
 
 
 def probe_transforms():
@@ -45,6 +46,14 @@ class DropPath(nn.Module):
 class LayerScale(nn.Module):
     def __init__(self, dim): super().__init__(); self.gamma = nn.Parameter(torch.ones(dim))
     def forward(self, x): return x * self.gamma
+
+
+# Identity forward whose signed scale steers FINO gradients at the backbone boundary.
+class GradScale(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, x, scale): ctx.scale = scale; return x
+    @staticmethod
+    def backward(ctx, grad): return grad * ctx.scale, None
 
 
 # Attention with single qkv Linear + F.scaled_dot_product_attention (Flash-2 backend on H100 bf16).
@@ -114,6 +123,7 @@ class ViT(nn.Module):
         cfg = variant_cfg or VIT_VARIANTS[variant]
         dim, depth, heads, pretrain_grid, patch, ffn, pos_has_cls, self.pretrained_url = cfg[:8]
         mlp_ratio, registers = 4.0, cfg[8] if len(cfg) > 8 else 4
+        self.robust_norm = variant == "robust_norm_dinov2_vits14_reg" and variant_cfg is None
         self.patch_size, self.registers, self.embed_dim = patch, registers, dim
         self._pretrain_grid, self._pos_has_cls = pretrain_grid, pos_has_cls
         self.patch_embed = nn.Module()
@@ -125,6 +135,26 @@ class ViT(nn.Module):
         rates = [drop_path_rate * i / max(1, depth - 1) for i in range(depth)]
         self.blocks = nn.ModuleList(Block(dim, heads, mlp_ratio, p, ffn=ffn) for p in rates)
         self.norm = nn.LayerNorm(dim, eps=1e-6)
+        # Keep external baseline state dicts unchanged; ordinary Nanopath models checkpoint these statistics.
+        if self.robust_norm:
+            self.register_buffer("rn_fitted", torch.zeros((), dtype=torch.bool))
+            self.register_buffer("rn_mu", torch.zeros(2, dim))
+            self.register_buffer("rn_v", torch.zeros(2, 256, dim))
+            self.register_buffer("sb_mu", torch.zeros(2, dim))
+            self.register_buffer("sb_v", torch.zeros(2, 128, dim))
+            self.register_buffer("pf_fitted", torch.zeros((), dtype=torch.bool))
+            self.register_buffer("pf_mu", torch.zeros(5, dim))
+            self.register_buffer("pf_v", torch.zeros(5, 1, dim))
+            # Contraction: a rank-64 typicality basis over the fused taps, fitted from the same
+            # draw as rn_/pf_. ct_lo is the gate's floor weight; zero until train.py fits them.
+            self.register_buffer("ct_fitted", torch.zeros((), dtype=torch.bool))
+            self.register_buffer("ct_mu", torch.zeros(5 * dim))
+            self.register_buffer("ct_R", torch.zeros(64, 5 * dim))
+            self.register_buffer("ct_lam", torch.ones(64))
+            self.register_buffer("ct_ms", torch.zeros(2))
+            self.register_buffer("ct_lo", torch.zeros(()))
+        else:
+            self.rn_fitted = self.pf_fitted = False
 
     # Bicubic resample of the checkpoint patch-pos grid to the current (h, w) grid.
     def _interpolate_pos_embed(self, h, w):
@@ -142,7 +172,7 @@ class ViT(nn.Module):
         patch_pos = patch_pos.permute(0, 2, 3, 1).reshape(1, h * w, -1).to(self.pos_embed.dtype)
         return torch.cat([cls_pos, patch_pos], dim=1) if cls_pos is not None else patch_pos
 
-    # Build [cls, registers, patches] tokens; iBOT swaps the masked patch positions for mask_token.
+    # Build [cls, registers, patches]; masked objectives swap selected patches for mask_token.
     def _prepare_tokens(self, x, masks=None):
         B, _, H, W = x.shape
         h, w = H // self.patch_size, W // self.patch_size
@@ -156,10 +186,34 @@ class ViT(nn.Module):
             return torch.cat([x[:, :1], regs, x[:, 1:]], dim=1)
         return torch.cat([cls, regs, x + self._interpolate_pos_embed(h, w)], dim=1)
 
+    # Remove fitted scanner-response directions while retaining the original feature mean.
+    def _suppress(self, x, mean, directions):
+        centered = x.float() - mean
+        return (centered - (centered @ directions.T) @ directions + mean).to(x.dtype)
+
     # Return semantic token groups used by train.py and probe.py.
     # `checkpoint=True` re-runs each block under torch.utils.checkpoint to trade compute for memory;
-    # useful when the 1-GPU batch of 128 (2 globals + 8 locals) does not fit in 80 GB.
+    # useful when a configured 1-GPU batch does not fit in 80 GB.
     def forward(self, x, masks=None, checkpoint=False):
+        if not self.training and self.rn_fitted and masks is None:
+            # Post-training embedding: average the model over the tile's symmetry group. Each view's
+            # patch grid is mapped back to the canonical orientation before averaging token-wise.
+            side = x.shape[-1] // self.patch_size
+            outs, patch_maps = [], []
+            for flipped, v in enumerate((x, x.flip(-1))):
+                for k in range(0, 4, 1):
+                    o = self._forward_tokens(torch.rot90(v, k, dims=(-2, -1)), None, checkpoint)
+                    grid = torch.rot90(o["patches"].unflatten(1, (side, side)), -k, dims=(1, 2))
+                    patch_maps.append(grid.flip(2) if flipped else grid)
+                    outs.append(o)
+            return {
+                "cls": torch.stack([o["cls"] for o in outs]).mean(0),
+                "registers": outs[0]["registers"],
+                "patches": torch.stack(patch_maps).mean(0).flatten(1, 2),
+            }
+        return self._forward_tokens(x, masks, checkpoint)
+
+    def _forward_tokens(self, x, masks, checkpoint):
         x = self._prepare_tokens(x, masks)
         for blk in self.blocks:
             if checkpoint and self.training:
@@ -167,26 +221,81 @@ class ViT(nn.Module):
             else:
                 x = blk(x)
         x = self.norm(x)
+        cls, patches = x[:, 0], x[:, 1 + self.registers :]
+        if not self.training and self.rn_fitted:
+            cls = self._suppress(cls, self.rn_mu[0], self.rn_v[0])
+            patch_mean = patches.mean(1)
+            patch_mean = self._suppress(patch_mean, self.rn_mu[1], self.rn_v[1])
+            cls = self._suppress(cls, self.sb_mu[0], self.sb_v[0])
+            patches = patches + (self._suppress(patch_mean, self.sb_mu[1], self.sb_v[1]) - patches.mean(1)).unsqueeze(1)
         return {
-            "cls": x[:, 0],
+            "cls": cls,
             "registers": x[:, 1 : 1 + self.registers],
-            "patches": x[:, 1 + self.registers :],
+            "patches": patches,
         }
 
-    # Default probe contract: encode_image returns patches for segmentation
-    # and probe_features returns CLS for pooled probes. Recipes may override either method
-    # to define their test-time feature aggregation without changing the locked probe suite.
+    # Segmentation fuses the last four blocks on the native patch grid. No resampling: v2's
+    # probe.py area-pools the grid itself, and interpolating first measured -0.033 seg f1.
     def encode_image(self, x, checkpoint=False):
-        return self(x, checkpoint=checkpoint)["patches"]
+        if not self.robust_norm:
+            return self(x, checkpoint=checkpoint)["patches"]
+        tokens, features = self._prepare_tokens(x), []
+        for i, block in enumerate(self.blocks):
+            tokens = torch.utils.checkpoint.checkpoint(block, tokens, use_reentrant=False) if checkpoint and self.training else block(tokens)
+            if i >= len(self.blocks) - 4:
+                features.append(self.norm(tokens)[:, 1 + self.registers :])
+        return torch.cat(features, dim=-1)
 
+    # Five strided-depth CLS taps: the space the typicality gate is calibrated in.
+    def _probe_taps(self, x):
+        tokens, features = self._prepare_tokens(x), []
+        for i, block in enumerate(self.blocks):
+            tokens = block(tokens)
+            if i in (2, 4, 6, 8, 11):
+                features.append(self.norm(tokens)[:, 0])
+        return features
+
+    # Pooled probes. probe.py averages a slide's tiles with equal weight, so the per-tile
+    # descriptor is the only lever on what that average becomes:
+    #   1. five taps with their fitted rank-one suppression -> the 1920-d gate space;
+    #   2. per-tile Mahalanobis typicality in that space, applied to the pristine final CLS as
+    #      a shrink toward the fitted corpus mean, so atypical tiles pull the slide mean less.
+    #      Gating the CLS rather than the fusion keeps the pooling gain without the dimension
+    #      inflation that costs tile-level classification;
+    #   3. the last block's MLP activation, block-mean pooled to 256 -- a different source from
+    #      the residual stream, so it adds information rather than a rescaled copy.
+    # Both passes also run on the 180-degree rotation and average, making the readout
+    # orientation-symmetric.
     def probe_features(self, x):
-        return self(x)["cls"]
+        if not self.robust_norm:
+            return self(x)["cls"]
+        activations = []
+        handle = self.blocks[-1].mlp.fc1.register_forward_hook(
+            lambda module, args, output: activations.append(F.gelu(output[:, 0].float())))
+        try:
+            taps = [(a.float() + b.float()) / 2 for a, b in zip(self._probe_taps(x), self._probe_taps(torch.rot90(x, 2, dims=(-2, -1))))]
+        finally:
+            handle.remove()
+        final_cls = taps[-1]
+        out = final_cls
+        if self.ct_fitted:
+            fused = torch.cat([self._suppress(f, self.pf_mu[j], self.pf_v[j]) if self.pf_fitted else f for j, f in enumerate(taps)], dim=-1)
+            centered = fused.float() - self.ct_mu
+            typicality = -torch.sqrt((((centered @ self.ct_R.T) ** 2) / self.ct_lam).sum(-1).clamp_min(0) + 1e-12)
+            gate = self.ct_lo + (1.0 - self.ct_lo) * torch.sigmoid(((typicality - self.ct_ms[0]) / self.ct_ms[1]).clamp(-30, 30))
+            out = self.rn_mu[0] + gate.unsqueeze(-1) * (final_cls - self.rn_mu[0])
+        act = torch.stack(activations).mean(0)
+        return torch.cat([out, act.reshape(act.shape[0], 256, act.shape[-1] // 256).mean(-1)], dim=-1)
 
 
 # Strict-load the model's declared pretrained weights; incompatible layouts fail loudly.
 def load_pretrained(model):
     state = torch.hub.load_state_dict_from_url(model.pretrained_url, progress=False, map_location="cpu")
-    model.load_state_dict(state, strict=True)
+    if model.robust_norm:
+        missing, unexpected = model.load_state_dict(state, strict=False)
+        assert not unexpected and all(key.startswith(("rn_", "pf_", "ct_", "sb_")) for key in missing), (missing, unexpected)
+    else:
+        model.load_state_dict(state, strict=True)
     return model
 
 
@@ -212,3 +321,20 @@ class DINOHead(nn.Module):
         x = self.mlp(x)
         x = F.normalize(x, dim=-1, p=2)
         return self.last_layer(x)
+
+
+# I-JEPA predicts EMA-teacher patch features from the student's block-masked tokens.
+class JEPAPredictor(nn.Module):
+    def __init__(self, dim, depth=4, width=0, heads=6):
+        super().__init__()
+        width = width or dim
+        self.proj_in = nn.Linear(dim, width) if width != dim else nn.Identity()
+        self.blocks = nn.ModuleList(Block(width, heads, 4.0, 0.0) for _ in range(depth))
+        self.norm = nn.LayerNorm(width, eps=1e-6)
+        self.proj = nn.Linear(width, dim, bias=True)
+
+    def forward(self, patch_tokens):
+        x = self.proj_in(patch_tokens)
+        for block in self.blocks:
+            x = block(x)
+        return self.proj(self.norm(x))

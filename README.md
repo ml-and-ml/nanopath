@@ -22,7 +22,7 @@ wandb login  # or: export WANDB_MODE=offline before launching noninteractive SLU
 # download pretraining & probe datasets & DINOv2 pretrained ckpt
 python prepare.py download=True
 
-# smoke test: very short training, then probe evals to ensure no errors
+# smoke test: four training steps exercising case-bag FINO and CLS-context JEPA
 ./submit/train_1gpu.sbatch configs/smoke.yaml
 # or directly on a GPU machine: python train.py configs/smoke.yaml
 
@@ -35,9 +35,30 @@ RUN_DIR=$PWD/data/main/my-run
 
 `pyproject.toml` pins `torch` / `torchvision` against the CUDA 12.9 wheel index. If your GPU/driver needs a different CUDA build, edit the `torch` and `torchvision` lines in `pyproject.toml` before `uv sync`.
 
-A successful model training prints periodic train lines, appends metrics to `metrics.jsonl`, and writes the final comparison artifact to `summary.json`. `configs/smoke.yaml` is simply meant to pretrain briefly and then run the fixed downstream probe suite to ensure everything works without errors.
+A successful model training prints periodic train lines, appends metrics to `metrics.jsonl`, and writes the final comparison artifact to `summary.json`. `configs/smoke.yaml` runs four full-size training steps without calibration or probes; full configurations run the unchanged downstream suite.
 
 W&B can run online or offline, but set that up before submitting a noninteractive job: either run `wandb login` once, or export `WANDB_MODE=offline`.
+
+## Noble context experiments
+
+This worktree uses the saved `robust-norm-huelocal` recipe (`run_sub_8a160bb2d9`) with the current v2 evaluator. All arms share `train.py`, `model.py`, and `dataloader.py`; only their YAML settings differ. The earlier local WSI-loader work is preserved in commit `75ac863` on `backup/pre-noble-20260909`, and live loading remains available through `data.input_mode: wsi` with `wsi_dir` and `target_mpp_range`.
+
+| Config | Intervention | Matched comparison |
+|---|---|---|
+| `configs/main.yaml` | Huelocal reproduction with calibration included in the sample/compute accounting | Shared reference |
+| `configs/case-control.yaml` | 32 patients × four distinct mapped tiles; original per-tile molecular loss | Sampling effect versus main |
+| `configs/case-fino.yaml` | Same groups; average molecular predictions before MSE, separately for each global view | Case control |
+| `configs/cls-context.yaml` | Prepend the masked student's CLS to the JEPA predictor and discard its output token | Main |
+
+Case bags use the TCGA-clinical DX-slide mapping and existing expr512 targets, preserving NanoPath's patient split and target encoding. This is patient-level bulk supervision; the mapping does not establish same-section RNA measurements. Subtype FINO, DINO, KDE, hue augmentation, and model readouts stay fixed. Calibration reserves its actual source-tile presentations before optimization; its views contribute compute without multiplying tile counts.
+
+Submit each full config with `./submit/train_1gpu.sbatch <config>`. Outputs live under `/data/$USER/nanopath/noble-20260909/`. After the main run completes, evaluate the same frozen checkpoint with typicality shrinkage disabled:
+
+```bash
+python evaluate.py configs/main.yaml checkpoint_path=/data/$USER/nanopath/noble-20260909/base/latest.pt output_dir=/data/$USER/nanopath/noble-20260909/gate-off
+```
+
+`summary.mean_probe_score` is the unweighted mean of linear, KNN, few-shot, segmentation, progression, mutation, survival, and robustness means on the v2 suite. It is a diagnostic alongside the official weighted `final_score`; it is not comparable to the earlier v1 mean. Require at least +0.006 mean-probe improvement before treating an arm as promising, then validate with independent seeds.
 
 ## Leaderboard
 
@@ -57,7 +78,7 @@ As you can see in the above correlation plots, our fast ~20 minute evaluation su
 
 ### nanopath models
 
-The `main` branch uses the `lr-and-curation` recipe. Model links below select the corresponding training recipe; clone with `--branch <branch-name>` to use that recipe with nanopath-evals v2.
+Upstream `main` uses the `lr-and-curation` recipe; this experiment branch uses Huelocal as described above. Model links below select the corresponding published training recipe.
 
 | # | Description | final score | classification | segmentation | progression | mutation | survival | robustness | Contributors |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -142,7 +163,7 @@ Every leaderboard run is bounded by two possible caps:
 - **`train.max_train_samples` ≤ 1,000,000 tile presentations**. A training sample is one source TCGA tile emitted as one dataloader item; if the same underlying tile is seen again later, that is another tile presentation. Teacher/student views, global/local crops, masks, or other augmentations derived from that tile do not multiply the sample count, though their compute still counts toward FLOPs. `train.py` never starts a batch that would push `summary.tile_presentations` over the cap.
 - **`train.max_train_flops` ≤ 1e18 training FLOPs**, measured directly via `torch.utils.flop_counter.FlopCounterMode` on the first step (forward + backward + optimizer.step) and reused thereafter since per-step shapes are fixed. This counts everything that touches the GPU during a step (student backbone, EMA teacher forward, projection heads, masking, etc.).
 
-LR decay, weight decay, teacher-temperature, freeze, and KDE schedules are keyed to `train_flops / train.max_train_flops`; LR warmup is keyed to tile presentations so it finishes early in the 1,000,000-tile sample-capped run. The `main` recipe normally reaches the sample cap at about 19% of the 1e18-FLOP budget, so the FLOP-keyed schedules intentionally stop early unless you change the caps or schedule fractions.
+LR decay, weight decay, teacher-temperature, freeze, and KDE schedules are keyed to `train_flops / train.max_train_flops`; LR warmup is keyed to optimizer tile presentations. Huelocal reaches the sample cap before the FLOP cap, so the FLOP-keyed schedules intentionally stop early unless you change the caps or schedule fractions.
 
 Wall time is logged for diagnostics and standardized reruns, but it is not a public-submission eligibility cap. Maintainer validation is separate: the submitted recipe must complete training on the maintainer's single 80 GB H100 within 2 hours.
 Intensive preprocessing before model training starts, such as tile extraction, data curation, metadata joins, indexing, or embedding generation, is allowed and is not counted as training time.

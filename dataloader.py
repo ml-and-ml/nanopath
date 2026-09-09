@@ -1,15 +1,11 @@
-# TCGA tile input pipeline backed by Parquet shards. Each shard is a parquet
-# file of `{path: string, jpeg: binary}` rows. We open the shards via pyarrow
-# directly (NOT `datasets.load_dataset`, which copies into ~/.cache) so the
-# ~120 GB of shards are mmap'd in place with zero duplication. Random access
-# is resolved by per-shard ParquetFile.read_row_group; prepare.py packs each
-# shard with PARQUET_ROW_GROUP_SIZE=64 rows/group so reading one row group is
-# ~2 MB and __getitem__ is ~2-3 ms incl. JPEG decode.
+# TCGA input uses historical Parquet JPEGs, or reads the same coordinates from
+# live WSIs at a sampled MPP. Worker-local row-group and slide caches bound RAM;
+# four-tile patient bags use mapped DX slides and retain the historical split.
 #
 # Patients (not tiles) are hashed by TCGA barcode and the bottom `val_fraction`
 # of the hash space is held out from training; train.py instantiates the dataset
 # twice (`is_train=True` for the training loop, `is_train=False` for the
-# lightweight DINO/iBOT/KDE validation pass), so the held-out patient slice
+# lightweight DINO/I-JEPA/KDE validation pass), so the held-out patient slice
 # stays cleanly out-of-distribution from optimization.
 #
 # Augmentation per view: RandomResizedCrop -> optional HEDJitter -> horizontal/
@@ -18,17 +14,21 @@
 # This file is the *pretraining* input pipeline only. The downstream probes
 # (probe.py) do not import anything from here.
 
+import csv
 import hashlib
 import io
+import json
 import random
+from collections import OrderedDict
 from pathlib import Path
 
 import numpy as np
+import openslide
 import pyarrow.parquet as pq
 import torch
 import torch.nn as nn
 from PIL import Image
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, get_worker_info
 from torchvision.transforms import v2
 
 
@@ -50,6 +50,7 @@ RGB_FROM_HED = torch.tensor(
 )
 LOG_1E6 = float(np.log(1e-6))
 TILE_SIZE = 224
+DEFAULT_NATIVE_MPP = 0.5  # Legacy TCGA slides without physical-resolution tags.
 
 
 # Patients (not tiles) are the split unit so train/val never share a case.
@@ -93,6 +94,8 @@ class TCGATileDataset(Dataset):
     def __init__(self, cfg, is_train=True):
         data = cfg["data"]
         train = cfg["train"]
+        self.is_train, self.input_mode = is_train, data["input_mode"]
+        self.case_bag_size = int(data["case_bag_size"]) if is_train else 1
         self.tissue_thresh = float(data["tissue_thresh"]) if is_train else 0.0
         dataset_dir = Path(data["dataset_dir"])
         self.shards = sorted(dataset_dir.glob("shard-*.parquet"))
@@ -105,6 +108,14 @@ class TCGATileDataset(Dataset):
         # Lazy ParquetFile handles, opened on first __getitem__ in each worker
         # so fork-children own their own file positions.
         self._readers = [None] * len(self.shards)
+        self._groups, self._slides = OrderedDict(), OrderedDict()
+        if self.input_mode == "wsi":
+            self.wsi_paths = {p.stem: str(p) for p in Path(data["wsi_dir"]).rglob("*.svs")}
+            self.target_mpp_range = tuple(map(float, data["target_mpp_range"]))
+        cases, mapped = {}, set()
+        if self.case_bag_size > 1:
+            with open(data["case_map"]) as handle:
+                mapped = {row["slide_id_stem"] for row in csv.DictReader(handle)}
         # Pull just the path column from each shard once to build the train index;
         # the JPEG bytes column stays on disk until __getitem__.
         in_split_shard = []
@@ -115,6 +126,8 @@ class TCGATileDataset(Dataset):
                 # XOR with is_train: training keeps tiles where patient_in_val is False,
                 # validation keeps the complement.
                 if patient_in_val(patient_id_from_relpath(p), data["split_seed"], data["val_fraction"]) != is_train:
+                    if p.split("/", 1)[0] in mapped:
+                        cases.setdefault(patient_id_from_relpath(p), []).append(len(in_split_shard))
                     in_split_shard.append(shard_idx)
                     in_split_row.append(row_idx)
         if not in_split_shard:
@@ -122,29 +135,70 @@ class TCGATileDataset(Dataset):
         # Two parallel int32 arrays (~32 MB total for 4M tiles) shared COW across DataLoader fork-workers.
         self.shard_of = np.asarray(in_split_shard, dtype=np.int32)
         self.row_of = np.asarray(in_split_row, dtype=np.int32)
+        # FINO metadata is patient-keyed and shared copy-on-write by loader workers.
+        self.fino = (cfg.get("fino") or {}).get("enabled")
+        if self.fino:
+            meta = json.loads((dataset_dir / "fino_meta.json").read_text())
+            self.fino_disc = [factor for factor, _ in cfg["fino"]["discrete"]]
+            self.fino_cont = [factor for factor, _ in cfg["fino"]["continuous"]]
+            self.meta_disc = {factor: meta["discrete"][factor] for factor in self.fino_disc}
+            self.meta_cont = {factor: meta["continuous"][factor] for factor in self.fino_cont}
+            self.cont_dim = {factor: meta["cont_dim"].get(factor, 1) for factor in self.fino_cont}
+        # Bags need mapped DX slides and existing expression targets; ignore the map's split.
+        self.case_patients = [p for p, rows in cases.items() if len(rows) >= self.case_bag_size
+                              and np.isfinite(self.meta_cont["expr512"].get(p, np.nan)).all()]
+        self.case_tiles = [np.asarray(cases[p], dtype=np.int32) for p in self.case_patients]
         mean, std = data["mean"], data["std"]
         self.global_views = int(train["global_views"])
         self.local_views = int(train["local_views"])
         self.to_tensor = v2.Compose([v2.ToImage(), v2.ToDtype(torch.float32, scale=True)])
         # Global and local views differ only in crop scale/size; the stochastic tail is shared.
-        augment = [
-            *([HEDJitter(data["hed_jitter"])] if data["hed_jitter"] > 0 else []),
-            v2.RandomHorizontalFlip(), v2.RandomVerticalFlip(),
-            v2.ColorJitter(data["color_jitter"], data["color_jitter"], data["color_jitter_saturation"], 0.0),
-            v2.RandomGrayscale(p=0.1),
-            v2.RandomApply([v2.GaussianBlur(9, sigma=(0.1, 1.8))], p=0.35),
-            v2.Normalize(mean=mean, std=std),
-        ]
-        self.global_aug = v2.Compose([v2.RandomResizedCrop(train["global_size"], scale=tuple(data["global_crop_scale"]), antialias=True), *augment])
-        self.local_aug = v2.Compose([v2.RandomResizedCrop(train["local_size"], scale=tuple(data["local_crop_scale"]), antialias=True), *augment])
+        # Hue jitter is applied to the local crops only: the teacher sees globals, so the DINO target
+        # stays colour-faithful while the student's inputs are perturbed.
+        def augment(hue):
+            return [
+                *([HEDJitter(data["hed_jitter"])] if data["hed_jitter"] > 0 else []),
+                v2.RandomHorizontalFlip(), v2.RandomVerticalFlip(),
+                v2.ColorJitter(data["color_jitter"], data["color_jitter"], data["color_jitter_saturation"], hue),
+                v2.RandomGrayscale(p=0.1),
+                v2.RandomApply([v2.GaussianBlur(9, sigma=(0.1, 1.8))], p=0.35),
+                v2.Normalize(mean=mean, std=std),
+            ]
+        self.global_aug = v2.Compose([v2.RandomResizedCrop(train["global_size"], scale=tuple(data["global_crop_scale"]), antialias=True), *augment(0.0)])
+        self.local_aug = v2.Compose([v2.RandomResizedCrop(train["local_size"], scale=tuple(data["local_crop_scale"]), antialias=True), *augment(data["aug_hue_local"])])
 
     # Dataset length is the number of tiles in this train/val split.
     def __len__(self):
         return int(self.shard_of.shape[0])
 
-    # Read one JPEG row, resampling until training tiles clear the tissue threshold.
+    # DataLoader invokes this once per batch: groups stay contiguous through collation.
+    # Sharing one candidate permutation across each bag also makes tissue retries distinct.
+    def __getitems__(self, indices):
+        if self.case_bag_size == 1:
+            return [self[index] for index in indices]
+        batch = []
+        for case in random.sample(range(len(self.case_tiles)), len(indices) // self.case_bag_size):
+            candidates = iter(np.random.permutation(self.case_tiles[case]))
+            batch.extend(self[(next(candidates), candidates)] for _ in range(self.case_bag_size))
+        return batch
+
+    # Decode stored JPEGs or their live WSI coordinates; reject tissue within the same bag.
     def __getitem__(self, idx):
+        idx, candidates = idx if isinstance(idx, tuple) else (idx, None)
         idx = int(idx)
+        worker = get_worker_info()
+        lo = 0 if worker is None else len(self) * worker.id // worker.num_workers
+        hi = len(self) if worker is None else len(self) * (worker.id + 1) // worker.num_workers
+        wsi_info = {}
+        if self.input_mode == "wsi":
+            # Keep live-WSI workers within disjoint coordinate intervals for slide locality.
+            if self.is_train and worker is not None and candidates is None:
+                if not hasattr(self, "_order"):
+                    self._order = np.random.default_rng(worker.seed).permutation(hi - lo)
+                    self._position = 0
+                idx = lo + int(self._order[self._position % len(self._order)])
+                self._position += 1
+            target_mpp = random.uniform(*self.target_mpp_range)
         for _ in range(1000):
             shard_idx = int(self.shard_of[idx])
             row_idx = int(self.row_of[idx])
@@ -157,23 +211,52 @@ class TCGATileDataset(Dataset):
             rg_size = reader.metadata.row_group(0).num_rows
             rg_idx = row_idx // rg_size
             row_in_rg = row_idx % rg_size
-            table = reader.read_row_group(rg_idx, columns=["path", "jpeg"])
+            key = (shard_idx, rg_idx)
+            table = self._groups.pop(key, None)
+            if table is None:
+                table = reader.read_row_group(rg_idx, columns=["path", "jpeg"] if self.input_mode == "parquet" else ["path"])
+            self._groups[key] = table
+            if len(self._groups) > 16:
+                self._groups.popitem(last=False)
             rel = table["path"][row_in_rg].as_py()
-            jpeg_bytes = table["jpeg"][row_in_rg].as_py()
-            with Image.open(io.BytesIO(jpeg_bytes)) as img:
-                tile = self.to_tensor(img.convert("RGB"))
+            if self.input_mode == "parquet":
+                with Image.open(io.BytesIO(table["jpeg"][row_in_rg].as_py())) as img:
+                    tile = self.to_tensor(img.convert("RGB"))
+            else:
+                stem, spec = rel.split("/", 1)
+                slide = self._slides.pop(stem, None)
+                if slide is None:
+                    slide = openslide.OpenSlide(self.wsi_paths[stem])
+                self._slides[stem] = slide
+                if len(self._slides) > 512:
+                    self._slides.popitem(last=False)[1].close()
+                native_mpp = float(slide.properties.get(openslide.PROPERTY_NAME_MPP_X, DEFAULT_NATIVE_MPP))
+                level = int(np.argmin(np.abs(np.log(native_mpp * np.asarray(slide.level_downsamples) / target_mpp))))
+                src = round(TILE_SIZE * target_mpp / (native_mpp * float(slide.level_downsamples[level])))
+                x, y, _ = map(int, spec.rsplit(".", 1)[0].split("_"))
+                tile = slide.read_region((x, y), level, (src, src)).convert("RGB")
+                if src != TILE_SIZE:
+                    tile = tile.resize((TILE_SIZE, TILE_SIZE), Image.Resampling.LANCZOS)
+                tile = self.to_tensor(tile)
+                wsi_info = {"target_mpp": torch.tensor(target_mpp), "source_level": torch.tensor(level, dtype=torch.int8)}
             if self.tissue_thresh <= 0:
                 break
             sat = (tile.amax(0) - tile.amin(0)) / (tile.amax(0) + 1e-6)
             if float((sat > 0.07).float().mean()) >= self.tissue_thresh:
                 break
-            idx = random.randint(0, self.shard_of.shape[0] - 1)
+            idx = int(next(candidates)) if candidates is not None else random.randrange(lo, hi) if self.input_mode == "wsi" else random.randint(0, len(self) - 1)
         else:
             raise RuntimeError(f"no tile met tissue_thresh={self.tissue_thresh} after 1000 samples")
         slide_stem = rel.split("/", 1)[0]
         patient_id = patient_id_from_relpath(rel)
         slide_key = int.from_bytes(hashlib.blake2b(slide_stem.encode(), digest_size=8).digest(), "big") & 0x7FFFFFFFFFFFFFFF
         patient_key = int.from_bytes(hashlib.blake2b(patient_id.encode(), digest_size=8).digest(), "big") & 0x7FFFFFFFFFFFFFFF
+        fino = {}
+        if self.fino:
+            fino["meta_disc"] = torch.tensor([self.meta_disc[factor].get(patient_id, -1) for factor in self.fino_disc], dtype=torch.int64)
+            for factor in self.fino_cont:
+                value = self.meta_cont[factor].get(patient_id, [float("nan")] * self.cont_dim[factor])
+                fino[f"mc_{factor}"] = torch.tensor(value if isinstance(value, list) else [value], dtype=torch.float32)
         # Augmentations are stochastic per view; reproducibility comes from worker seeds.
         global_views = torch.stack([self.global_aug(tile) for _ in range(self.global_views)])
         local_views = torch.stack([self.local_aug(tile) for _ in range(self.local_views)])
@@ -183,4 +266,6 @@ class TCGATileDataset(Dataset):
             "sample_idx": torch.tensor(int(idx), dtype=torch.int64),
             "slide_id": torch.tensor(slide_key, dtype=torch.int64),
             "patient_id": torch.tensor(patient_key, dtype=torch.int64),
+            **wsi_info,
+            **fino,
         }

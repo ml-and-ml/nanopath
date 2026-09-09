@@ -22,6 +22,10 @@ CONFIG_FILE="${1:-${REPO_DIR}/configs/main.yaml}"
 
 cd "${REPO_DIR}"
 source "${REPO_DIR}/.venv/bin/activate"
+export TORCH_HOME="/data/${USER}/nanopath/torch"
+export TORCHINDUCTOR_CACHE_DIR="/data/${USER}/nanopath/cache/inductor"
+export TRITON_CACHE_DIR="/data/${USER}/nanopath/cache/triton"
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-16}"
 mkdir -p slurm
 
 LAUNCH_INFO="$(python - "${CONFIG_FILE}" "$@" <<'PY'

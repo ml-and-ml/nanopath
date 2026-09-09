@@ -1,10 +1,10 @@
 # Shared Huelocal recipe; named experiment configs change only the declared intervention.
 # Keep the fixed v2 probe suite identical across all arms.
 project:
-  name: noble-smoke
+  name: noble-case-fino
   family: nanopath
   recipe_id: dinov2-vits14-reg-robust-norm
-  output_dir: /data/$USER/nanopath/noble-20260909/smoke
+  output_dir: /data/$USER/nanopath/noble-20260909/case-fino
   wandb_dir: /data/$USER/nanopath/wandb
 
 data:
@@ -32,7 +32,7 @@ model:
   type: robust_norm_dinov2_vits14_reg
 
 train:
-  calibrate: false
+  calibrate: true
   fino_bag_loss: true
   contract_lo: 0.0
   seed: 7777
@@ -42,13 +42,13 @@ train:
   num_workers: 16
   prefetch_factor: 2
   persistent_workers: true
-  max_train_samples: 512 # tile presentations; global/local crops still count as one sample
+  max_train_samples: 1000000 # tile presentations; global/local crops still count as one sample
   max_train_flops: 1000000000000000000 # 1.0e18, the leaderboard FLOP budget
-  log_every: 1
-  save_every: null
+  log_every: 20
+  save_every: 1000
   # Validation pass every `eval_every` steps over `val_batches` held-out batches
   eval_every: 200
-  val_batches: 1
+  val_batches: 16
   global_views: 2
   local_views: 14
   global_size: 224
@@ -70,7 +70,7 @@ dino:
   kde_loss_weight: 0.1
   kde_concentration: 10.0
   # Contiguous block masking and the predictor for I-JEPA patch regression.
-  jepa_cls_context: true
+  jepa_cls_context: false
   jepa_pred_depth: 4
   jepa_pred_width: 0
   jepa_blocks: 4
@@ -84,7 +84,7 @@ fino:
   continuous: [[expr512, 3], [fga, 3]]
 
 probe:
-  enabled: false
+  enabled: true
   model_weights: ema
   count: 1 # 4 means probing at 25%, 50%, 75%, and 100% of the sample cap. 1 means probing just at the end.
   datasets:

@@ -1,10 +1,10 @@
 # Shared Huelocal recipe; named experiment configs change only the declared intervention.
 # Keep the fixed v2 probe suite identical across all arms.
 project:
-  name: noble-smoke
+  name: noble-cls-context
   family: nanopath
   recipe_id: dinov2-vits14-reg-robust-norm
-  output_dir: /data/$USER/nanopath/noble-20260909/smoke
+  output_dir: /data/$USER/nanopath/noble-20260909/cls-context
   wandb_dir: /data/$USER/nanopath/wandb
 
 data:
@@ -14,7 +14,7 @@ data:
   input_mode: parquet # wsi reads the preserved live-slide path instead
   wsi_dir: /block/TCGA
   target_mpp_range: [0.25, 2.0]
-  case_bag_size: 4
+  case_bag_size: 1
   case_map: /data/hassan/tcga-rnaseq/tpm/dx_slide_to_patient_target.csv
   split_seed: 7777
   val_fraction: 0.05
@@ -32,8 +32,8 @@ model:
   type: robust_norm_dinov2_vits14_reg
 
 train:
-  calibrate: false
-  fino_bag_loss: true
+  calibrate: true
+  fino_bag_loss: false
   contract_lo: 0.0
   seed: 7777
   bf16: true
@@ -42,13 +42,13 @@ train:
   num_workers: 16
   prefetch_factor: 2
   persistent_workers: true
-  max_train_samples: 512 # tile presentations; global/local crops still count as one sample
+  max_train_samples: 1000000 # tile presentations; global/local crops still count as one sample
   max_train_flops: 1000000000000000000 # 1.0e18, the leaderboard FLOP budget
-  log_every: 1
-  save_every: null
+  log_every: 20
+  save_every: 1000
   # Validation pass every `eval_every` steps over `val_batches` held-out batches
   eval_every: 200
-  val_batches: 1
+  val_batches: 16
   global_views: 2
   local_views: 14
   global_size: 224
@@ -84,7 +84,7 @@ fino:
   continuous: [[expr512, 3], [fga, 3]]
 
 probe:
-  enabled: false
+  enabled: true
   model_weights: ema
   count: 1 # 4 means probing at 25%, 50%, 75%, and 100% of the sample cap. 1 means probing just at the end.
   datasets:
