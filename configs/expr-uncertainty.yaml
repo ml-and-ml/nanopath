@@ -1,10 +1,10 @@
-# Shared Huelocal recipe; named experiment configs change only the declared intervention.
+# Expression uncertainty from the Huelocal reference: tile log variance, initialized to zero.
 # Keep the fixed v2 probe suite identical across all arms.
 project:
-  name: noble-case-fino
+  name: expr-uncertainty
   family: nanopath
-  recipe_id: dinov2-vits14-reg-robust-norm
-  output_dir: /data/$USER/nanopath/noble-20260909/case-fino
+  recipe_id: dinov2-vits14-reg-robust-norm-expr-uncertainty
+  output_dir: /data/$USER/nanopath/uncertainty-fino-20260909/expr-uncertainty
   wandb_dir: /data/$USER/nanopath/wandb
 
 data:
@@ -14,7 +14,7 @@ data:
   input_mode: parquet # wsi reads the preserved live-slide path instead
   wsi_dir: /block/TCGA
   target_mpp_range: [0.25, 2.0]
-  case_bag_size: 4
+  case_bag_size: 1
   case_map: /data/hassan/tcga-rnaseq/tpm/dx_slide_to_patient_target.csv
   split_seed: 7777
   val_fraction: 0.05
@@ -33,7 +33,7 @@ model:
 
 train:
   calibrate: true
-  fino_bag_loss: true
+  fino_bag_loss: false
   contract_lo: 0.0
   seed: 7777
   bf16: true
@@ -80,7 +80,7 @@ dino:
 fino:
   enabled: true
   gamma_max: 0.7
-  expression_variance: fixed # fixed, global, or tile; expression-only uncertainty
+  expression_variance: tile # fixed, global, or tile; expression-only uncertainty
   continuous_registers: false
   discrete: [[subtype, 1]]
   continuous: [[expr512, 3], [fga, 3]]

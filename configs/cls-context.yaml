@@ -80,6 +80,7 @@ dino:
 fino:
   enabled: true
   gamma_max: 0.7
+  expression_variance: fixed # fixed, global, or tile; expression-only uncertainty
   continuous_registers: false
   discrete: [[subtype, 1]]
   continuous: [[expr512, 3], [fga, 3]]

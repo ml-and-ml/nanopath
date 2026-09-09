@@ -318,6 +318,13 @@ def main():
         factor: nn.Sequential(nn.Linear(student_backbone.embed_dim, 512), nn.GELU(), nn.Linear(512, 256), nn.GELU(), nn.Linear(256, fino_meta["cont_dim"].get(factor, 1))).to(device)
         for factor, _ in fino_cont
     }
+    if fino_cfg and fino_cfg["expression_variance"] != "fixed":
+        # Fork CPU initialization so the added head leaves prototypes and the tile stream unchanged.
+        with torch.random.fork_rng(devices=[]):
+            predictors["expr_logvar"] = nn.Linear(student_backbone.embed_dim, 1).to(device)
+        for p in predictors["expr_logvar"].parameters(): nn.init.zeros_(p)
+        # Frozen zero weights make the global arm a single learned, tile-independent intercept.
+        predictors["expr_logvar"].weight.requires_grad_(fino_cfg["expression_variance"] == "tile")
     # AdamW param groups carry per-parameter LR/WD multipliers (LWD + patch_embed + biases-no-WD).
     param_groups = build_param_groups(student_backbone, student_dino_head, student_predictor, dino_cfg["layerwise_decay"], dino_cfg["patch_embed_lr_mult"])
     if predictors:
@@ -520,7 +527,7 @@ def main():
         }
 
     # Compute DINO, JEPA, KDE, and optional FINO; validation omits FINO.
-    def compute_losses(gf, lf, b, masks, mask_idx, mask_w, t_temp, k_scale, ckpt=False, meta=None):
+    def compute_losses(gf, lf, b, masks, mask_idx, mask_w, t_temp, k_scale, ckpt=False, meta=None, diagnostics=None):
         with torch.no_grad():
             t = teacher_backbone(gf)
             t_cls = teacher_dino_head(t["cls"]).chunk(train_cfg["global_views"])
@@ -565,13 +572,27 @@ def main():
                     values = continuous[factor].repeat(train_cfg["global_views"], 1)
                     keep = ~torch.isnan(values).any(1)
                     if keep.any():
-                        prediction = predictors[factor](GradScale.apply(molecular[keep], sign * gamma))
+                        features = GradScale.apply(molecular[keep], sign * gamma)
+                        prediction = predictors[factor](features)
                         target = values[keep]
                         if train_cfg["fino_bag_loss"]:
                             # Keep global views separate; missing metadata removes complete case bags.
                             shape = (train_cfg["global_views"], -1, cfg["data"]["case_bag_size"], target.shape[-1])
                             prediction, target = prediction.reshape(shape).mean(2), target.reshape(shape)[:, :, 0]
-                        terms.append(0.03 * F.mse_loss(prediction, target))
+                        if factor == "expr512" and "expr_logvar" in predictors:
+                            logvar = predictors["expr_logvar"](features).squeeze(-1)
+                            error = (prediction - target).square().mean(-1)
+                            # Twice the per-gene Gaussian NLL matches the reference MSE scale at s=0.
+                            terms.append(0.03 * (logvar.neg().exp() * error + logvar).mean())
+                            if diagnostics is not None:
+                                precision = logvar.detach().neg().exp()
+                                diagnostics.update(expr_mse=error.detach().mean(), expr_logvar_mean=logvar.detach().mean(),
+                                                   expr_logvar_min=logvar.detach().min(), expr_logvar_max=logvar.detach().max(),
+                                                   expr_precision_mean=precision.mean(), expr_precision_std=precision.std(unbiased=False))
+                                # The hook isolates this head's gradient, including its FINO boundary scale.
+                                features.register_hook(lambda grad, scale=abs(sign * gamma): diagnostics.update(expr_feature_grad_norm=scale * grad.detach().norm()))
+                        else:
+                            terms.append(0.03 * F.mse_loss(prediction, target))
                 for term in terms:
                     meta_loss = meta_loss + term
         return local_loss + global_loss, jepa_loss, kde, meta_loss
@@ -699,9 +720,10 @@ def main():
                     gamma = fino_cfg["gamma_max"] * (2 / (1 + math.exp(-10 * sample_fraction)) - 1) if fino_cfg else 0.0
                     meta = ((gamma, batch["meta_disc"].to(device, non_blocking=True),
                              {factor: batch[f"mc_{factor}"].to(device, non_blocking=True) for factor, _ in fino_cont}) if fino_cfg else None)
+                    expression_metrics = {}
                     dino_loss_value, jepa_loss, kde, meta_loss = compute_losses(
                         gf, lf, batch_size, masks, mask_idx, mask_w, teacher_temp, kde_scale,
-                        ckpt=activation_checkpointing, meta=meta,
+                        ckpt=activation_checkpointing, meta=meta, diagnostics=expression_metrics if should_log else None,
                     )
                     total_loss = dino_loss_value + jepa_loss + kde + meta_loss
                 opt.zero_grad(set_to_none=True)
@@ -780,6 +802,7 @@ def main():
                     "gpu_peak_mem_gb": gpu_peak_mem_gb,
                     "grad_norm": float(grad_norm.detach()),
                 }
+                train_log.update({key: float(value) for key, value in expression_metrics.items()})
                 train_log.update(unique_counts)
                 print(
                     f"{console_prefix()} Training  "
