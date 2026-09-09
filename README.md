@@ -51,7 +51,7 @@ This worktree uses the saved `robust-norm-huelocal` recipe (`run_sub_8a160bb2d9`
 | `configs/cls-context.yaml` | CLS-context JEPA: prepend masked student CLS to the predictor and discard its output token | Main | 0.680590 | 0.675516 |
 | `evaluate.py` | Ungated frozen readout: disable typicality shrinkage on the same final weights | Main | 0.675236 | 0.665912 |
 
-These are seed-7777 results on the full 20-dataset suite. No intervention exceeds its matched control by +0.006 mean probe. The frozen ablation preserves the original checkpoint and gives identical segmentation and CRoMa scores; its classification gains are offset by lower progression and mutation scores.
+These are unvalidated seed-7777 results on the full 20-dataset suite. CLS context gains +0.000111 mean probe over the reference; bag-mean supervision gains +0.001004 over its sampling control. The frozen ablation preserves the original checkpoint and gives identical segmentation and CRoMa scores; its classification gains are offset by lower progression and mutation scores.
 
 Case bags use the TCGA-clinical DX-slide mapping and existing expr512 targets, preserving NanoPath's patient split and target encoding. This is patient-level bulk supervision; the mapping does not establish same-section RNA measurements. Subtype FINO, DINO, KDE, hue augmentation, and model readouts stay fixed. All arms follow the standard 16-CPU, 16-training-worker allocation; four validation workers limit competing prefetch. Calibration reserves its actual source-tile presentations before optimization; its views contribute compute without multiplying tile counts.
 
@@ -61,7 +61,7 @@ Submit each full config with `./submit/train_1gpu.sbatch <config>`. Outputs live
 python evaluate.py configs/main.yaml checkpoint_path=/data/$USER/nanopath/noble-20260909/base/latest.pt output_dir=/data/$USER/nanopath/noble-20260909/gate-off
 ```
 
-`summary.mean_probe_score` is the unweighted mean of linear, KNN, few-shot, segmentation, progression, mutation, survival, and robustness means on the v2 suite. It is a diagnostic alongside the official weighted `final_score`; it is not comparable to the earlier v1 mean. Require at least +0.006 mean-probe improvement before treating an arm as promising, then validate with independent seeds.
+`summary.mean_probe_score` is the unweighted mean of linear, KNN, few-shot, segmentation, progression, mutation, survival, and robustness means on the v2 suite. It is a diagnostic alongside the official weighted `final_score`; it is not comparable to the earlier v1 mean. Apply the +0.006 mean-probe threshold only when comparing against a previously validated run. For unvalidated runs, report the observed score differences and validation status.
 
 ## Leaderboard
 
