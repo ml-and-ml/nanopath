@@ -403,7 +403,11 @@ def main():
         "persistent_workers": train_cfg["persistent_workers"] and train_cfg["num_workers"] > 0,
     }
     train_loader = DataLoader(train_ds, shuffle=True, **loader_kwargs)
-    val_loader = DataLoader(val_ds, shuffle=False, **loader_kwargs)
+    # A short validation pass needs few workers; excess prefetch starves training augmentation.
+    val_loader = DataLoader(val_ds, shuffle=False, **(loader_kwargs | {
+        "num_workers": min(4, train_cfg["num_workers"]),
+        "prefetch_factor": 1 if train_cfg["num_workers"] > 0 else None,
+    }))
 
     activation_checkpointing = bool(train_cfg["activation_checkpointing"])
     global_grid = train_cfg["global_size"] // student_backbone.patch_size

@@ -50,7 +50,7 @@ This worktree uses the saved `robust-norm-huelocal` recipe (`run_sub_8a160bb2d9`
 | `configs/case-fino.yaml` | Same groups; average molecular predictions before MSE, separately for each global view | Case control |
 | `configs/cls-context.yaml` | Prepend the masked student's CLS to the JEPA predictor and discard its output token | Main |
 
-Case bags use the TCGA-clinical DX-slide mapping and existing expr512 targets, preserving NanoPath's patient split and target encoding. This is patient-level bulk supervision; the mapping does not establish same-section RNA measurements. Subtype FINO, DINO, KDE, hue augmentation, and model readouts stay fixed. Calibration reserves its actual source-tile presentations before optimization; its views contribute compute without multiplying tile counts.
+Case bags use the TCGA-clinical DX-slide mapping and existing expr512 targets, preserving NanoPath's patient split and target encoding. This is patient-level bulk supervision; the mapping does not establish same-section RNA measurements. Subtype FINO, DINO, KDE, hue augmentation, and model readouts stay fixed. All arms use 32 training workers and four validation workers to avoid CPU augmentation stalls. Calibration reserves its actual source-tile presentations before optimization; its views contribute compute without multiplying tile counts.
 
 Submit each full config with `./submit/train_1gpu.sbatch <config>`. Outputs live under `/data/$USER/nanopath/noble-20260909/`. After the main run completes, evaluate the same frozen checkpoint with typicality shrinkage disabled:
 

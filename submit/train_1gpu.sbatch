@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --gpus-per-task=1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=64
 #SBATCH --output=slurm/%j.out
 #SBATCH --error=slurm/%j.err
 #SBATCH --partition=n
@@ -25,7 +25,7 @@ source "${REPO_DIR}/.venv/bin/activate"
 export TORCH_HOME="/data/${USER}/nanopath/torch"
 export TORCHINDUCTOR_CACHE_DIR="/data/${USER}/nanopath/cache/inductor"
 export TRITON_CACHE_DIR="/data/${USER}/nanopath/cache/triton"
-export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-16}"
+export OMP_NUM_THREADS=16
 mkdir -p slurm
 
 LAUNCH_INFO="$(python - "${CONFIG_FILE}" "$@" <<'PY'
