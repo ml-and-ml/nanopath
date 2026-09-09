@@ -50,9 +50,9 @@ This worktree uses the saved `robust-norm-huelocal` recipe (`run_sub_8a160bb2d9`
 | `configs/case-fino.yaml` | Bag-mean molecular supervision: average predictions before MSE, separately for each global view | Case control | 0.668121 |
 | `configs/cls-context.yaml` | CLS-context JEPA: prepend masked student CLS to the predictor and discard its output token | Main | 0.675516 |
 | `configs/ungated-readout.yaml` | Ungated frozen readout: disable typicality shrinkage on the same final weights | Main | 0.665912 |
-| `configs/register-fino.yaml` | Molecular register routing: expression/FGA heads use the normalized mean of the four existing register tokens | Main | Pending |
+| `configs/register-fino.yaml` | Molecular register routing: expression/FGA heads use the normalized mean of the four existing register tokens | Main | 0.675649 |
 
-Completed rows are unvalidated seed-7777 results on the full 20-dataset suite. CLS context changes v2 by -0.000036 versus the reference; bag-mean supervision gains +0.001550 over its sampling control. The frozen ablation preserves the original checkpoint and gives identical segmentation and CRoMa scores; its classification gains are offset by lower progression and mutation scores.
+Completed rows are unvalidated seed-7777 results on the full 20-dataset suite. CLS context changes v2 by -0.000036 versus the reference; bag-mean supervision gains +0.001550 over its sampling control. Molecular register routing changes v2 by +0.000097 versus the reference, with its progression gain largely offset by lower survival. The frozen ablation preserves the original checkpoint and gives identical segmentation and CRoMa scores; its classification gains are offset by lower progression and mutation scores.
 
 `fino.continuous_registers` moves only continuous molecular supervision to pooled registers from the same masked student forward. Subtype prototypes, DINO/KDE on CLS, JEPA patches, and inference readouts retain their original paths. `configs/register-fino.yaml` keeps the reference sampler, seed, targets, and budgets; it adds no tokens, parameters, or backbone passes and writes to `/data/$USER/nanopath/register-fino-20260909/full`.
 
