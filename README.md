@@ -39,20 +39,23 @@ A successful model training prints periodic train lines, appends metrics to `met
 
 W&B can run online or offline, but set that up before submitting a noninteractive job: either run `wandb login` once, or export `WANDB_MODE=offline`.
 
-## Noble context experiments
+## Tile and patient context experiments
 
 This worktree uses the saved `robust-norm-huelocal` recipe (`run_sub_8a160bb2d9`) with the current v2 evaluator. All arms share `train.py`, `model.py`, and `dataloader.py`; only their YAML settings differ. The earlier local WSI-loader work is preserved in commit `75ac863` on `backup/pre-noble-20260909`, and live loading remains available through `data.input_mode: wsi` with `wsi_dir` and `target_mpp_range`.
 
-| Config | Intervention | Matched comparison |
-|---|---|---|
-| `configs/main.yaml` | Huelocal reproduction with calibration included in the sample/compute accounting | Shared reference |
-| `configs/case-control.yaml` | 32 patients × four distinct mapped tiles; original per-tile molecular loss | Sampling effect versus main |
-| `configs/case-fino.yaml` | Same groups; average molecular predictions before MSE, separately for each global view | Case control |
-| `configs/cls-context.yaml` | Prepend the masked student's CLS to the JEPA predictor and discard its output token | Main |
+| Config | Intervention | Matched comparison | Mean probe | v2 score |
+|---|---|---|---:|---:|
+| `configs/main.yaml` | Huelocal reproduction with calibration included in the sample/compute accounting | Shared reference | 0.680479 | 0.675552 |
+| `configs/case-control.yaml` | Patient-balanced sampling: 32 patients × four distinct mapped tiles; original per-tile molecular loss | Main | 0.671066 | 0.666571 |
+| `configs/case-fino.yaml` | Bag-mean molecular supervision: average predictions before MSE, separately for each global view | Case control | 0.672069 | 0.668121 |
+| `configs/cls-context.yaml` | CLS-context JEPA: prepend masked student CLS to the predictor and discard its output token | Main | 0.680590 | 0.675516 |
+| `evaluate.py` | Ungated frozen readout: disable typicality shrinkage on the same final weights | Main | 0.675236 | 0.665912 |
+
+These are seed-7777 results on the full 20-dataset suite. No intervention exceeds its matched control by +0.006 mean probe. The frozen ablation preserves the original checkpoint and gives identical segmentation and CRoMa scores; its classification gains are offset by lower progression and mutation scores.
 
 Case bags use the TCGA-clinical DX-slide mapping and existing expr512 targets, preserving NanoPath's patient split and target encoding. This is patient-level bulk supervision; the mapping does not establish same-section RNA measurements. Subtype FINO, DINO, KDE, hue augmentation, and model readouts stay fixed. All arms follow the standard 16-CPU, 16-training-worker allocation; four validation workers limit competing prefetch. Calibration reserves its actual source-tile presentations before optimization; its views contribute compute without multiplying tile counts.
 
-Submit each full config with `./submit/train_1gpu.sbatch <config>`. Outputs live under `/data/$USER/nanopath/noble-20260909/`. After the main run completes, evaluate the same frozen checkpoint with typicality shrinkage disabled:
+Submit each full config with `./submit/train_1gpu.sbatch <config>`. Outputs live under `/data/$USER/nanopath/noble-20260909/`. After the main run completes, evaluate the same frozen checkpoint inside a standard one-H100/16-CPU SLURM allocation, with the virtualenv activated:
 
 ```bash
 python evaluate.py configs/main.yaml checkpoint_path=/data/$USER/nanopath/noble-20260909/base/latest.pt output_dir=/data/$USER/nanopath/noble-20260909/gate-off
