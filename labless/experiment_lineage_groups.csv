@@ -1,0 +1,1253 @@
+run_id,title,group_id,family,group_size,best_run_id
+run_sub_0d8aeb2511,dinov2-s-kde,group_0000,run:run_sub_0d8aeb2511,1,run_sub_0d8aeb2511
+run_sub_8b10c87dfb,"A100, bs=64",group_0001,a100-bs-64,1,run_sub_8b10c87dfb
+run_sub_0f32802c54,tissue-curate,group_0002,sampling/curation,1,run_sub_0f32802c54
+run_sub_53a6eca303,curric-frac75,group_0003,curric-frac75,1,run_sub_53a6eca303
+run_sub_8fc10b5e02,warmup03-b2,group_0004,warmup/schedule,1,run_sub_8fc10b5e02
+run_sub_6c6c051f71,lr-and-curation,group_0005,run:run_sub_6c6c051f71,1,run_sub_6c6c051f71
+run_sub_ce783976ea,gentleaug-l112,group_0006,gentleaug-l112,1,run_sub_ce783976ea
+run_sub_e462a0a3e7,magjit,group_0007,magjit,1,run_sub_e462a0a3e7
+run_sub_99b3ad6898,jepa-dino,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_0cdf7364c0,jepa-mask25,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_1ef0eea009,jepa-narrow,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_bb20cbae4a,jepa-mask10,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_4035c72174,jepa-dual,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_ffdb1b12ac,jepa-mask5,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_e0b11ed636,hsv-tissue,group_0009,sampling/curation + stain/color aug,1,run_sub_e0b11ed636
+run_sub_802e83b402,dinov3-vits-jepa,group_0010,masking/JEPA/iBOT + architecture,2,run_sub_802e83b402
+run_sub_df0b646cd4,vit5-vitb-kde,group_0011,KDE/uniformity + architecture,2,run_sub_df0b646cd4
+run_sub_ad5c1705b1,vit5-vits-kde,group_0011,KDE/uniformity + architecture,2,run_sub_df0b646cd4
+run_sub_02076759a7,tissue03,group_0012,sampling/curation,4,run_sub_3f2d617c97
+run_sub_8400095956,ijepa-for-all,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_816fc5d0ca,I-JEPA contig patch,group_0013,run:run_sub_816fc5d0ca,1,run_sub_816fc5d0ca
+run_sub_25b5fd6d3b,dino-jepa,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_7333994365,main-default,group_0014,main-default,1,run_sub_7333994365
+run_sub_f653951c3a,mergeMainLeader,group_0015,teacher/EMA/temp,3,run_sub_1e2d9d9f77
+run_sub_fc5c458152,jepa-gram-anchor,group_0016,replication/control + masking/JEPA/iBOT + anti-collapse,1,run_sub_fc5c458152
+run_sub_adeab711e6,jepa-tissue03,group_0017,masking/JEPA/iBOT + sampling/curation,6,run_sub_adeab711e6
+run_sub_959982de57,dino-jepa-pred6,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_2e56e7ded8,jepa-mask075,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_e8797adfe5,dino_jepa_w1,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_2be55385f1,dino_jepa_w2,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_ffac0d4472,dino_jepa_w4,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_df7330d020,diversity,group_0018,diversity,1,run_sub_df7330d020
+run_sub_373f29d67e,jedi,group_0019,jedi,1,run_sub_373f29d67e
+run_sub_ececf5d4a3,jedi_f40,group_0020,jedi-f40,1,run_sub_ececf5d4a3
+run_sub_d402281eb2,jedi_outpaint,group_0021,jedi-outpaint,1,run_sub_d402281eb2
+run_sub_56fb9689a0,jedi_w05,group_0022,jedi-w05,1,run_sub_56fb9689a0
+run_sub_1c3eebd67b,jedi_w20,group_0023,jedi-w20,1,run_sub_1c3eebd67b
+run_sub_6cbc40b75f,jepa,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_e77982a0b5,nima,group_0024,nima,1,run_sub_e77982a0b5
+run_sub_797f9c4ede,nima_blocks6,group_0025,nima-blocks6,1,run_sub_797f9c4ede
+run_sub_4da48ee2c5,nima_cover20,group_0026,nima-cover20,1,run_sub_4da48ee2c5
+run_sub_2fd2527d5d,nima_gram01,group_0027,nima-gram01,1,run_sub_2fd2527d5d
+run_sub_116366e921,nima_gram03,group_0028,nima-gram03,1,run_sub_116366e921
+run_sub_d71378a44e,nima_gram_ms,group_0029,nima-gram-ms,1,run_sub_d71378a44e
+run_sub_d0a80be591,nima_ibot03,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_9971b47eb2,nima_kde05,group_0030,KDE/uniformity,2,run_sub_9971b47eb2
+run_sub_3b5ffc6cd2,nima_keepibot,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_60df323f8e,nima_lr15,group_0031,nima-lr15,1,run_sub_60df323f8e
+run_sub_d4e4d5f287,nima_mask10,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_588616eb65,nima_mask25,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_1d845f6ebd,nima_mask5,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_c69fcbc0c2,nima_multiscale,group_0032,nima-multiscale,1,run_sub_c69fcbc0c2
+run_sub_55c6183ae4,nima_pd6_s2024,group_0033,nima-pd6-s2024,1,run_sub_55c6183ae4
+run_sub_d309fdd13a,nima_pd8,group_0034,nima-pd8,1,run_sub_d309fdd13a
+run_sub_a700e33c73,nima_pd_c12,group_0035,nima-pd-c12,1,run_sub_a700e33c73
+run_sub_6b1cdd3c02,nima_pd_c15,group_0036,nima-pd-c15,1,run_sub_6b1cdd3c02
+run_sub_53048df284,nima_pd_reg,group_0037,nima-pd-reg,1,run_sub_53048df284
+run_sub_7cfdb430b0,nima_s2025,group_0038,nima-s2025,1,run_sub_7cfdb430b0
+run_sub_dd34f71439,nima_s31337,group_0039,nima-s31337,1,run_sub_dd34f71439
+run_sub_45eb76872b,nima_s42,group_0040,nima-s42,1,run_sub_45eb76872b
+run_sub_3f80ab99fb,nima_s7,group_0041,nima-s7,1,run_sub_3f80ab99fb
+run_sub_ffe7bcdb5e,nima_s88,group_0042,nima-s88,1,run_sub_ffe7bcdb5e
+run_sub_b293f9941c,nima_s999,group_0043,nima-s999,1,run_sub_b293f9941c
+run_sub_20464c6614,nima_w576,group_0044,nima-w576,1,run_sub_20464c6614
+run_sub_541e33ab4c,nima_w768,group_0045,nima-w768,1,run_sub_541e33ab4c
+run_sub_73f73a1daa,nima_warm03,group_0046,nima-warm03,1,run_sub_73f73a1daa
+run_sub_77aaaf2624,nima_warmlong,group_0047,nima-warmlong,1,run_sub_77aaaf2624
+run_sub_2525131624,vitb,group_0048,vitb,1,run_sub_2525131624
+run_sub_0fc6df78e3,vitb_lr2e5,group_0049,vitb-lr2e5,1,run_sub_0fc6df78e3
+run_sub_3871635755,vitb_lr5e5,group_0050,vitb-lr5e5,1,run_sub_3871635755
+run_sub_f5f01e06c5,jepa-fino-morph,group_0051,masking/JEPA/iBOT + metadata/FINO,7,run_sub_70382d6d1b
+run_sub_fc3be92a2c,jepa-fino-fga,group_0051,masking/JEPA/iBOT + metadata/FINO,7,run_sub_70382d6d1b
+run_sub_03b9dec528,jepa-block,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_fb8cfd06fd,gram-clean,group_0052,gram-clean,1,run_sub_fb8cfd06fd
+run_sub_24513e748d,jepa-fino-fga-ramp,group_0053,masking/JEPA/iBOT + warmup/schedule + metadata/FINO,1,run_sub_24513e748d
+run_sub_70382d6d1b,jepa-fino-clu-g08-w,group_0051,masking/JEPA/iBOT + metadata/FINO,7,run_sub_70382d6d1b
+run_sub_a7ad4029ff,jepa-fino-clu-g05-w,group_0051,masking/JEPA/iBOT + metadata/FINO,7,run_sub_70382d6d1b
+run_sub_befb2e6caf,jepa-fino-clu-g03-w,group_0051,masking/JEPA/iBOT + metadata/FINO,7,run_sub_70382d6d1b
+run_sub_16e0f9e2f2,jepa-fino-se-g05,group_0051,masking/JEPA/iBOT + metadata/FINO,7,run_sub_70382d6d1b
+run_sub_70b76e248d,jepa-fino-fga-warm,group_0051,masking/JEPA/iBOT + metadata/FINO,7,run_sub_70382d6d1b
+run_sub_5d8eb4171c,nima_vcreg1,group_0054,nima-vcreg1,1,run_sub_5d8eb4171c
+run_sub_d8d8a48281,nima_vcreg25,group_0055,nima-vcreg25,1,run_sub_d8d8a48281
+run_sub_250a9f32b9,nima_capi,group_0056,nima-capi,1,run_sub_250a9f32b9
+run_sub_ff632fb0d6,lejepa-sigreg,group_0057,masking/JEPA/iBOT + anti-collapse,1,run_sub_ff632fb0d6
+run_sub_5a02d4c1bf,jf-lr-anneal,group_0058,LR/optimizer/grad,7,run_sub_f32f515351
+run_sub_3f8dd36e3f,jf-lranneal-rawcls,group_0059,jf-lranneal-rawcls,1,run_sub_3f8dd36e3f
+run_sub_6cca4611bb,jf-rawcls,group_0060,jf-rawcls,1,run_sub_6cca4611bb
+run_sub_58591e404b,jf-reg-rekey,group_0061,jf-reg-rekey,1,run_sub_58591e404b
+run_sub_369935bb6a,jf-sched-rekey,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_aca0d8fddf,jf-til-immune,group_0063,jf-til-immune,1,run_sub_aca0d8fddf
+run_sub_146d47691b,jf-til-rawcls,group_0064,jf-til-rawcls,1,run_sub_146d47691b
+run_sub_1c09fa3e4b,jf-til-sched,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_1128785297,jf-lr-const,group_0058,LR/optimizer/grad,7,run_sub_f32f515351
+run_sub_d40a06b414,jf-lr150,group_0065,jf-lr150,1,run_sub_d40a06b414
+run_sub_8fa9b04574,jf-lr150-lv12,group_0066,jf-lr150-lv12,1,run_sub_8fa9b04574
+run_sub_76b2a56793,jf-lr150-const,group_0067,jf-lr150-const,1,run_sub_76b2a56793
+run_sub_e9efc8b5c9,jf-lr200,group_0068,jf-lr200,1,run_sub_e9efc8b5c9
+run_sub_f7b57d5e46,jf-localviews12,group_0069,jf-localviews12,1,run_sub_f7b57d5e46
+run_sub_ad9525ebad,jf-localviews16,group_0070,jf-localviews16,1,run_sub_ad9525ebad
+run_sub_c661c3a993,jf-clip5,group_0071,jf-clip5,1,run_sub_c661c3a993
+run_sub_16742926b9,jf-clip5-dp05,group_0072,jf-clip5-dp05,1,run_sub_16742926b9
+run_sub_3a9f265bcf,jf-droppath05,group_0073,jf-droppath05,1,run_sub_3a9f265bcf
+run_sub_83dc4fb889,jf-lr135,group_0074,jf-lr135,1,run_sub_83dc4fb889
+run_sub_996f834ba7,jf-lwd08,group_0075,jf-lwd08,1,run_sub_996f834ba7
+run_sub_2a698375d8,jf-grad-eq,group_0076,jf-grad-eq,1,run_sub_2a698375d8
+run_sub_40bed4531c,jf-warmup05,group_0077,warmup/schedule,1,run_sub_40bed4531c
+run_sub_1bc4d404e3,jf-lr125,group_0078,jf-lr125,1,run_sub_1bc4d404e3
+run_sub_2b49c9b4db,jf-crop-aggr,group_0079,jf-crop-aggr,1,run_sub_2b49c9b4db
+run_sub_211e4f51b5,jf-colorjit05,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_3f2d617c97,jf-tissue010,group_0012,sampling/curation,4,run_sub_3f2d617c97
+run_sub_6dbed091c3,jf-tissue025,group_0012,sampling/curation,4,run_sub_3f2d617c97
+run_sub_26ca4507c2,jf-hed12,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_4579b3d809,jf-tis010-hed12,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_ce3d0e5405,jf-hed12-cj05,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_65df96af8c,jf-hed-off,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_b104e12d94,jf-hed08,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_c152943adf,jf-hed09,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_4034c32654,jf-hed05,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_3cd4be1e0c,jf-hed07,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_1879d32919,jepa-fino-s2026,group_0080,run:run_sub_1879d32919,1,run_sub_1879d32919
+run_sub_9fc309cdf9,exp0098-fino-sat,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_1ecd0b7fcb,abl-adamuon-20260610,group_0058,LR/optimizer/grad,7,run_sub_f32f515351
+run_sub_29e502625a,abl-adamuon-j-202606,group_0058,LR/optimizer/grad,7,run_sub_f32f515351
+run_sub_84d916751d,abl-qknorm-20260610,group_0082,readout/post-train,7,run_sub_b2e57385b8
+run_sub_fe9678d63f,abl-qknorm-j-2026061,group_0082,readout/post-train,7,run_sub_b2e57385b8
+run_sub_d4c3ad5bcd,abl-registers-202606,group_0083,architecture,6,run_sub_9b15ec49a6
+run_sub_c0ab1aefdd,abl-registers-j-2026,group_0083,architecture,6,run_sub_9b15ec49a6
+run_sub_f6113790ee,adamuon-qknorm-reg-2,group_0084,LR/optimizer/grad + readout/post-train,2,run_sub_b0205bdfe2
+run_sub_b0205bdfe2,adamuon-qknorm-reg-j,group_0084,LR/optimizer/grad + readout/post-train,2,run_sub_b0205bdfe2
+run_sub_b78cc53f39,aug-split-rstain-202,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_77e674dc25,aug-split-rstain-j-2,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_ccedcb2e62,aug-symaug-j-2026061,group_0085,aug-symaug-j-2026061,1,run_sub_ccedcb2e62
+run_sub_dca2712358,curated,group_0012,sampling/curation,4,run_sub_3f2d617c97
+run_sub_ae9a69c526,evo-1780892424,group_0086,evo-1780892424,1,run_sub_ae9a69c526
+run_sub_9d3be16566,exp_0010,group_0087,exp-0010,1,run_sub_9d3be16566
+run_sub_a87f7763be,exp_0011,group_0088,exp-0011,1,run_sub_a87f7763be
+run_sub_6ba22604b6,exp_0012,group_0089,exp-0012,1,run_sub_6ba22604b6
+run_sub_0f11886868,exp_0013,group_0090,exp-0013,1,run_sub_0f11886868
+run_sub_a0a62f2cc5,exp_0014,group_0091,exp-0014,1,run_sub_a0a62f2cc5
+run_sub_514565704f,exp_0015,group_0092,exp-0015,1,run_sub_514565704f
+run_sub_e9c8754449,exp_0016,group_0093,exp-0016,1,run_sub_e9c8754449
+run_sub_2bf88f58c3,exp_0017,group_0094,exp-0017,1,run_sub_2bf88f58c3
+run_sub_d9a2e2d88f,exp_0018,group_0095,exp-0018,1,run_sub_d9a2e2d88f
+run_sub_1861cd5edb,exp_0019,group_0096,exp-0019,1,run_sub_1861cd5edb
+run_sub_ff5f3ed41c,exp_0020,group_0097,exp-0020,1,run_sub_ff5f3ed41c
+run_sub_24969e57ad,exp_0021,group_0098,exp-0021,1,run_sub_24969e57ad
+run_sub_a29ff7f4fe,exp_0022,group_0099,exp-0022,1,run_sub_a29ff7f4fe
+run_sub_b7e98ee893,exp_0023,group_0100,exp-0023,1,run_sub_b7e98ee893
+run_sub_709ff179a3,exp_0024,group_0101,exp-0024,1,run_sub_709ff179a3
+run_sub_5ecfe5d1d4,exp_0025,group_0102,exp-0025,1,run_sub_5ecfe5d1d4
+run_sub_958c6a2902,exp_0026,group_0103,exp-0026,1,run_sub_958c6a2902
+run_sub_6a71ae8139,exp_0028,group_0104,exp-0028,1,run_sub_6a71ae8139
+run_sub_8f74c1e2ac,exp_0029,group_0105,exp-0029,1,run_sub_8f74c1e2ac
+run_sub_a749665a38,exp_0030,group_0106,exp-0030,1,run_sub_a749665a38
+run_sub_0f6929ea49,exp_0031,group_0107,exp-0031,1,run_sub_0f6929ea49
+run_sub_f9e00d2070,exp_0032,group_0108,exp-0032,1,run_sub_f9e00d2070
+run_sub_15d6c8b12b,exp_0033,group_0109,exp-0033,1,run_sub_15d6c8b12b
+run_sub_361cf89806,exp_0035,group_0110,exp-0035,1,run_sub_361cf89806
+run_sub_3f78a86980,exp_0036,group_0111,exp-0036,1,run_sub_3f78a86980
+run_sub_b576d92595,exp_0037,group_0112,exp-0037,1,run_sub_b576d92595
+run_sub_410cfc913d,exp_0038,group_0113,exp-0038,1,run_sub_410cfc913d
+run_sub_2835fac4e1,exp_0039,group_0114,exp-0039,1,run_sub_2835fac4e1
+run_sub_bee8c8e67e,exp_0040,group_0115,exp-0040,1,run_sub_bee8c8e67e
+run_sub_1bd672fdd0,exp_0042,group_0116,exp-0042,1,run_sub_1bd672fdd0
+run_sub_bfabb429f1,exp_0043,group_0117,exp-0043,1,run_sub_bfabb429f1
+run_sub_3d77e408ff,exp_0044,group_0118,exp-0044,1,run_sub_3d77e408ff
+run_sub_245e9362e6,exp_0045,group_0119,exp-0045,1,run_sub_245e9362e6
+run_sub_76276b5a94,exp_0046,group_0120,exp-0046,1,run_sub_76276b5a94
+run_sub_8bf5635560,exp_0047,group_0121,exp-0047,1,run_sub_8bf5635560
+run_sub_6d3c16e7d1,exp_0048,group_0122,exp-0048,1,run_sub_6d3c16e7d1
+run_sub_4a5f40530b,exp_0049,group_0123,exp-0049,1,run_sub_4a5f40530b
+run_sub_84ab85f3d5,exp_0050,group_0124,exp-0050,1,run_sub_84ab85f3d5
+run_sub_c90ab695c0,exp_0053,group_0125,exp-0053,1,run_sub_c90ab695c0
+run_sub_9f7be454c3,exp_0054,group_0126,exp-0054,1,run_sub_9f7be454c3
+run_sub_15bd61e6d0,exp_0055,group_0127,exp-0055,1,run_sub_15bd61e6d0
+run_sub_530655d5b4,exp_0056,group_0128,exp-0056,1,run_sub_530655d5b4
+run_sub_c8701efaea,exp_0057,group_0129,exp-0057,1,run_sub_c8701efaea
+run_sub_17672296c0,jepa-curated-v2,group_0017,masking/JEPA/iBOT + sampling/curation,6,run_sub_adeab711e6
+run_sub_1956cbb74d,jepa-curated-v4,group_0017,masking/JEPA/iBOT + sampling/curation,6,run_sub_adeab711e6
+run_sub_1c8143c06d,jepa-curated-v5,group_0017,masking/JEPA/iBOT + sampling/curation,6,run_sub_adeab711e6
+run_sub_4249fe7bd2,jepa-curated-v6,group_0017,masking/JEPA/iBOT + sampling/curation,6,run_sub_adeab711e6
+run_sub_1bf76093c5,jepa-mask10-diag,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_1ecbd52de3,jepa-mask10-diag-7,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_7f355a8988,jepa-mask10-dinov3-t,group_0010,masking/JEPA/iBOT + architecture,2,run_sub_802e83b402
+run_sub_94bd78522b,online-stream-202606,group_0130,online-stream-202606,1,run_sub_94bd78522b
+run_sub_5f9864c9c6,online-stream-j-2026,group_0131,online-stream-j-2026,1,run_sub_5f9864c9c6
+run_sub_8f11d1b7f8,soft-equiv-20260610,group_0132,soft-equiv-20260610,1,run_sub_8f11d1b7f8
+run_sub_5e309ca08b,soft-equiv-j-2026061,group_0133,soft-equiv-j-2026061,1,run_sub_5e309ca08b
+run_sub_752a96b487,soft08-20260610,group_0134,soft08-20260610,1,run_sub_752a96b487
+run_sub_5c2fb4fb95,soft08-j-20260610,group_0135,soft08-j-20260610,1,run_sub_5c2fb4fb95
+run_sub_5477d8c01e,softeq-filt08-202606,group_0136,softeq-filt08-202606,1,run_sub_5477d8c01e
+run_sub_2699a372b7,stream-tcga-20260609,group_0137,stream-tcga-20260609,1,run_sub_2699a372b7
+run_sub_f1a4c23b32,jepa-curated-v7,group_0017,masking/JEPA/iBOT + sampling/curation,6,run_sub_adeab711e6
+run_sub_2f0f7b6623,exp_0027,group_0138,exp-0027,1,run_sub_2f0f7b6623
+run_sub_37f32261e6,softeq-filt08-j-2026,group_0139,softeq-filt08-j-2026,1,run_sub_37f32261e6
+run_sub_4209bba23d,exp_0059,group_0140,exp-0059,1,run_sub_4209bba23d
+run_sub_32addaa772,exp_0060,group_0141,exp-0060,1,run_sub_32addaa772
+run_sub_a799eaed0f,exp_0080,group_0142,exp-0080,1,run_sub_a799eaed0f
+run_sub_b1e38fcacd,exp_0081,group_0143,exp-0081,1,run_sub_b1e38fcacd
+run_sub_3a9be17551,exp_0083,group_0144,exp-0083,1,run_sub_3a9be17551
+run_sub_f5dfe51224,exp_0084,group_0145,exp-0084,1,run_sub_f5dfe51224
+run_sub_833ffaa55c,exp_0085,group_0146,exp-0085,1,run_sub_833ffaa55c
+run_sub_3cef252c7e,exp_0087,group_0147,exp-0087,1,run_sub_3cef252c7e
+run_sub_f144938d8a,exp_0089,group_0148,exp-0089,1,run_sub_f144938d8a
+run_sub_88ff12b96a,exp_0092,group_0149,exp-0092,1,run_sub_88ff12b96a
+run_sub_1c9da5ba80,exp_0093,group_0150,exp-0093,1,run_sub_1c9da5ba80
+run_sub_b88106af85,exp_0094,group_0151,exp-0094,1,run_sub_b88106af85
+run_sub_a25fbce8a7,exp_0096,group_0152,exp-0096,1,run_sub_a25fbce8a7
+run_sub_c638d9d09a,exp_0102,group_0153,exp-0102,1,run_sub_c638d9d09a
+run_sub_bfa958498a,exp_0104,group_0154,exp-0104,1,run_sub_bfa958498a
+run_sub_7da79ded62,exp_0105,group_0155,exp-0105,1,run_sub_7da79ded62
+run_sub_c13d4744db,exp_0106,group_0156,exp-0106,1,run_sub_c13d4744db
+run_sub_49c6f10dbe,exp_0108,group_0157,exp-0108,1,run_sub_49c6f10dbe
+run_sub_4cb03c4bda,exp_0109,group_0158,exp-0109,1,run_sub_4cb03c4bda
+run_sub_5d8ee9da18,exp_0110,group_0159,exp-0110,1,run_sub_5d8ee9da18
+run_sub_259dc0f6af,exp_0111,group_0160,exp-0111,1,run_sub_259dc0f6af
+run_sub_d55ff378c8,exp_0112,group_0161,exp-0112,1,run_sub_d55ff378c8
+run_sub_d7ba4aea0e,exp_0113,group_0162,exp-0113,1,run_sub_d7ba4aea0e
+run_sub_264cc64cd3,exp_0114,group_0163,exp-0114,1,run_sub_264cc64cd3
+run_sub_4b051428f5,exp_0115,group_0164,exp-0115,1,run_sub_4b051428f5
+run_sub_8c4c058005,jf-m-scan,group_0165,jf-m-scan,1,run_sub_8c4c058005
+run_sub_e01f267ac1,jf-m-scanyrrace,group_0166,jf-m-scanyrrace,1,run_sub_e01f267ac1
+run_sub_d202b08f88,df-se-g05,group_0167,df-se-g05,1,run_sub_d202b08f88
+run_sub_622f83ae98,df-sefga-g05,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_3c776a5574,fino_expr_g08_r,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_0d51d5fc61,fino_g08_r,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_c942fa6b47,fino_full_r,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_adab12aa1e,fino_best_g12_r,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_fdcbdbf4bf,fino_submit,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_c04f080c1f,fino_g10_s2024,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_e366d6101e,fino_expr_fga_r,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_e26c3dbefd,fino_g10_s1337,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_afa423cbcf,fino_g10_s99,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_ca939ca14a,fino_expr_r,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_9100ce4da6,fino_best_r,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_1bd6a3c61d,fino-densefuse,group_0168,metadata/FINO + readout/post-train,2,run_sub_62eefbe552
+run_sub_83e4308b41,pathorob-201,group_0169,pathorob-201,1,run_sub_83e4308b41
+run_sub_cd344b7325,deepen-jepa-95,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_53df730e21,self-gram-107,group_0170,self-gram-107,1,run_sub_53df730e21
+run_sub_e8f6636fa7,three-factor-116,group_0171,three-factor-116,1,run_sub_e8f6636fa7
+run_sub_584caaacd8,stack-lr125-st-117,group_0172,stack-lr125-st-117,1,run_sub_584caaacd8
+run_sub_a09c29adb9,stratified-fino-118,group_0173,metadata/FINO,1,run_sub_a09c29adb9
+run_sub_503119cd4f,stack-stain-aug-127,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_46d48d250e,fino-base-small-128,group_0174,metadata/FINO,1,run_sub_46d48d250e
+run_sub_10c755e67f,rkd-relational-129,group_0175,rkd-relational-129,1,run_sub_10c755e67f
+run_sub_9b2d66dd00,param-level-dino-130,group_0176,param-level-dino-130,1,run_sub_9b2d66dd00
+run_sub_22b5b644ea,graft-cluster-131,group_0177,graft-cluster-131,1,run_sub_22b5b644ea
+run_sub_a394ec270a,ibot-all-token-132,group_0178,masking/JEPA/iBOT,1,run_sub_a394ec270a
+run_sub_e506363b50,high-res-2x-133,group_0179,high-res-2x-133,1,run_sub_e506363b50
+run_sub_e325b9197a,high-mag-tile-134,group_0180,high-mag-tile-134,1,run_sub_e325b9197a
+run_sub_47068ff6fc,slide-frequency-135,group_0181,slide-frequency-135,1,run_sub_47068ff6fc
+run_sub_e0706f49d5,fino-base-137,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_94949416e8,jepa-predictor-138,group_0182,masking/JEPA/iBOT,1,run_sub_94949416e8
+run_sub_5864a0d118,late-phase-cls-139,group_0183,late-phase-cls-139,1,run_sub_5864a0d118
+run_sub_6a3dc08f81,replace-paad-140,group_0184,replace-paad-140,1,run_sub_6a3dc08f81
+run_sub_6958860122,late-dino-cls-142,group_0185,late-dino-cls-142,1,run_sub_6958860122
+run_sub_3d03ef1dec,kde-schedule-143,group_0186,KDE/uniformity + warmup/schedule + stain/color aug,1,run_sub_3d03ef1dec
+run_sub_354b3096d4,post-minimum-144,group_0187,post-minimum-144,1,run_sub_354b3096d4
+run_sub_3793ee76c2,post-hoc-power-145,group_0188,post-hoc-power-145,1,run_sub_3793ee76c2
+run_sub_b8d995906c,refreshed-ema-146,group_0189,teacher/EMA/temp + stain/color aug,1,run_sub_b8d995906c
+run_sub_479ac69eb6,simdino-coding-156,group_0190,simdino-coding-156,1,run_sub_479ac69eb6
+run_sub_36656ba4ae,multi-block-158,group_0191,multi-block-158,1,run_sub_36656ba4ae
+run_sub_62feaeaf96,additive-coding-161,group_0192,additive-coding-161,1,run_sub_62feaeaf96
+run_sub_d34e87772f,late-gated-patch-162,group_0193,late-gated-patch-162,1,run_sub_d34e87772f
+run_sub_0bbdc2cf6f,post-hoc-power-163,group_0194,post-hoc-power-163,1,run_sub_0bbdc2cf6f
+run_sub_1262737024,port-last-dense-164,group_0195,port-last-dense-164,1,run_sub_1262737024
+run_sub_bc084464be,co-location-oom-165,group_0196,co-location-oom-165,1,run_sub_bc084464be
+run_sub_1292ad70ab,dense-seg-166,group_0197,dense-seg-166,1,run_sub_1292ad70ab
+run_sub_f73f3047b0,survival-rank-168,group_0198,survival-rank-168,1,run_sub_f73f3047b0
+run_sub_d8c1811000,ledoit-wolf-170,group_0199,ledoit-wolf-170,1,run_sub_d8c1811000
+run_sub_2d8a81b59d,port-exp-0114-172,group_0200,port-exp-0114-172,1,run_sub_2d8a81b59d
+run_sub_ba79edc448,multi-block-173,group_0201,multi-block-173,1,run_sub_ba79edc448
+run_sub_fe4033d412,widen-dense-seg-175,group_0202,widen-dense-seg-175,1,run_sub_fe4033d412
+run_sub_9dc8f8434e,land-jbu-seg-176,group_0203,readout/post-train,2,run_sub_9dc8f8434e
+run_sub_c01e2cd73b,vary-jbu-seg-177,group_0203,readout/post-train,2,run_sub_9dc8f8434e
+run_sub_7a599a9512,multi-depth-cls-179,group_0204,architecture,1,run_sub_7a599a9512
+run_sub_4e2e49f431,covariance-180,group_0205,covariance-180,1,run_sub_4e2e49f431
+run_sub_4e65f6bf3d,seg-densifier-181,group_0206,seg-densifier-181,1,run_sub_4e65f6bf3d
+run_sub_88b219b27b,slide-bag-182,group_0207,slide-bag-182,1,run_sub_88b219b27b
+run_sub_2af152deeb,learned-dense-183,group_0208,learned-dense-183,1,run_sub_2af152deeb
+run_sub_c7d6d29da9,survival-de-184,group_0209,survival-de-184,1,run_sub_c7d6d29da9
+run_sub_d503ccc32a,cls-readout-188,group_0210,readout/post-train,1,run_sub_d503ccc32a
+run_sub_9b15ec49a6,depth-weighted-191,group_0083,architecture,6,run_sub_9b15ec49a6
+run_sub_0c7ded229e,survival-scoped-198,group_0211,survival-scoped-198,1,run_sub_0c7ded229e
+run_sub_b82cd28a60,cls-depth-blend-202,group_0083,architecture,6,run_sub_9b15ec49a6
+run_sub_5b0ea9697a,training-free-167,group_0212,training-free-167,1,run_sub_5b0ea9697a
+run_sub_21e84ccb73,combine-exp-0176-178,group_0213,combine-exp-0176-178,1,run_sub_21e84ccb73
+run_sub_b2e57385b8,block-strided-214,group_0082,readout/post-train,7,run_sub_b2e57385b8
+run_sub_62eefbe552,fino-densefuse6,group_0168,metadata/FINO + readout/post-train,2,run_sub_62eefbe552
+run_sub_79f95991a6,replace-always-216,group_0214,replace-always-216,1,run_sub_79f95991a6
+run_sub_4c2aad9ab3,dino-teacher-217,group_0215,teacher/EMA/temp,1,run_sub_4c2aad9ab3
+run_sub_7063648c5b,staged-objective-218,group_0216,geometric aug,1,run_sub_7063648c5b
+run_sub_e674ee911b,late-regime-219,group_0217,late-regime-219,1,run_sub_e674ee911b
+run_sub_f4390f35ef,high-res-tail-220,group_0218,high-res-tail-220,1,run_sub_f4390f35ef
+run_sub_799a50e4b4,detached-dense-221,group_0219,stain/color aug,1,run_sub_799a50e4b4
+run_sub_01ad7a31f2,unsupervised-cls-222,group_0220,unsupervised-cls-222,1,run_sub_01ad7a31f2
+run_sub_290aef7cd0,exploit-lr125-223,group_0221,exploit-lr125-223,1,run_sub_290aef7cd0
+run_sub_2d27200f6c,ibot-style-dense-225,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_e739db70f2,hed-space-stain-231,group_0062,stain/color aug,15,run_sub_3cd4be1e0c
+run_sub_3825508cb5,cross-227,group_0222,cross-227,1,run_sub_3825508cb5
+run_sub_6fbb95c0bd,re-aimed-two-228,group_0223,re-aimed-two-228,1,run_sub_6fbb95c0bd
+run_sub_4f0b08e8d3,mag-aware-local-229,group_0224,mag-aware-local-229,1,run_sub_4f0b08e8d3
+run_sub_28c348d1b1,dino-proto-230,group_0225,dino-proto-230,1,run_sub_28c348d1b1
+run_sub_57bd608058,back-half-236,group_0226,back-half-236,1,run_sub_57bd608058
+run_sub_0a4394cc79,mag-aware-global-232,group_0227,mag-aware-global-232,1,run_sub_0a4394cc79
+run_sub_95d0123dd9,stack-stain-aug-234,group_0228,stain/color aug,1,run_sub_95d0123dd9
+run_sub_74de1260a8,fresh-trained-235,group_0229,fresh-trained-235,1,run_sub_74de1260a8
+run_sub_82c2c9e615,off-trunk-slide-237,group_0230,off-trunk-slide-237,1,run_sub_82c2c9e615
+run_sub_a47bd97faf,attention-guided-238,group_0231,attention-guided-238,1,run_sub_a47bd97faf
+run_sub_ba4bf500e2,cls-sphere-239,group_0232,cls-sphere-239,1,run_sub_ba4bf500e2
+run_sub_ac460fa453,stronger-patch-240,group_0233,stronger-patch-240,1,run_sub_ac460fa453
+run_sub_59f7f9defa,lawa-deploy-241,group_0058,LR/optimizer/grad,7,run_sub_f32f515351
+run_sub_9cc72b2e65,90-degree-242,group_0234,90-degree-242,1,run_sub_9cc72b2e65
+run_sub_9e37eb8168,off-trunk-bank-243,group_0235,off-trunk-bank-243,1,run_sub_9e37eb8168
+run_sub_1f88ff484a,qk-norm-244,group_0082,readout/post-train,7,run_sub_b2e57385b8
+run_sub_c9496db5cd,off-trunk-245,group_0236,off-trunk-245,1,run_sub_c9496db5cd
+run_sub_f00bf47f9b,cotap-253,group_0237,cotap-253,1,run_sub_f00bf47f9b
+run_sub_4bdddac4e7,grad-equalize-247,group_0238,grad-equalize-247,1,run_sub_4bdddac4e7
+run_sub_fa8c4df71a,mag-aware-local-249,group_0239,mag-aware-local-249,1,run_sub_fa8c4df71a
+run_sub_15a7a8e64b,hed-jitter-250,group_0240,stain/color aug,2,run_sub_15a7a8e64b
+run_sub_2f825fd71c,kde-weight-push-252,group_0030,KDE/uniformity,2,run_sub_9971b47eb2
+run_sub_453cb16ed8,fino-stain-site-254,group_0241,metadata/FINO + stain/color aug,1,run_sub_453cb16ed8
+run_sub_bfbffbcccf,combine-two-256,group_0242,combine-two-256,1,run_sub_bfbffbcccf
+run_sub_6e379376f1,re-home-exp-0073-260,group_0243,re-home-exp-0073-260,1,run_sub_6e379376f1
+run_sub_969581e54f,dense-objective-262,group_0244,geometric aug,1,run_sub_969581e54f
+run_sub_ac7d86a2fe,exploit-264,group_0245,exploit-264,1,run_sub_ac7d86a2fe
+run_sub_aab500b0bb,dinov3-style-265,group_0083,architecture,6,run_sub_9b15ec49a6
+run_sub_a49f5b086b,partial-grad-266,group_0246,partial-grad-266,1,run_sub_a49f5b086b
+run_sub_a494a651ad,jepa-distance-267,group_0247,masking/JEPA/iBOT,2,run_sub_7ee5a57cd7
+run_sub_8c0be592ec,high-res-gram-268,group_0248,high-res-gram-268,1,run_sub_8c0be592ec
+run_sub_7ee5a57cd7,jepa-weight-75-269,group_0247,masking/JEPA/iBOT,2,run_sub_7ee5a57cd7
+run_sub_6f46f0ae1e,jepa-deep-self-270,group_0249,masking/JEPA/iBOT,1,run_sub_6f46f0ae1e
+run_sub_edc32aef4c,jepa-canonical-275,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_1e2d9d9f77,temporal-dino-278,group_0015,teacher/EMA/temp,3,run_sub_1e2d9d9f77
+run_sub_0cebc3d39e,raise-jepa-dense-279,group_0008,masking/JEPA/iBOT,26,run_sub_edc32aef4c
+run_sub_34dbbca851,content-aware-273,group_0250,content-aware-273,1,run_sub_34dbbca851
+run_sub_069af7a05b,barlow-vicreg-274,group_0251,anti-collapse,1,run_sub_069af7a05b
+run_sub_00f6a2f612,backbone-276,group_0083,architecture,6,run_sub_9b15ec49a6
+run_sub_9c45acebb8,hed07-st-two-277,group_0240,stain/color aug,2,run_sub_15a7a8e64b
+run_sub_ea4cc6060e,mag-aware-local-280,group_0252,mag-aware-local-280,1,run_sub_ea4cc6060e
+run_sub_d1f86f05c9,lr-curve-shape-281,group_0058,LR/optimizer/grad,7,run_sub_f32f515351
+run_sub_243d368856,batch-step-282,group_0253,batch-step-282,1,run_sub_243d368856
+run_sub_f32f515351,optimizer-state-284,group_0058,LR/optimizer/grad,7,run_sub_f32f515351
+run_sub_11fe0c19ee,data-286,group_0254,data-286,1,run_sub_11fe0c19ee
+run_sub_6af8ed4698,step-anchored-287,group_0255,replication/control,1,run_sub_6af8ed4698
+run_sub_c87f46301e,sample-keyed-291,group_0256,sample-keyed-291,1,run_sub_c87f46301e
+run_sub_d92b5ddfc7,kde-70x-35-hed07-292,group_0257,KDE/uniformity + stain/color aug,1,run_sub_d92b5ddfc7
+run_sub_776a5afbef,exp0214-block-214,group_0258,exp0214-block-214,1,run_sub_776a5afbef
+run_sub_c66815c807,live-ema-gram-290,group_0015,teacher/EMA/temp,3,run_sub_1e2d9d9f77
+run_sub_dffc7771ca,port-block-cls-293,group_0259,port-block-cls-293,1,run_sub_dffc7771ca
+run_sub_1ee564bcfd,training-multi-294,group_0260,training-multi-294,1,run_sub_1ee564bcfd
+run_sub_d10f3e5e5a,slide-percent-297,group_0261,slide-percent-297,1,run_sub_d10f3e5e5a
+run_sub_e06d9e33cb,patient-level-299,group_0081,metadata/FINO,15,run_sub_9fc309cdf9
+run_sub_ee236e5ed8,halve-dino-head-300,group_0262,halve-dino-head-300,1,run_sub_ee236e5ed8
+run_sub_d48e9d9553,reduce-dino-301,group_0263,reduce-dino-301,1,run_sub_d48e9d9553
+run_sub_c4de74a02d,clinical-302,group_0264,clinical-302,1,run_sub_c4de74a02d
+run_sub_057127ba51,narrow-dino-head-303,group_0265,narrow-dino-head-303,1,run_sub_057127ba51
+run_sub_8986771745,port-batch-pca-308,group_0082,readout/post-train,7,run_sub_b2e57385b8
+run_sub_c792301a4d,reduce-dino-cls-298,group_0266,reduce-dino-cls-298,1,run_sub_c792301a4d
+run_sub_2a73da3280,stack-block-cls-309,group_0267,stack-block-cls-309,1,run_sub_2a73da3280
+run_sub_dfc7d8ab2c,port-block-cls-310,group_0268,port-block-cls-310,1,run_sub_dfc7d8ab2c
+run_sub_f56fbd265b,batch-pca-soft-311,group_0082,readout/post-train,7,run_sub_b2e57385b8
+run_sub_0eeba19684,cls4681-seed7777,group_0269,cls4681-seed7777,1,run_sub_0eeba19684
+run_sub_5f782f72e3,cls4681-seed42,group_0270,geometric aug,1,run_sub_5f782f72e3
+run_sub_c57b14975f,vits-readout,group_0082,readout/post-train,7,run_sub_b2e57385b8
+run_sub_46ebc8a061,cls4681-seed1337,group_0271,cls4681-seed1337,1,run_sub_46ebc8a061
+run_sub_59d24d6b7b,block-strided-cls,group_0272,run:run_sub_59d24d6b7b,1,run_sub_59d24d6b7b
+run_sub_d999d71ff2,fino-df6-s271,group_0273,metadata/FINO,4,run_sub_d999d71ff2
+run_sub_45f1f97336,organ-fino-s7777,group_0273,metadata/FINO,4,run_sub_d999d71ff2
+run_sub_a64e43b90c,bsc-s7777,group_0274,bsc-s7777,1,run_sub_a64e43b90c
+run_sub_force_update_9d3be16566,exp_0010,group_0275,exp-0010,1,run_sub_force_update_9d3be16566
+run_sub_f3177bf830,bsc-s7777-k10,group_0276,bsc-s7777-k10,1,run_sub_f3177bf830
+run_sub_b218e3f360,pathorob-v14-final,group_0277,pathorob-v14-final,1,run_sub_b218e3f360
+run_sub_2d4ee76dfd,jepa-fino-densefuse6,group_0278,masking/JEPA/iBOT + metadata/FINO + readout/post-train,2,run_sub_cb53c47dbe
+run_sub_9d404c0c58,ovfx-reseed-anchor,group_0279,replication/control,2,run_sub_6dfff49f22
+run_sub_22fc0a8864,ovfx-d13-gram,group_0280,ovfx-d13-gram,1,run_sub_22fc0a8864
+run_sub_96e4d52c0b,ovfx-d5-trainpca,group_0281,readout/post-train,1,run_sub_96e4d52c0b
+run_sub_88042f5dd1,ovfx-d14-clsdwkde,group_0282,KDE/uniformity,3,run_sub_f7ca513d9b
+run_sub_7cb6376ca9,ovfx-d19-kderealloc,group_0282,KDE/uniformity,3,run_sub_f7ca513d9b
+run_sub_b81c54f6bc,ovfx-d4-outpaint,group_0283,geometric aug,1,run_sub_b81c54f6bc
+run_sub_70390a004f,ovfx-d8-deepsup,group_0284,ovfx-d8-deepsup,1,run_sub_70390a004f
+run_sub_9bbe1f4c0e,ovfx-d1-severed,group_0285,ovfx-d1-severed,1,run_sub_9bbe1f4c0e
+run_sub_de6355ed20,ovfx-d22-finosurv,group_0286,metadata/FINO,2,run_sub_de6355ed20
+run_sub_55ae4acc96,ovfx-d17-optphase,group_0287,ovfx-d17-optphase,1,run_sub_55ae4acc96
+run_sub_1f17fe3ba8,ovfx-d15-gradgate,group_0288,ovfx-d15-gradgate,1,run_sub_1f17fe3ba8
+run_sub_d79fab2951,ovfx-d9-ibot,group_0289,masking/JEPA/iBOT,1,run_sub_d79fab2951
+run_sub_02f7c04fd6,ovfx-d20-contblock,group_0290,ovfx-d20-contblock,1,run_sub_02f7c04fd6
+run_sub_afefcd2c49,ovfx-d21-rectkde,group_0291,KDE/uniformity + geometric aug,1,run_sub_afefcd2c49
+run_sub_39a5d40511,ovfx-d11-pcov,group_0292,ovfx-d11-pcov,1,run_sub_39a5d40511
+run_sub_5968cf0209,ovfx-d16-teachreshp,group_0293,ovfx-d16-teachreshp,1,run_sub_5968cf0209
+run_sub_cb53c47dbe,jepa-fino-df6-l2norm,group_0278,masking/JEPA/iBOT + metadata/FINO + readout/post-train,2,run_sub_cb53c47dbe
+run_sub_374c9842fd,ovfx-d18-emacap,group_0294,teacher/EMA/temp,1,run_sub_374c9842fd
+run_sub_f6efaa52c8,ovfx-d6-mcr2,group_0295,ovfx-d6-mcr2,1,run_sub_f6efaa52c8
+run_sub_f7ca513d9b,ovfx-d24-kdecarr,group_0282,KDE/uniformity,3,run_sub_f7ca513d9b
+run_sub_e863067510,ovfx-d12-sigreg,group_0296,anti-collapse,1,run_sub_e863067510
+run_sub_05cabdd876,ovfx-d23-finodeep,group_0286,metadata/FINO,2,run_sub_de6355ed20
+run_sub_7c7f418231,ovfx-d7-xmagprim,group_0297,ovfx-d7-xmagprim,1,run_sub_7c7f418231
+run_sub_580b685742,ovfx-d3-xmagsev,group_0298,ovfx-d3-xmagsev,1,run_sub_580b685742
+run_sub_10338b2a87,ovfx-d25-frozwarm,group_0299,ovfx-d25-frozwarm,1,run_sub_10338b2a87
+run_sub_e4e8422057,ovfx-d10-featup,group_0300,ovfx-d10-featup,1,run_sub_e4e8422057
+run_sub_c83517282a,ovfx-combo-d17d16,group_0301,ovfx-combo,2,run_sub_c83517282a
+run_sub_c8b7d1ca33,ovfx-d11-retune,group_0302,ovfx-d11-retune,1,run_sub_c8b7d1ca33
+run_sub_8fc472586a,ovfx-combo-d17d24,group_0301,ovfx-combo,2,run_sub_c83517282a
+run_sub_9ae45a6656,clean-base-s2026,group_0303,clean-base-s2026,1,run_sub_9ae45a6656
+run_sub_6d00f5510f,clean-base-s2027,group_0304,clean-base-s2027,1,run_sub_6d00f5510f
+run_sub_63b1458cf5,clean-base-s2028,group_0305,clean-base-s2028,1,run_sub_63b1458cf5
+run_sub_baa8bbd833,clean-supp-s2026,group_0306,clean-supp-s2026,1,run_sub_baa8bbd833
+run_sub_aeecf0610f,clean-supp-s2027,group_0307,clean-supp-s2027,1,run_sub_aeecf0610f
+run_sub_5c2de91c36,clean-supp-s2028,group_0308,clean-supp-s2028,1,run_sub_5c2de91c36
+run_sub_6dfff49f22,ovfx-721-baseline,group_0279,replication/control,2,run_sub_6dfff49f22
+run_sub_66834a9f40,ovfx-721-d17,group_0309,ovfx-721-d17,1,run_sub_66834a9f40
+run_sub_ae40ecbc94,ovfx-721-d24,group_0310,ovfx-721-d24,1,run_sub_ae40ecbc94
+run_sub_084b8f10f4,ovfx-721-d3,group_0311,ovfx-721-d3,1,run_sub_084b8f10f4
+run_sub_e600cf8c13,ovfx-721-d6,group_0312,ovfx-721-d6,1,run_sub_e600cf8c13
+run_sub_f20cac25ad,ovfx-721-d16,group_0313,ovfx-721-d16,1,run_sub_f20cac25ad
+run_sub_35ab18b763,ovfx-721-n2,group_0314,ovfx-721-n2,1,run_sub_35ab18b763
+run_sub_987f141fb9,r3-s2026,group_0315,r3-s2026,1,run_sub_987f141fb9
+run_sub_b932ded428,r3-s2027,group_0316,r3-s2027,1,run_sub_b932ded428
+run_sub_78f61d7f43,r3-s2028,group_0317,r3-s2028,1,run_sub_78f61d7f43
+run_sub_285a5f677b,mol-s2026,group_0318,mol-s2026,1,run_sub_285a5f677b
+run_sub_33ae642612,mol-s2027,group_0319,mol-s2027,1,run_sub_33ae642612
+run_sub_c82603be94,mol-s2028,group_0320,mol-s2028,1,run_sub_c82603be94
+run_sub_9ef8e31347,ovfx-721-n1,group_0321,ovfx-721-n1,1,run_sub_9ef8e31347
+run_sub_9be6b175e5,reseed_anchor,group_0322,replication/control,1,run_sub_9be6b175e5
+run_sub_d9375e5e22,abl_nofino_s2026,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_8e09959508,abl_mp_subtype_s26,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_b4d0e8a355,abl_mp_expr512_s26,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_96467f7d53,abl_mp_fga_s2026,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_04bdd9f8a1,abl_mp_morph_s2026,group_0324,abl-mp-morph-s2026,1,run_sub_04bdd9f8a1
+run_sub_1c85d4ee7e,abl_mp_purity_s2026,group_0325,abl-mp-purity-s2026,1,run_sub_1c85d4ee7e
+run_sub_0c745af28f,abl_mp_tmb_s2026,group_0326,abl-mp-tmb-s2026,1,run_sub_0c745af28f
+run_sub_be19126c54,abl_mp_msi_s2026,group_0327,abl-mp-msi-s2026,1,run_sub_be19126c54
+run_sub_bda026586e,abl_mp_ploidy_s2026,group_0328,abl-mp-ploidy-s2026,1,run_sub_bda026586e
+run_sub_6e58c371d1,abl_mm_tss_s2026,group_0329,abl-mm-tss-s2026,1,run_sub_6e58c371d1
+run_sub_d12df89b4d,abl_mm_scanner_s2026,group_0330,abl-mm-scanner-s2026,1,run_sub_d12df89b4d
+run_sub_03280dc6e2,abl_mm_mpp_s2026,group_0331,abl-mm-mpp-s2026,1,run_sub_03280dc6e2
+run_sub_14381d87e8,nofino-s2027,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_d1f821d7a5,nofino-s2028,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_b3e51457e7,mp_subtype-s2027,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_64af58074c,mp_subtype-s2028,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_b80d703c0b,ovfx_c2_d3_xmag,group_0332,ovfx-c2-d3-xmag,1,run_sub_b80d703c0b
+run_sub_dfc9e3e857,ovfx_c2_d6_mcr2,group_0333,ovfx-c2-d6-mcr2,1,run_sub_dfc9e3e857
+run_sub_dfaec70469,subscan-s2026,group_0334,subscan-s2026,1,run_sub_dfaec70469
+run_sub_f4665dfcfd,subscan-s2027,group_0335,subscan-s2027,1,run_sub_f4665dfcfd
+run_sub_69e3384e48,subscan-s2028,group_0336,subscan-s2028,1,run_sub_69e3384e48
+run_sub_adeeb8bc03,abl M+ cancer s2026,group_0337,abl-m-cancer-s2026,1,run_sub_adeeb8bc03
+run_sub_2c951fed82,abl M+ mutcnt26,group_0338,abl-m-mutcnt26,1,run_sub_2c951fed82
+run_sub_06d778232f,abl M+ osst26,group_0339,abl-m-osst26,1,run_sub_06d778232f
+run_sub_cd02514a86,abl M- year s2026,group_0340,abl-m-year-s2026,1,run_sub_cd02514a86
+run_sub_83135101be,conf M+ cancer s2027,group_0341,conf-m-cancer-s2027,1,run_sub_83135101be
+run_sub_b766c9cc1f,conf M+ cancer s2028,group_0342,conf-m-cancer-s2028,1,run_sub_b766c9cc1f
+run_sub_d643aabd4c,conf os_status s27,group_0343,conf-os-status-s27,1,run_sub_d643aabd4c
+run_sub_d1b84cddca,conf os_status s28,group_0344,conf-os-status-s28,1,run_sub_d1b84cddca
+run_sub_0f4fa5ddad,crux1-s010,group_0345,crux1-s010,1,run_sub_0f4fa5ddad
+run_sub_f8174d815b,crux1-s025,group_0346,crux1-s025,1,run_sub_f8174d815b
+run_sub_d02d698ecf,crux1-s050,group_0347,crux1-s050,1,run_sub_d02d698ecf
+run_sub_b047b28d2c,curation-unbalanced,group_0348,sampling/curation,3,run_sub_b047b28d2c
+run_sub_1cb79388a3,curation-balanced,group_0348,sampling/curation,3,run_sub_b047b28d2c
+run_sub_3e305f030f,curation-halfnhalf,group_0348,sampling/curation,3,run_sub_b047b28d2c
+run_sub_8b24ba430d,bsc-s932-k10,group_0349,run:run_sub_8b24ba430d,1,run_sub_8b24ba430d
+run_sub_810dd07f21,kde_s220794,group_0350,KDE/uniformity,6,run_sub_b3b77ffa62
+run_sub_db29b159b9,kde_s613547,group_0350,KDE/uniformity,6,run_sub_b3b77ffa62
+run_sub_37d7e8be05,km_k50_m1e5_s207925,group_0351,km-k50-m1e5-s207925,1,run_sub_37d7e8be05
+run_sub_628406d16e,km_k50_m1e5_s220794,group_0352,km-k50-m1e5-s220794,1,run_sub_628406d16e
+run_sub_21f8805a2c,km_k50_m1e5_s613547,group_0353,km-k50-m1e5-s613547,1,run_sub_21f8805a2c
+run_sub_4824d4cfbb,mfix_w1e5_s207925,group_0354,mfix-w1e5-s207925,1,run_sub_4824d4cfbb
+run_sub_d2635eb73d,mfix_w1e5_s220794,group_0355,mfix-w1e5-s220794,1,run_sub_d2635eb73d
+run_sub_cd134074ed,mfix_w1e5_s613547,group_0356,mfix-w1e5-s613547,1,run_sub_cd134074ed
+run_sub_c93e3b54c7,sig_s220794,group_0357,sig-s220794,1,run_sub_c93e3b54c7
+run_sub_09147660f6,sig_s613547,group_0358,sig-s613547,1,run_sub_09147660f6
+run_sub_124c3067d6,sigw05_s207925,group_0359,sigw05-s207925,1,run_sub_124c3067d6
+run_sub_ffa9864c9f,cancerMp-j4-207925,group_0360,cancermp-j4-207925,1,run_sub_ffa9864c9f
+run_sub_e7ac4b08c1,orig-j4-207925,group_0361,orig-j4-207925,1,run_sub_e7ac4b08c1
+run_sub_d81f2e3c0c,nofino-j4-207925,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_1eb67b8543,cancerMp-j3-207925,group_0362,cancermp-j3-207925,1,run_sub_1eb67b8543
+run_sub_793e6f623e,orig-j3-207925,group_0363,orig-j3-207925,1,run_sub_793e6f623e
+run_sub_a8169ba3ff,nofino-j3-207925,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_f4f3fd43a8,d3rawema,group_0364,teacher/EMA/temp,4,run_sub_b0894aa4fa
+run_sub_bb0a2b8816,dinov2b-fair,group_0365,dinov2b-fair,1,run_sub_bb0a2b8816
+run_sub_87feea99ba,dinov2b-fino,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_de8743914a,hs-orig-s613547,group_0366,hs-orig-s613547,1,run_sub_de8743914a
+run_sub_1079216e81,hs-orig-s220794,group_0367,hs-orig-s220794,1,run_sub_1079216e81
+run_sub_7417812d2b,combo-nofino-207925,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_d2dbce08aa,combo-nofino-2026,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_4fb9fdea15,hs-cancer-s220794,group_0368,hs-cancer-s220794,1,run_sub_4fb9fdea15
+run_sub_a64fc7b838,combo-cancer-2026,group_0369,combo-cancer-2026,1,run_sub_a64fc7b838
+run_sub_4e202ef307,combo-cancer-207925,group_0370,combo-cancer-207925,1,run_sub_4e202ef307
+run_sub_f62e8441af,hs-cancer-s613547,group_0371,hs-cancer-s613547,1,run_sub_f62e8441af
+run_sub_78f0932a49,dinov3-b,group_0372,architecture,2,run_sub_78f0932a49
+run_sub_b5fc326591,sup-2tech-s2026,group_0373,sup-2tech-s2026,1,run_sub_b5fc326591
+run_sub_098ac9c38b,hs-nofino-s613547,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_cba2bc877a,dinov3-s,group_0372,architecture,2,run_sub_78f0932a49
+run_sub_5e153900c3,hs-nofino-s220794,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_ee428cbcff,genbio-rgbs,group_0374,stain/color aug,1,run_sub_ee428cbcff
+run_sub_91b846daea,sup-someones-s2026,group_0375,sup-someones-s2026,1,run_sub_91b846daea
+run_sub_7ddcf2fe32,sup-c2tech-s2026,group_0376,sup-c2tech-s2026,1,run_sub_7ddcf2fe32
+run_sub_eb8fee7897,sup-ctss-s2026,group_0377,sup-ctss-s2026,1,run_sub_eb8fee7897
+run_sub_fe7418321b,sup-cscan-s2026,group_0378,sup-cscan-s2026,1,run_sub_fe7418321b
+run_sub_46f6b12254,sup-capp-s2026,group_0379,sup-capp-s2026,1,run_sub_46f6b12254
+run_sub_05402d0000,a2-grppat-s2026,group_0380,a2-grppat-s2026,1,run_sub_05402d0000
+run_sub_63a798f9e1,a2-grpsub-207925,group_0381,a2-grpsub-207925,1,run_sub_63a798f9e1
+run_sub_f3b0362de7,b-orig-s2026,group_0382,b-orig-s2026,1,run_sub_f3b0362de7
+run_sub_6390756087,fino-a33-base,group_0273,metadata/FINO,4,run_sub_d999d71ff2
+run_sub_def80f0d09,fino-a33-treat,group_0273,metadata/FINO,4,run_sub_d999d71ff2
+run_sub_a706dc087e,b-orig-s2027,group_0383,b-orig-s2027,1,run_sub_a706dc087e
+run_sub_39b08a8232,fino-papermatch,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_fb12c4d526,b-cancer-s2026,group_0384,b-cancer-s2026,1,run_sub_fb12c4d526
+run_sub_77b8e83d59,fino-baseline-17,group_0385,replication/control + metadata/FINO,1,run_sub_77b8e83d59
+run_sub_ed2cb9e816,b-cancer-s2027,group_0386,b-cancer-s2027,1,run_sub_ed2cb9e816
+run_sub_e43b4f41b2,b-cexpr-s2026,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_64495eb78a,b-cexpr-s2027,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_ed06ca7c95,exp-0319,group_0387,exp-0319,1,run_sub_ed06ca7c95
+run_sub_de59a46092,finometa-base-meta,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_9137511364,noise-jfino-s2026,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_47ff5efa84,noise-jfino-s2027,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_b78828ac35,exp-0320,group_0388,exp-0320,1,run_sub_b78828ac35
+run_sub_c6b3d75771,finometa-base-raw,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_4f89170d3f,c5-base-748839,group_0389,c5-base,1,run_sub_4f89170d3f
+run_sub_19bedfb32c,c5-tissuedens,group_0390,sampling/curation,1,run_sub_19bedfb32c
+run_sub_5dda1388e5,c5-jmaskdiff,group_0391,masking/JEPA/iBOT,2,run_sub_5dda1388e5
+run_sub_27d71fc348,c5-tissdg3,group_0392,c5-tissdg3,1,run_sub_27d71fc348
+run_sub_20e115f3da,pp_cls_depth_stats,group_0393,architecture,1,run_sub_20e115f3da
+run_sub_20c74e073e,d3rawema-r1,group_0364,teacher/EMA/temp,4,run_sub_b0894aa4fa
+run_sub_50d89345ce,c5-jmask_harddose_t1,group_0391,masking/JEPA/iBOT,2,run_sub_5dda1388e5
+run_sub_dd2cb3dc22,c5-l5_fast_warmup_t1,group_0394,warmup/schedule,1,run_sub_dd2cb3dc22
+run_sub_435f6fa546,d3rawema-r2,group_0364,teacher/EMA/temp,4,run_sub_b0894aa4fa
+run_sub_5ccd693560,c5-l4-asym-t1,group_0395,c5-l4-asym,1,run_sub_5ccd693560
+run_sub_e84570c856,dv3-fresh-start,group_0396,dv3-fresh-start,1,run_sub_e84570c856
+run_sub_41b50f7bfb,c5-jmask_harddose_t2,group_0397,masking/JEPA/iBOT,1,run_sub_41b50f7bfb
+run_sub_9b0771fc09,dv3-fresh-repro,group_0398,replication/control,1,run_sub_9b0771fc09
+run_sub_43f7d43dec,c5-l5_fast_warmup_t2,group_0399,warmup/schedule,4,run_sub_43f7d43dec
+run_sub_c6e146a929,c5-l5_fast_warmup_t3,group_0399,warmup/schedule,4,run_sub_43f7d43dec
+run_sub_8b48aadfd1,c5-l6_stain_noise_t1,group_0400,stain/color aug,1,run_sub_8b48aadfd1
+run_sub_c5585cd0c6,c5-l13_dino_decay_t1,group_0399,warmup/schedule,4,run_sub_43f7d43dec
+run_sub_dbd200f470,fino_2factor_t01,group_0323,metadata/FINO,23,run_sub_9137511364
+run_sub_b6b065e924,c5-l13_dino_decay_t2,group_0399,warmup/schedule,4,run_sub_43f7d43dec
+run_sub_58f47053dc,capi-ibot-clean,group_0401,masking/JEPA/iBOT,5,run_sub_2db2d32375
+run_sub_1677a861d2,cls_dstats_delta,group_0402,cls-dstats-delta,1,run_sub_1677a861d2
+run_sub_d849de061e,c6-mc-curated-t1,group_0403,sampling/curation,4,run_sub_d849de061e
+run_sub_01402e3ec1,c6-l19-sgdr-paper-t1,group_0404,c6-l19-sgdr-paper,1,run_sub_01402e3ec1
+run_sub_00d0cd3df1,c6-l8-pcgv-t1,group_0405,c6-l8-pcgv,1,run_sub_00d0cd3df1
+run_sub_c17a8360be,c6-lcc-v10s128-t3,group_0406,local crops,4,run_sub_354e53619d
+run_sub_7cc207f872,c6-mc-basiccur-t1,group_0407,c6-mc-basiccur,1,run_sub_7cc207f872
+run_sub_883ca30856,c6-mc-slidebal-t2,group_0408,c6-mc-slidebal,1,run_sub_883ca30856
+run_sub_9d687148f0,c6-sproto-calib-t2,group_0409,c6-sproto-calib,1,run_sub_9d687148f0
+run_sub_62672892f5,c6-sproto-near-t1,group_0410,c6-sproto-near,1,run_sub_62672892f5
+run_sub_a464be887b,c6-base-882147,group_0411,c6-base,1,run_sub_a464be887b
+run_sub_5b45859608,c6-reseed-anc-beffa9,group_0412,replication/control,3,run_sub_96a077b7cc
+run_sub_d1b0ff327c,c6-train-d02-50ee5a,group_0413,KDE/uniformity,6,run_sub_d1b0ff327c
+run_sub_8d06e12f27,c6-train-d04-223ece,group_0414,teacher/EMA/temp,8,run_sub_ab68e6f39b
+run_sub_d75a3976d1,c6-train-d01-4681b4,group_0415,architecture,4,run_sub_d75a3976d1
+run_sub_cde355b5b0,c6-train-d03-t4,group_0416,c6-train-d03,5,run_sub_ed87978ba0
+run_sub_67ef4bc3a3,c6-train-d01-ea4086,group_0415,architecture,4,run_sub_d75a3976d1
+run_sub_f79c052f14,c6-train-d02-t1-kde6,group_0413,KDE/uniformity,6,run_sub_d1b0ff327c
+run_sub_b49845869d,c6_fino_freez-dcd392,group_0417,warmup/schedule + metadata/FINO + stain/color aug,1,run_sub_b49845869d
+run_sub_861952a2e1,c6-train-d04-236f36,group_0414,teacher/EMA/temp,8,run_sub_ab68e6f39b
+run_sub_cf6dc5ce21,c6-patient-sa-f63507,group_0418,metadata/FINO + sampling/curation,1,run_sub_cf6dc5ce21
+run_sub_f7d64cef67,c6-jepa-multi-829d44,group_0419,masking/JEPA/iBOT + architecture,2,run_sub_f7d64cef67
+run_sub_5858dac66a,c6-train-d04-37c70f,group_0414,teacher/EMA/temp,8,run_sub_ab68e6f39b
+run_sub_e57668ba3c,c6-train-d01-trial4,group_0420,c6-train-d01,1,run_sub_e57668ba3c
+run_sub_2b95b84ba2,c6-fino-freez-2aab84,group_0421,metadata/FINO,3,run_sub_564cdd6d8a
+run_sub_ab68e6f39b,c6-train-d04-cf9fad,group_0414,teacher/EMA/temp,8,run_sub_ab68e6f39b
+run_sub_ac92e417e7,c6-train-d02-t3,group_0422,c6-train-d02,1,run_sub_ac92e417e7
+run_sub_ef78858d82,c6-train-d06-816fc9,group_0403,sampling/curation,4,run_sub_d849de061e
+run_sub_fae3c7f79e,c6-train-d01-960630,group_0415,architecture,4,run_sub_d75a3976d1
+run_sub_4e18691490,c6_kde_conc15-49f9cd,group_0413,KDE/uniformity,6,run_sub_d1b0ff327c
+run_sub_151d8ded49,c6-train-d04-7d73f8,group_0414,teacher/EMA/temp,8,run_sub_ab68e6f39b
+run_sub_ee3f9251d0,c6-train-d06-t3,group_0423,c6-train-d06,3,run_sub_4e76cb7161
+run_sub_2160eb9ce2,c6-train-d06-cfc5d3,group_0403,sampling/curation,4,run_sub_d849de061e
+run_sub_008ae5ba6f,c6-train-d06-aa076f,group_0403,sampling/curation,4,run_sub_d849de061e
+run_sub_83c094d4f1,c6-train-d09-t1,group_0424,c6-train-d09,2,run_sub_83c094d4f1
+run_sub_d038eec100,c6-train-d07-96c203,group_0425,masking/JEPA/iBOT,4,run_sub_d038eec100
+run_sub_96a077b7cc,c6-asym-aug-l-16c394,group_0412,replication/control,3,run_sub_96a077b7cc
+run_sub_c86f83487c,c6-sinkhorn-geom-it5,group_0426,anti-collapse,4,run_sub_ad6fb84e52
+run_sub_2c402f222b,c6-train-d08-t1,group_0427,c6-train-d08,3,run_sub_a4be54f58c
+run_sub_3f65b89b9c,c6-train-d12-9f2bf6,group_0428,c6-train-d12,2,run_sub_3f65b89b9c
+run_sub_2764924a8e,c6-sinkhorn-e-317888,group_0426,anti-collapse,4,run_sub_ad6fb84e52
+run_sub_32d9db949d,c6-jepa-mask-931f23,group_0425,masking/JEPA/iBOT,4,run_sub_d038eec100
+run_sub_564cdd6d8a,c6-train-d07-52e822,group_0421,metadata/FINO,3,run_sub_564cdd6d8a
+run_sub_bba9a4a058,c6-lcc-alone-t2,group_0406,local crops,4,run_sub_354e53619d
+run_sub_03c251a87d,c6-optim-geom-4c60ce,group_0429,LR/optimizer/grad,2,run_sub_03c251a87d
+run_sub_36effd98bf,c6-train-d01-db8aa0,group_0415,architecture,4,run_sub_d75a3976d1
+run_sub_7e0be0829c,c6-train-d03-6a3884,group_0421,metadata/FINO,3,run_sub_564cdd6d8a
+run_sub_030984ae5d,c6-train-d01-5e97b9,group_0419,masking/JEPA/iBOT + architecture,2,run_sub_f7d64cef67
+run_sub_43178b0ba2,trial_03,group_0430,trial-03,1,run_sub_43178b0ba2
+run_sub_ed87978ba0,c6-train-d03-t2,group_0416,c6-train-d03,5,run_sub_ed87978ba0
+run_sub_a0ad329bc0,c6-train-d06-d6d652,group_0423,c6-train-d06,3,run_sub_4e76cb7161
+run_sub_46839cd41a,c6-kde-concen-f6b16f,group_0413,KDE/uniformity,6,run_sub_d1b0ff327c
+run_sub_8d2ec13d42,c6-train-d04-t2,group_0431,c6-train-d04,2,run_sub_b91eb8fd4c
+run_sub_f12b3eb433,c6-train-d03-823be8,group_0416,c6-train-d03,5,run_sub_ed87978ba0
+run_sub_b268852d67,c6-teacher-em-db0c3b,group_0414,teacher/EMA/temp,8,run_sub_ab68e6f39b
+run_sub_daed518e6d,c6-train-d02-00c454,group_0413,KDE/uniformity,6,run_sub_d1b0ff327c
+run_sub_4e76cb7161,c6-train-d06-05b56d,group_0423,c6-train-d06,3,run_sub_4e76cb7161
+run_sub_e91defdb80,c6-train-d12-t6,group_0428,c6-train-d12,2,run_sub_3f65b89b9c
+run_sub_4fda09f271,c6_sinkhorn_iter5_t1,group_0426,anti-collapse,4,run_sub_ad6fb84e52
+run_sub_067b88987d,c6-train-d03-8aed14,group_0416,c6-train-d03,5,run_sub_ed87978ba0
+run_sub_f3fe0733a2,lc10x128-s271828,group_0432,lc10x128-s271828,1,run_sub_f3fe0733a2
+run_sub_b6dec7de8a,c6-train-d08-d347e2,group_0433,local crops + LR/optimizer/grad,1,run_sub_b6dec7de8a
+run_sub_0d2306b604,c6_optim_geo-079f83,group_0429,LR/optimizer/grad,2,run_sub_03c251a87d
+run_sub_caaaabcd3e,c6-jepa-cond-f9ce7f,group_0425,masking/JEPA/iBOT,4,run_sub_d038eec100
+run_sub_7da2e8b076,localctx10x128,group_0434,localctx10x128,1,run_sub_7da2e8b076
+run_sub_ad6fb84e52,c6-sinkhorn-iter5-t2,group_0426,anti-collapse,4,run_sub_ad6fb84e52
+run_sub_4e94600124,c6_asym_teach-645e8b,group_0414,teacher/EMA/temp,8,run_sub_ab68e6f39b
+run_sub_16d1c8bfa4,c6-optim-geom-9f5e9c,group_0435,LR/optimizer/grad + warmup/schedule,1,run_sub_16d1c8bfa4
+run_sub_b79ffd2ad4,c6-teacher-em-c8ce27,group_0414,teacher/EMA/temp,8,run_sub_ab68e6f39b
+run_sub_3c2e79aef6,c6-asym-aug-s-e977fe,group_0412,replication/control,3,run_sub_96a077b7cc
+run_sub_9d7b1ab0fd,c6-train-d03-trial6,group_0416,c6-train-d03,5,run_sub_ed87978ba0
+run_sub_a4be54f58c,c6-train-d08-trial3,group_0427,c6-train-d08,3,run_sub_a4be54f58c
+run_sub_84bcdb93da,c6-jepa-geome-3a1ab0,group_0425,masking/JEPA/iBOT,4,run_sub_d038eec100
+run_sub_794cac8107,lctx10x128-s7777,group_0436,lctx10x128-s7777,1,run_sub_794cac8107
+run_sub_0d5110698c,c6-train-d08-29b21a,group_0406,local crops,4,run_sub_354e53619d
+run_sub_05e8624a23,c6-train-d15-t2,group_0437,c6-train-d15,1,run_sub_05e8624a23
+run_sub_b91eb8fd4c,c6-train-d04-t5,group_0431,c6-train-d04,2,run_sub_b91eb8fd4c
+run_sub_273c394c92,c6-train-d09-37395b,group_0424,c6-train-d09,2,run_sub_83c094d4f1
+run_sub_63ab79b906,c6-train-d08-trial06,group_0427,c6-train-d08,3,run_sub_a4be54f58c
+run_sub_13e58c3c85,molcap-text-s7777,group_0438,molcap-text-s7777,1,run_sub_13e58c3c85
+run_sub_57a26ec42b,lctx10-kde05-nuis,group_0350,KDE/uniformity,6,run_sub_b3b77ffa62
+run_sub_17d8e9f70f,lctx12-kde05-s7777,group_0350,KDE/uniformity,6,run_sub_b3b77ffa62
+run_sub_91ae661e33,molcap-route-s7777,group_0439,molcap-route-s7777,1,run_sub_91ae661e33
+run_sub_e3d0052a13,c7-reseed-anc-caed33,group_0440,replication/control,1,run_sub_e3d0052a13
+run_sub_70c47eb534,c7-base-882147,group_0441,c7-base,1,run_sub_70c47eb534
+run_sub_354e53619d,c6lcc-combined-pp,group_0406,local crops,4,run_sub_354e53619d
+run_sub_9770260f56,c7-train-p-me-97ee40,group_0442,warmup/schedule + metadata/FINO,1,run_sub_9770260f56
+run_sub_e3fe26b2ba,c7-train-p-ma-e20394,group_0443,masking/JEPA/iBOT + warmup/schedule,1,run_sub_e3fe26b2ba
+run_sub_265ebf885f,c7-train-p-te-8dc649,group_0444,teacher/EMA/temp,3,run_sub_fd6759a23f
+run_sub_c8cf4281d2,c7-train-p-wa-5fc40c,group_0445,warmup/schedule,2,run_sub_c8cf4281d2
+run_sub_9220550b7b,c7-trial2-sli-d1c0af,group_0446,sampling/curation,1,run_sub_9220550b7b
+run_sub_cb2a7ce038,c7-train-p-fi-cd5b3f,group_0447,metadata/FINO,2,run_sub_cb2a7ce038
+run_sub_c613297e8b,c7-train-p-je-e28955,group_0448,masking/JEPA/iBOT,2,run_sub_c613297e8b
+run_sub_b554dcacd1,c6-kde-count-3fde50,group_0413,KDE/uniformity,6,run_sub_d1b0ff327c
+run_sub_f73cf49531,c7-train-p-c6-8db363,group_0449,architecture,1,run_sub_f73cf49531
+run_sub_90e5eb6249,c7-trial3-ada-b7a076,group_0444,teacher/EMA/temp,3,run_sub_fd6759a23f
+run_sub_fd6759a23f,c7-train-p-re-588b2d,group_0444,teacher/EMA/temp,3,run_sub_fd6759a23f
+run_sub_2b93a3f3b4,c7-train-p-pr-9cfec7,group_0450,c7-train-p-prefer-wired-key-training-kn,1,run_sub_2b93a3f3b4
+run_sub_e467c6ee70,c7-warmup-fra-b12cff,group_0445,warmup/schedule,2,run_sub_c8cf4281d2
+run_sub_03dea1e86c,c7-train-p-pc-fd527a,group_0451,LR/optimizer/grad,1,run_sub_03dea1e86c
+run_sub_2587dbd082,c7-train-p-fi-e0cf59,group_0447,metadata/FINO,2,run_sub_cb2a7ce038
+run_sub_28da36b911,c7-train-p-sl-28f596,group_0452,metadata/FINO + sampling/curation,1,run_sub_28da36b911
+run_sub_d55a0669e8,c7-jepa-freeb-f06ee3,group_0448,masking/JEPA/iBOT,2,run_sub_c613297e8b
+run_sub_73dfc46d60,c7-capi-clust-b9ca20,group_0453,c7-capi-cluster-predict-aux,1,run_sub_73dfc46d60
+run_sub_9ae66231da,c7-train-p-c6-53b719,group_0454,architecture,5,run_sub_a2ea3b8091
+run_sub_12b3e59ccb,c7-train-p-pr-960da5,group_0455,c7-train-p-prefer-wired-key-training-kn,1,run_sub_12b3e59ccb
+run_sub_084b3cce68,c7-train-p-re-d704cc,group_0456,teacher/EMA/temp,7,run_sub_b108376d2e
+run_sub_5e0bf06e37,c7-train-p-di-4ae63a,group_0456,teacher/EMA/temp,7,run_sub_b108376d2e
+run_sub_1c90585ee1,c7-train-p-di-54b4f2,group_0457,c7-train-p-disagreement-triggered-diffi,2,run_sub_dd668e90d9
+run_sub_f0104397cd,c7-train-p-c7-2309cc,group_0458,masking/JEPA/iBOT + teacher/EMA/temp + warmup/schedule,1,run_sub_f0104397cd
+run_sub_e7c4a3c47f,c7-tr4-alpha1-f0d629,group_0459,sampling/curation,2,run_sub_e7c4a3c47f
+run_sub_b1beec1796,c7-disagree-g-c20b7a,group_0456,teacher/EMA/temp,7,run_sub_b108376d2e
+run_sub_ce1ea837b7,c7-metadata-c-d343db,group_0460,warmup/schedule + metadata/FINO,5,run_sub_ce1ea837b7
+run_sub_347ea317a1,c7-fino-freez-caa2ea,group_0461,metadata/FINO,1,run_sub_347ea317a1
+run_sub_60749ea31b,c7-train-p-ba-dc2917,group_0462,LR/optimizer/grad + warmup/schedule + stain/color aug + architecture,2,run_sub_60749ea31b
+run_sub_69783fa2ab,slide-balance-8d8a33,group_0463,metadata/FINO + sampling/curation,4,run_sub_3fc628941e
+run_sub_a6f8752ba9,c7-tr4-kde-wt-8dadcc,group_0464,KDE/uniformity,9,run_sub_a6f8752ba9
+run_sub_042331de27,c7-train-p-wa-479d03,group_0465,warmup/schedule,7,run_sub_b560648730
+run_sub_fcaa23af5f,c7-train-p-ba-595391,group_0462,LR/optimizer/grad + warmup/schedule + stain/color aug + architecture,2,run_sub_60749ea31b
+run_sub_fe38617a2a,c7-train-p-wi-23eae1,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_d0aff4ac88,c7-pcgrad-mul-d2c13e,group_0467,LR/optimizer/grad,4,run_sub_31397c985e
+run_sub_9dc7f63a8f,c7-train-p-je-bb16a6,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_0af54af82c,c7-warmup-fra-d22f83,group_0465,warmup/schedule,7,run_sub_b560648730
+run_sub_022def534a,c7-train-p-ma-5d0299,group_0469,masking/JEPA/iBOT + warmup/schedule,7,run_sub_c2479d00fc
+run_sub_1468036a33,c7-train-p-kd-bba7b6,group_0464,KDE/uniformity,9,run_sub_a6f8752ba9
+run_sub_2da69d1391,c7-train-p-ro-c1c6e3,group_0465,warmup/schedule,7,run_sub_b560648730
+run_sub_ec45cc7d62,c7-train-p-c7-515bfc,group_0470,stain/color aug,1,run_sub_ec45cc7d62
+run_sub_2b992b717d,c7-train-p-kd-4a9238,group_0464,KDE/uniformity,9,run_sub_a6f8752ba9
+run_sub_5257c1e6f3,c7-train-p-ma-e42532,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_39279c58bf,c7-train-p-ma-45421e,group_0469,masking/JEPA/iBOT + warmup/schedule,7,run_sub_c2479d00fc
+run_sub_35fef37c30,c7-train-p-bo-074be6,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_235ae0e469,c7-train-p-me-2fc119,group_0463,metadata/FINO + sampling/curation,4,run_sub_3fc628941e
+run_sub_361f27359c,c7-train-p-kd-9ad4c5,group_0464,KDE/uniformity,9,run_sub_a6f8752ba9
+run_sub_9f55bfaa16,c7-train-p-kd-c7fd2b,group_0464,KDE/uniformity,9,run_sub_a6f8752ba9
+run_sub_36b042bc07,c7-train-p-me-493d91,group_0460,warmup/schedule + metadata/FINO,5,run_sub_ce1ea837b7
+run_sub_1a75f3ff3c,c7-schedule-w-2d17ec,group_0471,warmup/schedule + stain/color aug,7,run_sub_c0caa1de3f
+run_sub_d0a15e7e60,c7-pcgrad-l8-916558,group_0472,LR/optimizer/grad + readout/post-train,8,run_sub_5d4f30b915
+run_sub_b8e1c73b19,c7-train-p-kd-337b46,group_0464,KDE/uniformity,9,run_sub_a6f8752ba9
+run_sub_edc80450e2,c7-tr5-warmup-7dac9a,group_0465,warmup/schedule,7,run_sub_b560648730
+run_sub_3dc81f431c,c7-train6-lr-f9d155,group_0473,LR/optimizer/grad + warmup/schedule,1,run_sub_3dc81f431c
+run_sub_66904f2a6a,c7-teacher-mo-371275,group_0456,teacher/EMA/temp,7,run_sub_b108376d2e
+run_sub_be3dbccce9,c7-teacher-te-25e9d3,group_0474,teacher/EMA/temp + warmup/schedule,5,run_sub_98a3c41dc5
+run_sub_6cde799e33,c7-train-p-ma-781561,group_0469,masking/JEPA/iBOT + warmup/schedule,7,run_sub_c2479d00fc
+run_sub_7462293c52,c7-train-p-mo-728101,group_0475,c7-train-p-moonshot-auglite-reduce-phot,1,run_sub_7462293c52
+run_sub_6a0daf8045,c7-wd-constan-5a7a05,group_0476,c7-wd-constant-004,2,run_sub_373d6eb34c
+run_sub_1f1da710da,c7-teacher-mo-9557f0,group_0456,teacher/EMA/temp,7,run_sub_b108376d2e
+run_sub_329a98cfb5,c7-train-p-c7-fb4cb2,group_0477,c7-train-p-c7-training-budget-halved-pr-tr2-lc5e02-ms1000,1,run_sub_329a98cfb5
+run_sub_98a3c41dc5,c7-train-p-c7-333f98,group_0474,teacher/EMA/temp + warmup/schedule,5,run_sub_98a3c41dc5
+run_sub_ec66d6ce10,trial04-moder-6259be,group_0478,trial04-moderate-phot-reduce-cj025-cj2p5e01,1,run_sub_ec66d6ce10
+run_sub_2ef1500ae2,c7-wd-const-004-t3,group_0479,c7-wd-const-004,1,run_sub_2ef1500ae2
+run_sub_ffa28598b2,c7-train-p-me-6b2c2f,group_0460,warmup/schedule + metadata/FINO,5,run_sub_ce1ea837b7
+run_sub_3fc628941e,c7-train-p-sl-326403,group_0463,metadata/FINO + sampling/curation,4,run_sub_3fc628941e
+run_sub_b200ab2ced,c7-trial7-glo-54f50c,group_0480,global crops,2,run_sub_b2dacf2915
+run_sub_dd668e90d9,c7-train-p-di-d6e490,group_0457,c7-train-p-disagreement-triggered-diffi,2,run_sub_dd668e90d9
+run_sub_3933af8ae4,c6-dino-local-b0db11,group_0481,local crops,1,run_sub_3933af8ae4
+run_sub_43eb47df5d,trial07-kde01-lc1e01,group_0464,KDE/uniformity,9,run_sub_a6f8752ba9
+run_sub_337909f0e9,c7-teacher-te-ef9e38,group_0474,teacher/EMA/temp + warmup/schedule,5,run_sub_98a3c41dc5
+run_sub_a76ecae97c,c7-train-gram-9c9631,group_0482,replication/control + anti-collapse,5,run_sub_a6b753ff39
+run_sub_37cfcfa126,t1-outpaint-j-b2ff32,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_d99bfb3d9f,c7-train-p-bo-0969fc,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_a44df55e6b,c7-train-p-mo-1be6db,group_0483,c7-train-p-moonshot-cross-mag-dense-con,4,run_sub_05ecdaee42
+run_sub_bbb050eaa1,c7-attmask-ra-5c8806,group_0469,masking/JEPA/iBOT + warmup/schedule,7,run_sub_c2479d00fc
+run_sub_9ca39517ca,c7-ibot-dual-61c690,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_aedc6daf09,c7-train-p-c7-2aad21,group_0484,c7-train-p-c7-capi-cluster-predict-aux,2,run_sub_aedc6daf09
+run_sub_7cbe671c9b,c7-pref-wired-d03757,group_0485,local crops + masking/JEPA/iBOT,1,run_sub_7cbe671c9b
+run_sub_373d6eb34c,c7-wd-constan-d16539,group_0476,c7-wd-constant-004,2,run_sub_373d6eb34c
+run_sub_97423be335,c7-train-p-c7-2299ec,group_0474,teacher/EMA/temp + warmup/schedule,5,run_sub_98a3c41dc5
+run_sub_29e1662fc1,c7-train-p-bo-138f6e,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_ef3dfd095e,c7-train-p-mo-835047,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_99ce242b1b,c7-train-p-mo-553721,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_5049234b26,c7-train-p-mo-c800e4,group_0483,c7-train-p-moonshot-cross-mag-dense-con,4,run_sub_05ecdaee42
+run_sub_c351a2c446,c7-train-p-lc-677583,group_0486,replication/control + local crops,4,run_sub_20fd561f5f
+run_sub_1a14b49380,c7-capi-clust-80040d,group_0487,c7-capi-cluster-predict-aux,1,run_sub_1a14b49380
+run_sub_50134304cf,c7-train-p-mo-340691,group_0482,replication/control + anti-collapse,5,run_sub_a6b753ff39
+run_sub_b0894aa4fa,molcap-ema-r7778,group_0364,teacher/EMA/temp,4,run_sub_b0894aa4fa
+run_sub_310ea9d301,c7-trial4-out-4d0b95,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_9d08b07b94,c7-train-p-c7-2e0670,group_0484,c7-train-p-c7-capi-cluster-predict-aux,2,run_sub_aedc6daf09
+run_sub_44fec9c43e,c7-train-p-mo-ec0aa4,group_0482,replication/control + anti-collapse,5,run_sub_a6b753ff39
+run_sub_1c8b258b50,c7-train-p-mo-a97fc8,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_05ecdaee42,c7-train-p-mo-081b3f,group_0483,c7-train-p-moonshot-cross-mag-dense-con,4,run_sub_05ecdaee42
+run_sub_a6b753ff39,c7-train-p-mo-bd7352,group_0482,replication/control + anti-collapse,5,run_sub_a6b753ff39
+run_sub_7551186e5b,c7-train-p-mo-0a89c0,group_0483,c7-train-p-moonshot-cross-mag-dense-con,4,run_sub_05ecdaee42
+run_sub_c2479d00fc,c7-outpaintin-094f48,group_0469,masking/JEPA/iBOT + warmup/schedule,7,run_sub_c2479d00fc
+run_sub_2ac63c58e2,c7-train-p-ma-245604,group_0469,masking/JEPA/iBOT + warmup/schedule,7,run_sub_c2479d00fc
+run_sub_76da80266b,c7-train-p-lc-83c04a,group_0486,replication/control + local crops,4,run_sub_20fd561f5f
+run_sub_00f62edb0f,c7-train-p-ma-5b7b8f,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_ab99efc028,c7-train-p-me-8d8867,group_0463,metadata/FINO + sampling/curation,4,run_sub_3fc628941e
+run_sub_692fe4ae84,c7-pcgrad-l8-4fc7d6,group_0488,LR/optimizer/grad + sampling/curation + readout/post-train,1,run_sub_692fe4ae84
+run_sub_5d4f30b915,c7-trial4-pcg-d93332,group_0472,LR/optimizer/grad + readout/post-train,8,run_sub_5d4f30b915
+run_sub_31397c985e,c7-pcgrad-mul-339374,group_0467,LR/optimizer/grad,4,run_sub_31397c985e
+run_sub_eae1d6c657,c7-train-p-di-4ffbf5,group_0456,teacher/EMA/temp,7,run_sub_b108376d2e
+run_sub_e70f0f7023,patron-main33,group_0489,patron-main33,1,run_sub_e70f0f7023
+run_sub_983e390269,c7-wd-interme-d64fea,group_0490,c7-wd-intermediate-010,1,run_sub_983e390269
+run_sub_8e06aceb85,slide-balance-8b0d27,group_0459,sampling/curation,2,run_sub_e7c4a3c47f
+run_sub_e5b61c19d2,gram_anchor_d-1cef55,group_0482,replication/control + anti-collapse,5,run_sub_a6b753ff39
+run_sub_a4d79eafc4,c7-train-p-ma-bbefd2,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_e1ffb89eec,c7-train-p-c6-53b719,group_0454,architecture,5,run_sub_a2ea3b8091
+run_sub_97a89864ab,c7-wired-key-1e9a97,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_f2c9b59f4e,c7-disagree-ramp-t9,group_0465,warmup/schedule,7,run_sub_b560648730
+run_sub_20bfd63a2b,c7-lcc-views1-c53a72,group_0491,local crops,2,run_sub_20bfd63a2b
+run_sub_7c9bf38778,c7-train-p-bo-1a86a0,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_ce89cf0bc1,c7-metadata-c-c7f9fb,group_0460,warmup/schedule + metadata/FINO,5,run_sub_ce1ea837b7
+run_sub_f6cfe134ff,c7-wired-anti-7cdd83,group_0492,masking/JEPA/iBOT + anti-collapse,6,run_sub_832d35bf23
+run_sub_288245644f,c7-train-p-ma-1a1a65,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_b9b04776da,sam-jepa-mol,group_0401,masking/JEPA/iBOT,5,run_sub_2db2d32375
+run_sub_e798538674,sam-jepa-v2,group_0401,masking/JEPA/iBOT,5,run_sub_2db2d32375
+run_sub_0a554c2460,c7-mask-stati-9096b7,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_867294c612,c7-wd-end-010-t8,group_0493,c7-wd-end-010,1,run_sub_867294c612
+run_sub_22979dd98f,c7-outpaintin-199fc2,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_9842dc7ff2,c7-train-p-me-7418d0,group_0460,warmup/schedule + metadata/FINO,5,run_sub_ce1ea837b7
+run_sub_20fd561f5f,c7-lcc-views1-7c68d3,group_0486,replication/control + local crops,4,run_sub_20fd561f5f
+run_sub_68f14787ec,c7-vit-regist-e52c56,group_0454,architecture,5,run_sub_a2ea3b8091
+run_sub_d6beafd6ca,c7-lcc-views1-395bbd,group_0486,replication/control + local crops,4,run_sub_20fd561f5f
+run_sub_8b0f838ee5,c7-mask-ratio-01a364,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_53caef5382,sam-hp-fix,group_0494,sam-hp-fix,1,run_sub_53caef5382
+run_sub_b3b77ffa62,lctx14-kde05-s7777,group_0350,KDE/uniformity,6,run_sub_b3b77ffa62
+run_sub_b514c1ee74,c7-train-p-wd-e5938e,group_0465,warmup/schedule,7,run_sub_b560648730
+run_sub_12b59cc8b4,c7-p-boundary-1d341e,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_c0caa1de3f,c7-schedule-w-38e412,group_0471,warmup/schedule + stain/color aug,7,run_sub_c0caa1de3f
+run_sub_39f405f06b,c7-p-fa-sigre-4dc968,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_9385b4e6fa,c7-train-p-fa-062463,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_4e69b3db43,c7-fa-sigreg-a85377,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_b2dacf2915,c7-globalcrop-37f126,group_0480,global crops,2,run_sub_b2dacf2915
+run_sub_6364f200b8,c7-intrinsic-592ca6,group_0464,KDE/uniformity,9,run_sub_a6f8752ba9
+run_sub_832d35bf23,c7-sigreg-ort-074edb,group_0492,masking/JEPA/iBOT + anti-collapse,6,run_sub_832d35bf23
+run_sub_a2ea3b8091,c7-registers-15bc6e,group_0454,architecture,5,run_sub_a2ea3b8091
+run_sub_22edb40e08,c7-optimizer-9a2ef4,group_0495,teacher/EMA/temp + LR/optimizer/grad + warmup/schedule,1,run_sub_22edb40e08
+run_sub_89ad2a55ff,c7-sigreg-low-85ccb7,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_5c65c15e13,c7-gradnorm-t-e6d016,group_0472,LR/optimizer/grad + readout/post-train,8,run_sub_5d4f30b915
+run_sub_f9f0812859,c7-schedule-g-0d484e,group_0471,warmup/schedule + stain/color aug,7,run_sub_c0caa1de3f
+run_sub_527c5cecaf,c7-sigreg-mas-18867d,group_0492,masking/JEPA/iBOT + anti-collapse,6,run_sub_832d35bf23
+run_sub_b9e7961d5f,c7-ademamix-w-1f483c,group_0474,teacher/EMA/temp + warmup/schedule,5,run_sub_98a3c41dc5
+run_sub_d2b05969f8,c7-sigreg-low-a3c8d6,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_1961769cef,c7-gradnorm-t-4ea85c,group_0472,LR/optimizer/grad + readout/post-train,8,run_sub_5d4f30b915
+run_sub_4edda04171,c7-intrinsic-89bade,group_0464,KDE/uniformity,9,run_sub_a6f8752ba9
+run_sub_8b19a52ca2,c7-gradnorm-t-b5a51a,group_0472,LR/optimizer/grad + readout/post-train,8,run_sub_5d4f30b915
+run_sub_e2110e2aad,c7-globalscal-9664db,group_0496,c7-globalscale-range-widen,1,run_sub_e2110e2aad
+run_sub_0e5f0341a0,c7-sigreg-low-cdddd3,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_751a2f351d,c7-train-p-fa-1b004c,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_a5cdb98a8f,c7-schedule-b-224bc2,group_0471,warmup/schedule + stain/color aug,7,run_sub_c0caa1de3f
+run_sub_1c4167a997,c7-sigreg-ort-b7d31a,group_0492,masking/JEPA/iBOT + anti-collapse,6,run_sub_832d35bf23
+run_sub_dee20afabf,c7-p-intrinsi-da17de,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_79109076b9,c7-schedule-b-26364f,group_0471,warmup/schedule + stain/color aug,7,run_sub_c0caa1de3f
+run_sub_375838cf9d,c7-sigreg-mas-95bdb0,group_0492,masking/JEPA/iBOT + anti-collapse,6,run_sub_832d35bf23
+run_sub_05801a4099,c7-train-p-fa-804cf3,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_d00dc8afbe,c7-train-p-sc-461572,group_0471,warmup/schedule + stain/color aug,7,run_sub_c0caa1de3f
+run_sub_0b1bf858ff,c7-fabank-cap-c0654e,group_0497,c7-fabank-cap-topn-diverse,1,run_sub_0b1bf858ff
+run_sub_613d93656e,c7-pcgrad-blo-3b034d,group_0467,LR/optimizer/grad,4,run_sub_31397c985e
+run_sub_d97ad7b676,c7-masking-si-d70f42,group_0492,masking/JEPA/iBOT + anti-collapse,6,run_sub_832d35bf23
+run_sub_4eb642767b,c7-loss-capi-49c4d4,group_0498,c7-loss-capi-cluster-latent-patch,1,run_sub_4eb642767b
+run_sub_a9f0b098a0,c7-sigreg-ant-a60fe9,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_7d38a0e512,c7-schedule-c-e26f6d,group_0471,warmup/schedule + stain/color aug,7,run_sub_c0caa1de3f
+run_sub_4b326ae126,c7-l8-pcgrad-3480eb,group_0472,LR/optimizer/grad + readout/post-train,8,run_sub_5d4f30b915
+run_sub_18b71a4a2f,c7-sigreg-ant-ec59fa,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_6b0c335192,c7-capi-clust-81bcb5,group_0467,LR/optimizer/grad,4,run_sub_31397c985e
+run_sub_58fc462ee6,c7-l8-pcgrad-cf4a05,group_0472,LR/optimizer/grad + readout/post-train,8,run_sub_5d4f30b915
+run_sub_81a8c10f0e,c7-sigreg-ant-ad93a7,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_4cdc270892,c7-train-p-fa-47f1ee,group_0466,anti-collapse,14,run_sub_39f405f06b
+run_sub_0e51358e48,c7-pcgrad-lay-29c828,group_0499,LR/optimizer/grad + architecture + readout/post-train,1,run_sub_0e51358e48
+run_sub_eaefb7a7d4,c7-l8-pcgrad-e34087,group_0472,LR/optimizer/grad + readout/post-train,8,run_sub_5d4f30b915
+run_sub_1f204662a7,c7-fa-proxy-r-c7b059,group_0500,c7-fa-proxy-rank-diag-log,1,run_sub_1f204662a7
+run_sub_3027a2c1f0,c7-train-p-fa-9c101d,group_0501,c7-train-p-fa-proxy-collapse-hardgate,1,run_sub_3027a2c1f0
+run_sub_429e181a18,c7-fa-intrins-df19b4,group_0502,c7-fa-intrinsic-ssl-diag,1,run_sub_429e181a18
+run_sub_887b984b12,c7-train-p-fa-d72e89,group_0503,c7-train-p-fa-intrinsic-rank-guardrail,1,run_sub_887b984b12
+run_sub_agent_2218928464296e5fc95bb9cb,Larger JEPA Blocks,group_0401,masking/JEPA/iBOT,5,run_sub_2db2d32375
+run_sub_f6c27887c7,lctx14-kde05-r3,group_0504,KDE/uniformity,1,run_sub_f6c27887c7
+run_sub_agent_14688ddcf95c8b95506b5293,Seed 20260720,group_0505,seed-20260720,1,run_sub_agent_14688ddcf95c8b95506b5293
+run_sub_agent_36aca864d1ca2fe580cad9b0,14x128 Local Views,group_0506,14x128-local-views,1,run_sub_agent_36aca864d1ca2fe580cad9b0
+run_sub_1ef9bffd3b,c8-p-md-resul-9ec6e0,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_b1b1e300d1,c8-train-p-si-6f5c55,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_5105c7204c,c8-md-local-c-3dc6f0,group_0509,local crops + warmup/schedule + stain/color aug,1,run_sub_5105c7204c
+run_sub_f90e0fa626,c8-dinov3-bas-e97dea,group_0510,masking/JEPA/iBOT + architecture,2,run_sub_f90e0fa626
+run_sub_eaf298355d,c8-md-larger-b56f13,group_0511,global crops,3,run_sub_eaf298355d
+run_sub_b75109c39d,c8-anticollap-4789c6,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_7579074453,c8-anticollap-d326c8,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_16c0a4070b,c8-asymmaug-g-407db6,group_0512,c8-asymmaug-graded-gap,1,run_sub_16c0a4070b
+run_sub_030069e56b,c8-asymmaug-g-a59630,group_0513,warmup/schedule,2,run_sub_030069e56b
+run_sub_agent_219091dbaf3a8d768ded624a,Halved KDE Weight,group_0350,KDE/uniformity,6,run_sub_b3b77ffa62
+run_sub_b54e4bd071,pathgen-672,group_0514,pathgen-672,1,run_sub_b54e4bd071
+run_sub_04a2cd9624,c8-train-p-av-1b3fe9,group_0515,LR/optimizer/grad,5,run_sub_ac25073ff5
+run_sub_ac5a13e986,c8-train-p-wi-4863ab,group_0515,LR/optimizer/grad,5,run_sub_ac25073ff5
+run_sub_d59c2260d7,c8-train-p-av-b33051,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_4cc0fc67f0,c8-train-p-la-f28406,group_0515,LR/optimizer/grad,5,run_sub_ac25073ff5
+run_sub_ac25073ff5,c8-train-p-av-4eb01e,group_0515,LR/optimizer/grad,5,run_sub_ac25073ff5
+run_sub_2b0e61cab2,c8-sigreg-rep-b95311,group_0516,anti-collapse + KDE/uniformity + warmup/schedule,1,run_sub_2b0e61cab2
+run_sub_1e04767480,c8-sigreg-lat-d3b841,group_0517,anti-collapse + warmup/schedule,2,run_sub_c454bd57c1
+run_sub_63d254bfb3,c8-sigreg-rep-85f0b4,group_0518,anti-collapse + KDE/uniformity,4,run_sub_8c0d2b6b0e
+run_sub_4fe6034171,c8-train-p-ge-64f456,group_0519,geometric aug,3,run_sub_3b6fbe5968
+run_sub_3b22c5ab21,c8-train-p-c6-82f442,group_0520,teacher/EMA/temp,1,run_sub_3b22c5ab21
+run_sub_868135e9ae,c8-anticollap-4e9283,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_8f4b10d417,c8-train-p-lo-03f0f6,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_8cadb6e90c,c8-localcrop-c8d7fc,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_24b64a173b,c8-train-p-lo-513167,group_0521,local crops + KDE/uniformity,1,run_sub_24b64a173b
+run_sub_48374386e7,c8-train-p-c8-8bd5be,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_739c71f5a6,c8-train-p-c8-764c73,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_e77501d0dd,c8-train-p-kd-70c7a8,group_0522,KDE/uniformity,2,run_sub_e77501d0dd
+run_sub_a80b532bdc,lctx14-kde05-s7375,group_0523,run:run_sub_a80b532bdc,1,run_sub_a80b532bdc
+run_sub_49014f2769,c8-anticollap-7feaf9,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_07405dbb4b,c8-train-p-lo-d59a52,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_agent_cf5578b0089e2eaac2cb50a0,Hardest-half mining,group_0524,hardest-half-mining,1,run_sub_agent_cf5578b0089e2eaac2cb50a0
+run_sub_agent_e736b016c7387af3aa9ae51b,Hardest-tile mining,group_0525,hardest-tile-mining,1,run_sub_agent_e736b016c7387af3aa9ae51b
+run_sub_7744a677de,bsc-s12-repl,group_0526,bsc-s12-repl,1,run_sub_7744a677de
+run_sub_caa18c644b,bscsc_xattn_wd_vis8,group_0527,bscsc-xattn-wd-vis8,1,run_sub_caa18c644b
+run_sub_4214117aa1,cls_spec_bsc,group_0528,cls-spec-bsc,1,run_sub_4214117aa1
+run_sub_c3501b60de,cls_spec_bsc_e6,group_0529,cls-spec-bsc-e6,1,run_sub_c3501b60de
+run_sub_f14b780731,labless-proof-c9,group_0530,labless-proof-c9,1,run_sub_f14b780731
+run_sub_5982ab1e7d,c8-localcrop-3c3941,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_cb562a6514,c8-p-av-jepa-f39afc,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_8407916564,c8-train-p-ca-cd03c3,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_a5b7e54d32,c8-capi-ibot-03235e,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_2c3e700809,c8-train-p-av-1cbcb8,group_0532,c8-train-p-av-config-first-gradient-bal,1,run_sub_2c3e700809
+run_sub_df7b66f159,c8-mdminer-ib-88833d,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_82058eea06,c8-jepa-maske-c92e07,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_dfded8b233,c8-train-p-md-db3a14,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_3d2fc68b1f,c10-reseed-an-c7cc1e,group_0533,replication/control,1,run_sub_3d2fc68b1f
+run_sub_ed8b84c8d4,c10-base-550499,group_0534,c10-base,1,run_sub_ed8b84c8d4
+run_sub_0b97b4d2a9,c8-capi-ibot-dbe633,group_0535,masking/JEPA/iBOT,6,run_sub_0b97b4d2a9
+run_sub_a53ec5934d,c8-train-p-c6-c10798,group_0536,c8-train-p-c6-latest-weight-averaging-widest-span,1,run_sub_a53ec5934d
+run_sub_148869fecd,c8-localcrop-ebf6e6,group_0537,local crops,10,run_sub_148869fecd
+run_sub_ecc8069f85,c8-train-p-au-ad9894,group_0538,c8-train-p-auglite-photometric-moderate,1,run_sub_ecc8069f85
+run_sub_2b9329a968,c8-anticollap-28d568,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_8fda484a9d,c8-lawa-late-ema-t2,group_0540,teacher/EMA/temp + LR/optimizer/grad,3,run_sub_8fda484a9d
+run_sub_9c572666d5,c8-lawa-tail-172a10,group_0541,LR/optimizer/grad,9,run_sub_9c572666d5
+run_sub_fe01274e44,c8-train-p-re-090674,group_0542,architecture,3,run_sub_fe01274e44
+run_sub_22648bce02,c8-train-p-lo-6c568c,group_0537,local crops,10,run_sub_148869fecd
+run_sub_e3786b5fdf,c8-p-dinov3-a-5d13a0,group_0543,masking/JEPA/iBOT + architecture,2,run_sub_e3786b5fdf
+run_sub_842ec2ab62,c8-train-p-av-1ec11b,group_0541,LR/optimizer/grad,9,run_sub_9c572666d5
+run_sub_dbae3e3cc8,c8-sizemix-co-ac106c,group_0537,local crops,10,run_sub_148869fecd
+run_sub_e2ea611532,c8-train-p-c6-4deb30,group_0544,c8-train-p-c6-latest-weight-averaging-widest-window,1,run_sub_e2ea611532
+run_sub_f25db7deb9,c8-train-p-si-67f3b7,group_0537,local crops,10,run_sub_148869fecd
+run_sub_49ac2ac2c4,c8-train-p-si-8ac9d2,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_0a010124f9,c8-lawa-ema-tail-t5,group_0540,teacher/EMA/temp + LR/optimizer/grad,3,run_sub_8fda484a9d
+run_sub_9a4cf57441,c8-train-p-av-54f792,group_0545,stain/color aug,7,run_sub_9a4cf57441
+run_sub_c2528926c3,c8-anti-colla-943a42,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_126f9ba2bd,c8-p-lawa-avg-58b991,group_0541,LR/optimizer/grad,9,run_sub_9c572666d5
+run_sub_e14143bf5f,c8-localcrop-bf0e5f,group_0537,local crops,10,run_sub_148869fecd
+run_sub_1db565f69a,c8-train-p-si-ba7d52,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_19b50d9800,c8-md-larger-a27c57,group_0546,global crops,4,run_sub_19b50d9800
+run_sub_3896d2c5df,c8-lawa-slow-ema-t3,group_0540,teacher/EMA/temp + LR/optimizer/grad,3,run_sub_8fda484a9d
+run_sub_a6a0ed0e35,c8-schedule-l-bff30e,group_0547,local crops + warmup/schedule + stain/color aug,2,run_sub_a6a0ed0e35
+run_sub_ef3f9e9508,c8-train-p-la-f70cb3,group_0541,LR/optimizer/grad,9,run_sub_9c572666d5
+run_sub_6047efb2c8,c8-train-p-ge-c52cfd,group_0548,geometric aug,3,run_sub_6047efb2c8
+run_sub_bb4b3d0772,c8-train-teac-3726ee,group_0549,teacher/EMA/temp,4,run_sub_bb4b3d0772
+run_sub_395b6959a7,c8-train-p-av-cf7720,group_0550,sampling/curation,3,run_sub_395b6959a7
+run_sub_e5cf66a997,c8-p-av-confi-b7de40,group_0535,masking/JEPA/iBOT,6,run_sub_0b97b4d2a9
+run_sub_38c962ce7d,c8-p-anticoll-99f3b7,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_123d80adae,c8-train-p-si-cb0c05,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_3b06712d12,c8-data-hed-j-702f50,group_0545,stain/color aug,7,run_sub_9a4cf57441
+run_sub_163a3f9970,c8-md-ideator-be8904,group_0551,teacher/EMA/temp + warmup/schedule,1,run_sub_163a3f9970
+run_sub_2174a6bbe3,c8-train-p-in-04ca07,group_0552,c8-train-p-inplace-dispatch-skip-worktree,1,run_sub_2174a6bbe3
+run_sub_28c307801a,c8-train-p-c6-c33cf9,group_0541,LR/optimizer/grad,9,run_sub_9c572666d5
+run_sub_83999f3ff9,c8-train-p-wa-663406,group_0553,warmup/schedule,2,run_sub_83999f3ff9
+run_sub_6c02ee14e3,c8-train-p-av-006b23,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_bdcb75c80f,c8-train-p-av-da25e0,group_0541,LR/optimizer/grad,9,run_sub_9c572666d5
+run_sub_82abd719bb,c8-train-p-wa-940e14,group_0554,warmup/schedule + stain/color aug,1,run_sub_82abd719bb
+run_sub_cd91f383a2,c8-train-teac-9431d8,group_0549,teacher/EMA/temp,4,run_sub_bb4b3d0772
+run_sub_799408b4f8,c8-dinov3-ibo-ad6e5d,group_0543,masking/JEPA/iBOT + architecture,2,run_sub_e3786b5fdf
+run_sub_52ec80ae5a,c8-anticollap-b919f2,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_13e6b6a5af,c8-train-p-si-fc81bb,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_c044d220cd,c8-train-p-c6-a42958,group_0542,architecture,3,run_sub_fe01274e44
+run_sub_397a02e5db,c8-train-p-la-babd2a,group_0541,LR/optimizer/grad,9,run_sub_9c572666d5
+run_sub_783e04375b,c8-localcrop-aaa445,group_0547,local crops + warmup/schedule + stain/color aug,2,run_sub_a6a0ed0e35
+run_sub_cfd6d0f2d2,c8-md-multi-s-5cd608,group_0537,local crops,10,run_sub_148869fecd
+run_sub_0de2bb3ed9,c8-geoaug-ect-46395e,group_0548,geometric aug,3,run_sub_6047efb2c8
+run_sub_57699018eb,c8-train-p-wa-3f35ab,group_0553,warmup/schedule,2,run_sub_83999f3ff9
+run_sub_e335facf6e,c8-p-av-crop-68cf80,group_0555,c8-p-av-crop-scale-widen,1,run_sub_e335facf6e
+run_sub_41936c5599,c8-md-larger-246bd6,group_0546,global crops,4,run_sub_19b50d9800
+run_sub_f5172c0c2d,c8-train-p-si-b4c971,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_973140e1a1,c8-train-p-lr-a9a28e,group_0541,LR/optimizer/grad,9,run_sub_9c572666d5
+run_sub_18952d9127,c8-train-p-ge-b757ef,group_0548,geometric aug,3,run_sub_6047efb2c8
+run_sub_87fb6cf54e,c8-jepa-maske-574303,group_0535,masking/JEPA/iBOT,6,run_sub_0b97b4d2a9
+run_sub_0eeb409444,c8-anticollap-2f40be,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_934ef2ad9a,c8-localcrop-4a0311,group_0537,local crops,10,run_sub_148869fecd
+run_sub_12ac153087,c8-capi-ibot-37233f,group_0535,masking/JEPA/iBOT,6,run_sub_0b97b4d2a9
+run_sub_a84a408977,c8-avoid-anti-72c4a7,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_f00e3c3a8c,c8-md-multi-s-ee7e90,group_0556,c8-md-multi-scale-drop-small,1,run_sub_f00e3c3a8c
+run_sub_bcbc73a29e,c8-md-larger-8b1c35,group_0546,global crops,4,run_sub_19b50d9800
+run_sub_b454055dcb,c8-capi-ibot-6d3aa1,group_0535,masking/JEPA/iBOT,6,run_sub_0b97b4d2a9
+run_sub_6edc671991,c8-train-p-im-16e0e4,group_0557,warmup/schedule + sampling/curation,1,run_sub_6edc671991
+run_sub_8e53c1b045,c8-localcrop-b706db,group_0537,local crops,10,run_sub_148869fecd
+run_sub_76e5d7692d,c8-pcgrad-dee-c8e0c2,group_0541,LR/optimizer/grad,9,run_sub_9c572666d5
+run_sub_35c4e2c984,c8-avoid-anti-943ee4,group_0539,anti-collapse,13,run_sub_2b9329a968
+run_sub_a396f5850a,c8-train-p-re-434620,group_0542,architecture,3,run_sub_fe01274e44
+run_sub_0a8ad9026d,c8-train-p-cr-88331d,group_0558,c8-train-p-crop-scale-widen,1,run_sub_0a8ad9026d
+run_sub_4d31b42b9e,c8-train-p-im-1d9941,group_0549,teacher/EMA/temp,4,run_sub_bb4b3d0772
+run_sub_c3fdca5df3,c8-md-larger-516712,group_0546,global crops,4,run_sub_19b50d9800
+run_sub_7667c73905,c8-train-p-im-61e448,group_0559,teacher/EMA/temp + sampling/curation,1,run_sub_7667c73905
+run_sub_f493994a14,c8-p-av-balan-06d5e1,group_0550,sampling/curation,3,run_sub_395b6959a7
+run_sub_db01c891ca,c8-mscrop-mix-d406db,group_0537,local crops,10,run_sub_148869fecd
+run_sub_486f1e8405,c8-sigreg-rep-c8aaa7,group_0560,anti-collapse + KDE/uniformity,2,run_sub_486f1e8405
+run_sub_b45628da3e,c8-train-p-av-af9d7c,group_0550,sampling/curation,3,run_sub_395b6959a7
+run_sub_3c85cfd3f4,c8-capi-ibot-f2be46,group_0535,masking/JEPA/iBOT,6,run_sub_0b97b4d2a9
+run_sub_eb854fc8de,c8-sigreg-rep-125dac,group_0561,anti-collapse + KDE/uniformity + warmup/schedule,1,run_sub_eb854fc8de
+run_sub_2ea2d57a22,c8-sigreg-rep-fc91f0,group_0560,anti-collapse + KDE/uniformity,2,run_sub_486f1e8405
+run_sub_363b213215,c8-stain-jitt-cf9fce,group_0545,stain/color aug,7,run_sub_9a4cf57441
+run_sub_81960566bc,c8-aug-staina-0d9d3a,group_0545,stain/color aug,7,run_sub_9a4cf57441
+run_sub_63e391c37c,c10-md-local-089dfe,group_0562,local crops,4,run_sub_63e391c37c
+run_sub_2d4ce9b793,c10-p-av-bala-1b2472,group_0563,metadata/FINO + sampling/curation,2,run_sub_2d4ce9b793
+run_sub_bbf7189bce,c8-train-p-ba-71834a,group_0564,LR/optimizer/grad + architecture,1,run_sub_bbf7189bce
+run_sub_441ebfd4b9,c8-train-p-md-71427b,group_0537,local crops,10,run_sub_148869fecd
+run_sub_d19092d0a7,c8-stain-aug-b1e482,group_0545,stain/color aug,7,run_sub_9a4cf57441
+run_sub_692ea8a6d2,c8-model-scal-61708b,group_0565,c8-model-scale-vitb-mutransfer,1,run_sub_692ea8a6d2
+run_sub_17922e0675,c8-stain-aug-8ddef6,group_0545,stain/color aug,7,run_sub_9a4cf57441
+run_sub_ded30e1e46,c8-stain-jitt-8b0915,group_0545,stain/color aug,7,run_sub_9a4cf57441
+run_sub_a9fb17d4fd,c8-train-p-mu-f6c0b8,group_0549,teacher/EMA/temp,4,run_sub_bb4b3d0772
+run_sub_d81f09b27b,c8-train-p-si-c37d26,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_ef04c57108,c8-train-p-gl-718acd,group_0566,local crops + global crops,3,run_sub_ef04c57108
+run_sub_220039688f,c8-loss-focal-ec61e5,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_9b27666bf5,c8-localcrop-97f6fb,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_d3053cc964,c8-jepa-block-10b759,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_43931b473b,c8-sizemix-co-3e9287,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_076969ca31,c8-train-p-fo-e07042,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_a981a96121,c8-schedule-t-21011f,group_0567,teacher/EMA/temp + warmup/schedule + stain/color aug,1,run_sub_a981a96121
+run_sub_38f3f68846,c8-train-p-av-b213cd,group_0568,c8-train-p-avoid-worktree-inplace-privatecheckout,1,run_sub_38f3f68846
+run_sub_1ae27b20fe,c6-pcgrad-com-0ff897,group_0569,LR/optimizer/grad,1,run_sub_1ae27b20fe
+run_sub_b6814f52e1,c8-genediv-cu-91e6dc,group_0570,anti-collapse + metadata/FINO + sampling/curation,2,run_sub_b6814f52e1
+run_sub_82c168b6ec,c8-train-p-av-74fed5,group_0571,masking/JEPA/iBOT + anti-collapse,3,run_sub_82c168b6ec
+run_sub_ffee99f3e1,c8-anticollap-aaf7db,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_17e8790d0f,c6-train-d03-t4,group_0572,c6-train-d03,1,run_sub_17e8790d0f
+run_sub_48caa95148,c8-capi-ibot-18b55a,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_9ac62f4f23,c8-avoid-aug-642e5e,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_afa2eb2380,c8-train-p-ca-8218b5,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_d630694d78,c8-capi-ibot-e65561,group_0574,masking/JEPA/iBOT + teacher/EMA/temp,1,run_sub_d630694d78
+run_sub_7419867513,c8-train-p-lo-5fab2b,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_1237a2dc67,c8-localcrop-74b6c2,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_4e4783e541,c8-train-p-av-793174,group_0575,warmup/schedule + metadata/FINO + sampling/curation,2,run_sub_4e4783e541
+run_sub_e4a3d1a793,c8-capi-ibot-71150f,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_247a99c128,c8-train-p-lo-aeb8de,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_aa212d5dc6,c8-masking-st-51be6f,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_52f805d4d6,c8-train-p-av-51cd8d,group_0576,c8-train-p-avoid-worktree-private-checkout-isolate,1,run_sub_52f805d4d6
+run_sub_f8880b973d,c8-data-hed-j-a372d0,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_8c0d2b6b0e,c8-train-p-av-20b1d6,group_0518,anti-collapse + KDE/uniformity,4,run_sub_8c0d2b6b0e
+run_sub_aa05209592,c7-train-p-je-eec679,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_acdb0098a3,c7-train-p-je-7f537c,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_17867c6ed2,c8-train-p-c8-483627,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_b560648730,c7-capi-clust-9c2b39,group_0465,warmup/schedule,7,run_sub_b560648730
+run_sub_023a3497fa,c8-avoid-conf-4b9a8e,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_734764df99,c8-train-p-av-d45928,group_0577,anti-collapse + teacher/EMA/temp + warmup/schedule,4,run_sub_734764df99
+run_sub_b83ac77058,c8-anticollap-4eecf7,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_86f84a00ed,c8-schedule-s-b01163,group_0578,anti-collapse + warmup/schedule + metadata/FINO + stain/color aug,1,run_sub_86f84a00ed
+run_sub_6fa4a5ef07,c8-lit-highfr-0bb565,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_c4e009ab44,c8-genediv-sh-89e4fe,group_0579,anti-collapse + metadata/FINO,1,run_sub_c4e009ab44
+run_sub_30e1b0bbab,c8-train-p-au-46bf5a,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_4e55f683b2,c8-train-p-lo-2d38a8,group_0580,replication/control + local crops,6,run_sub_4e55f683b2
+run_sub_0ba3040d80,c7-outpaintin-563f25,group_0468,masking/JEPA/iBOT,23,run_sub_aa05209592
+run_sub_43b9bd598d,c8-train-p-lo-6dd8af,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_b00245f5c4,c6-train-d02-8b7e9e,group_0581,KDE/uniformity,1,run_sub_b00245f5c4
+run_sub_7c4f1c597b,c8-train-p-av-ae4dbe,group_0582,anti-collapse + teacher/EMA/temp,4,run_sub_7c4f1c597b
+run_sub_ffdcf32688,c8-train-p-lo-0dd13c,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_312b130a84,c8-train-p-si-ff91c3,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_a25bcc2e9f,c8-train-p-av-f0313f,group_0582,anti-collapse + teacher/EMA/temp,4,run_sub_7c4f1c597b
+run_sub_a48cb134c2,c10-train-p-c-934453,group_0583,anti-collapse,1,run_sub_a48cb134c2
+run_sub_77b2f82130,c8-train-p-av-2a6039,group_0577,anti-collapse + teacher/EMA/temp + warmup/schedule,4,run_sub_734764df99
+run_sub_2f93e98e20,c8-train-p-av-994636,group_0584,masking/JEPA/iBOT + anti-collapse + teacher/EMA/temp,2,run_sub_2f93e98e20
+run_sub_acaa5e274b,c8-train-p-av-688cd2,group_0577,anti-collapse + teacher/EMA/temp + warmup/schedule,4,run_sub_734764df99
+run_sub_2deed59d67,c8-train-p-si-7174f1,group_0580,replication/control + local crops,6,run_sub_4e55f683b2
+run_sub_595d9c03eb,c10-sdhl-self-90e9eb,group_0585,warmup/schedule + architecture,1,run_sub_595d9c03eb
+run_sub_71b5ac5bee,c10-p-lawa-wi-f39355,group_0586,LR/optimizer/grad,6,run_sub_71b5ac5bee
+run_sub_105348484b,c10-p-av-loss-7da217,group_0587,c10-p-av-lossbal-anneal-code-2x,1,run_sub_105348484b
+run_sub_52eee0442a,c10-gram-anch-511f3d,group_0588,replication/control + anti-collapse,4,run_sub_73c671a253
+run_sub_865fd4fe82,c10-sampling-396762,group_0589,local crops + metadata/FINO + sampling/curation,3,run_sub_865fd4fe82
+run_sub_d334f5b46b,c10-p-teacher-c813b6,group_0590,masking/JEPA/iBOT + teacher/EMA/temp,3,run_sub_bbdb1603d3
+run_sub_e024014dbd,c10-train-tea-a4774c,group_0591,teacher/EMA/temp,1,run_sub_e024014dbd
+run_sub_5735c3bad8,c10-p-av-bala-7c6e4e,group_0563,metadata/FINO + sampling/curation,2,run_sub_2d4ce9b793
+run_sub_1a8d4b6144,c10-train-p-a-1f4efa,group_0592,c10-train-p-asymaug-student-blur-gap,1,run_sub_1a8d4b6144
+run_sub_fe8f7c3e82,c10-gram-anch-a82c1d,group_0593,replication/control + anti-collapse + warmup/schedule,1,run_sub_fe8f7c3e82
+run_sub_405c0483fe,c10-p-l8pcgra-8b31b2,group_0594,local crops + LR/optimizer/grad,5,run_sub_405c0483fe
+run_sub_8a129db9e4,c10-train-p-a-7ea6a7,group_0586,LR/optimizer/grad,6,run_sub_71b5ac5bee
+run_sub_7889eea7b1,c10-p-dense-c-6e262f,group_0595,c10-p-dense-crossview,1,run_sub_7889eea7b1
+run_sub_04c52c67f9,c10-loss-mask-3d7dd5,group_0596,masking/JEPA/iBOT,4,run_sub_2e903c306b
+run_sub_8d97336b37,c10-sampling-c54b3f,group_0589,local crops + metadata/FINO + sampling/curation,3,run_sub_865fd4fe82
+run_sub_8626266434,c10-usernorm-8ab7b2,group_0597,metadata/FINO + readout/post-train,1,run_sub_8626266434
+run_sub_5526ddfc01,c10-p-lawa-wi-ea9839,group_0586,LR/optimizer/grad,6,run_sub_71b5ac5bee
+run_sub_bbdb1603d3,c10-p-teacher-df242f,group_0590,masking/JEPA/iBOT + teacher/EMA/temp,3,run_sub_bbdb1603d3
+run_sub_89fed3cc1d,c10-md-local-071fbd,group_0562,local crops,4,run_sub_63e391c37c
+run_sub_5bd0eaa5bb,c10-train-p-g-83ee61,group_0598,replication/control + anti-collapse + readout/post-train,1,run_sub_5bd0eaa5bb
+run_sub_19f9369088,c10-train-p-l-3044e9,group_0594,local crops + LR/optimizer/grad,5,run_sub_405c0483fe
+run_sub_b5b87020c9,c10-gram-anch-4a26b4,group_0588,replication/control + anti-collapse,4,run_sub_73c671a253
+run_sub_50ab5cf5e0,c10-md-miner-1ae2f7,group_0596,masking/JEPA/iBOT,4,run_sub_2e903c306b
+run_sub_c7ab7574e9,c10-gram-anch-bf0e3d,group_0588,replication/control + anti-collapse,4,run_sub_73c671a253
+run_sub_0002e0a05f,c10-p-attn-gu-0723f9,group_0596,masking/JEPA/iBOT,4,run_sub_2e903c306b
+run_sub_73c671a253,c10-train-p-g-579d38,group_0588,replication/control + anti-collapse,4,run_sub_73c671a253
+run_sub_2ec24f31c2,c10-md-miner-999843,group_0562,local crops,4,run_sub_63e391c37c
+run_sub_520f8aa36e,c10-p-tissue-e93f05,group_0599,sampling/curation,2,run_sub_20e18685c9
+run_sub_6f16a4b814,c10-loss-mask-853dd1,group_0590,masking/JEPA/iBOT + teacher/EMA/temp,3,run_sub_bbdb1603d3
+run_sub_3ac31c835c,c10-p-lawa-sl-f20bbc,group_0600,teacher/EMA/temp + LR/optimizer/grad,1,run_sub_3ac31c835c
+run_sub_23b3742ee8,c10-genbio-rg-f5d6f5,group_0601,stain/color aug,1,run_sub_23b3742ee8
+run_sub_f9104966f9,c10-train-p-s-84babf,group_0602,c10-train-p-ssl-patch-mixup-target-reweight,1,run_sub_f9104966f9
+run_sub_f23b4c1dff,c10-train-p-c-36f555,group_0603,architecture,2,run_sub_f23b4c1dff
+run_sub_abfabc772a,c10-train-p-d-f67433,group_0603,architecture,2,run_sub_f23b4c1dff
+run_sub_a494815037,c10-sdhl-hidd-0e0145,group_0604,warmup/schedule,1,run_sub_a494815037
+run_sub_3fd0593a3c,c10-pcgrad-gl-01d481,group_0586,LR/optimizer/grad,6,run_sub_71b5ac5bee
+run_sub_e2db672da5,c10-train-p-s-afb054,group_0594,local crops + LR/optimizer/grad,5,run_sub_405c0483fe
+run_sub_1efe6b2d73,c10-sampling-cf1c46,group_0589,local crops + metadata/FINO + sampling/curation,3,run_sub_865fd4fe82
+run_sub_20e18685c9,c10-p-tissue-9b8c9b,group_0599,sampling/curation,2,run_sub_20e18685c9
+run_sub_2e903c306b,c10-train-p-m-1fff84,group_0596,masking/JEPA/iBOT,4,run_sub_2e903c306b
+run_sub_135395342f,c10-l8pcgrad-42cd5f,group_0594,local crops + LR/optimizer/grad,5,run_sub_405c0483fe
+run_sub_bb7313faef,c10-p-combine-7c56bf,group_0605,local crops + metadata/FINO,1,run_sub_bb7313faef
+run_sub_e6df4c25fe,c10-loss-equi-d3bc20,group_0606,c10-loss-equipred-transform-onset-late,1,run_sub_e6df4c25fe
+run_sub_71dfe73202,c10-loss-rela-327bcb,group_0607,c10-loss-relational-batch-sim,1,run_sub_71dfe73202
+run_sub_513d891499,c10-p-l8pcgra-0689bf,group_0594,local crops + LR/optimizer/grad,5,run_sub_405c0483fe
+run_sub_8113022d92,c10-sdhl-self-7bd4ab,group_0608,c10-sdhl-selfdistill-weightdown,1,run_sub_8113022d92
+run_sub_a49ae04754,c10-train-p-s-ea1f6a,group_0562,local crops,4,run_sub_63e391c37c
+run_sub_e48df5f6dd,c10-train-p-r-da1b06,group_0609,c10-train-p-relpos-aux,1,run_sub_e48df5f6dd
+run_sub_6955ffa597,c10-train-pcg-cd76cf,group_0586,LR/optimizer/grad,6,run_sub_71b5ac5bee
+run_sub_8ce35d1240,c8-avoid-anti-a9c41c,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_a1ca8c0803,c8-sizemix-wi-bcb0e3,group_0580,replication/control + local crops,6,run_sub_4e55f683b2
+run_sub_2c880e84fd,c8-anticollap-bd5c4e,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_2bdc3c2f77,c8-train-p-ko-1909e5,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_b4501002ad,c8-train-p-gl-232adb,group_0566,local crops + global crops,3,run_sub_ef04c57108
+run_sub_ab31a30525,c8-train-p-pe-8b45dd,group_0610,c8-train-p-per-lineage-worktree-iso-harden-disk,1,run_sub_ab31a30525
+run_sub_d9859be257,c8-genediv-cu-c5fbfd,group_0570,anti-collapse + metadata/FINO + sampling/curation,2,run_sub_b6814f52e1
+run_sub_73fb2241c1,c8-train-p-av-3cacff,group_0582,anti-collapse + teacher/EMA/temp,4,run_sub_7c4f1c597b
+run_sub_3b6fbe5968,c8-meta-inpla-86cfe9,group_0519,geometric aug,3,run_sub_3b6fbe5968
+run_sub_65d57a2d43,c8-avoid-trai-a6c2cf,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_3f928b6ba3,c8-anticollap-195367,group_0518,anti-collapse + KDE/uniformity,4,run_sub_8c0d2b6b0e
+run_sub_b34b7994cc,c8-dinov3-bas-3c70f7,group_0611,masking/JEPA/iBOT + warmup/schedule + architecture,1,run_sub_b34b7994cc
+run_sub_059a07b646,c8-train-p-lo-80f63b,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_a32606ff27,c6-train-d07-6afb10,group_0612,c6-train-d07,1,run_sub_a32606ff27
+run_sub_a344bfa3a2,c6-train-d06-d81f3d,group_0613,sampling/curation,1,run_sub_a344bfa3a2
+run_sub_ad7b7609a9,c8-anticollap-6fe1ec,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_2bf6757620,c10-train-p-l-0e23da,group_0586,LR/optimizer/grad,6,run_sub_71b5ac5bee
+run_sub_8780cae12f,c7-train-p-c6-abd2ef,group_0454,architecture,5,run_sub_a2ea3b8091
+run_sub_3ba99edf0c,c8-avoid-head-8a4e2d,group_0614,c8-avoid-headcrash-mean-lse-concat,1,run_sub_3ba99edf0c
+run_sub_744e604eac,c8-anticollap-3321f5,group_0518,anti-collapse + KDE/uniformity,4,run_sub_8c0d2b6b0e
+run_sub_dbefb7805b,c8-train-p-av-ef4703,group_0615,anti-collapse + warmup/schedule + metadata/FINO,1,run_sub_dbefb7805b
+run_sub_66645fc59b,c8-metainfra-4a5d93,group_0519,geometric aug,3,run_sub_3b6fbe5968
+run_sub_70619af390,c8-avoid-aug-dc2507,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_4aab05f8dc,c8-train-p-lo-e2c231,group_0580,replication/control + local crops,6,run_sub_4e55f683b2
+run_sub_ce7253ef7f,c8-train-p-av-a5c177,group_0571,masking/JEPA/iBOT + anti-collapse,3,run_sub_82c168b6ec
+run_sub_5930ae0c42,c8-anti-colla-3c474b,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_b108376d2e,teacher-disag-a7df52,group_0456,teacher/EMA/temp,7,run_sub_b108376d2e
+run_sub_bd73f7d194,c8-capi-ibot-3f9c84,group_0616,masking/JEPA/iBOT + warmup/schedule,2,run_sub_bd73f7d194
+run_sub_27ba74a973,c6-train-d02-t2,group_0617,c6-train-d02,1,run_sub_27ba74a973
+run_sub_5bc7d612cd,c6-sinkhorn-e-317888,group_0618,anti-collapse,1,run_sub_5bc7d612cd
+run_sub_6dc8308489,c8-av-gradbal-cf9034,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_4dec30bc57,c8-train-p-av-f44752,group_0584,masking/JEPA/iBOT + anti-collapse + teacher/EMA/temp,2,run_sub_2f93e98e20
+run_sub_94f60d3e86,compose-c1-st-a11a48,group_0619,local crops,1,run_sub_94f60d3e86
+run_sub_5726e26a9f,compose-c2-ab-891270,group_0620,local crops,1,run_sub_5726e26a9f
+run_sub_388f9ffd4d,compose-c3-ab-caef77,group_0621,local crops,1,run_sub_388f9ffd4d
+run_sub_9f882966c6,compose-c4-ab-73ea27,group_0622,local crops,1,run_sub_9f882966c6
+run_sub_89ad37b6b1,reseed-c-c10-5297be,group_0623,replication/control + local crops,1,run_sub_89ad37b6b1
+run_sub_06488a5ebd,c8-augaug-sta-7969a6,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_7fa6cad302,c8-anticollap-255776,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_248c0bde9d,c8-train-p-lo-bc1731,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_dfdcb95794,c8-train-p-lo-d02307,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_c454bd57c1,c8-train-p-ko-9022ab,group_0517,anti-collapse + warmup/schedule,2,run_sub_c454bd57c1
+run_sub_e6ee0a26b5,c8-train-p-av-818bfb,group_0577,anti-collapse + teacher/EMA/temp + warmup/schedule,4,run_sub_734764df99
+run_sub_e080a8e568,c8-sizemix-fu-350e28,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_e77c19afe0,c8-ideatormin-5c81dd,group_0624,teacher/EMA/temp + warmup/schedule,1,run_sub_e77c19afe0
+run_sub_3c2f2a0250,c8-globalcrop-da1606,group_0511,global crops,3,run_sub_eaf298355d
+run_sub_7b3563fbf6,c8-train-p-lo-a03920,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_8762497836,c8-train-p-au-547a95,group_0625,c8-train-p-auglite-photometric-moderate,1,run_sub_8762497836
+run_sub_2e535f7a55,c8-train-p-pe-fd5dab,group_0626,c8-train-p-per-lineage-outputdir-isolation,1,run_sub_2e535f7a55
+run_sub_58315967d3,c8-av-config-780fea,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_a36690566f,c6-train-d09-t1,group_0627,c6-train-d09,1,run_sub_a36690566f
+run_sub_799d8d465e,c8-train-p-me-7e31d3,group_0628,c8-train-p-meanmax-ssl-headpool,1,run_sub_799d8d465e
+run_sub_de4dcfb178,c8-avoid-anti-59d948,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_74ce8c80f2,c8-asymmetric-fd31f9,group_0629,c8-asymmetric-aug-fixed-gap,1,run_sub_74ce8c80f2
+run_sub_e7af1e04dc,c8-train-p-av-199578,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_e599eb2685,c8-train-p-au-69582c,group_0630,c8-train-p-auglite-photometric-remove,1,run_sub_e599eb2685
+run_sub_1af876805a,c8-hedjitter-79b20f,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_ece1ec698b,b6-l14-cw-t3,group_0631,b6-l14-cw,1,run_sub_ece1ec698b
+run_sub_b8c77a8ad7,c8-pcgrad-jep-3172c4,group_0632,masking/JEPA/iBOT + LR/optimizer/grad,1,run_sub_b8c77a8ad7
+run_sub_8b09606053,c8-localcrop-37fe72,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_83032f7b86,c8-train-p-co-138cd3,group_0616,masking/JEPA/iBOT + warmup/schedule,2,run_sub_bd73f7d194
+run_sub_9398e77e0e,c8-larger-dat-adccc2,group_0511,global crops,3,run_sub_eaf298355d
+run_sub_b9b8924c4b,c8-anticollap-919aa1,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_9cf356f532,c8-mask-ratio-acfc4b,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_1ef4abb788,c8-train-p-an-a6404c,group_0582,anti-collapse + teacher/EMA/temp,4,run_sub_7c4f1c597b
+run_sub_970a77c954,c8-localcrop-84d7b1,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_20b6211388,c8-train-p-si-92a96f,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_1e31eb72c4,c8-train-p-si-247931,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_963549c74a,c8-train-p-av-eda80f,group_0575,warmup/schedule + metadata/FINO + sampling/curation,2,run_sub_4e4783e541
+run_sub_b28df82d77,c8-anticollap-0619ac,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_828e5a9739,c8-capi-ibot-5cb3ff,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_4e336cdef2,c5-l4-asym-t2,group_0633,c5-l4-asym,1,run_sub_4e336cdef2
+run_sub_8af5ab4133,c8-model-scal-09fef8,group_0634,replication/control,1,run_sub_8af5ab4133
+run_sub_d661a60ae1,c8-train-p-av-00f690,group_0635,warmup/schedule + metadata/FINO,1,run_sub_d661a60ae1
+run_sub_551a6ff46f,c7-train-p-lo-1d42d9,group_0636,local crops + global crops,1,run_sub_551a6ff46f
+run_sub_9d9c18ac9e,c8-localcrop-db076a,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_87fee67eac,c8-jepa-maske-01a58f,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_2b56d3a11c,c11-base-646404,group_0637,c11-base,1,run_sub_2b56d3a11c
+run_sub_a337a1c7ad,c11-loss-ibot-942d66,group_0638,masking/JEPA/iBOT + sampling/curation,2,run_sub_093d6c2ecf
+run_sub_5b5cac3af1,c11-train-p-u-cbba66,group_0639,geometric aug,3,run_sub_5b5cac3af1
+run_sub_9a6417d9f9,c11-p-av-bala-8b71c5,group_0640,metadata/FINO + sampling/curation,1,run_sub_9a6417d9f9
+run_sub_61fb990ba9,c11-train-p-c-6d0657,group_0641,anti-collapse,3,run_sub_61fb990ba9
+run_sub_4cf388fd6c,c11-train-p-k-6d94c6,group_0641,anti-collapse,3,run_sub_61fb990ba9
+run_sub_0df1c0707a,c11-p-c6-late-c9bec7,group_0642,LR/optimizer/grad,6,run_sub_0df1c0707a
+run_sub_fa655ebd31,c11-train-md-4efa92,group_0643,local crops,1,run_sub_fa655ebd31
+run_sub_a25f322b80,c11-auglite-p-562b8b,group_0644,c11-auglite-photometric-subtract,1,run_sub_a25f322b80
+run_sub_015d456304,c11-train-p-a-0e2c94,group_0645,c11-train-p-asym-student-local-aug,1,run_sub_015d456304
+run_sub_18b305b4f7,c11-userwsamp-2bb5af,group_0646,sampling/curation,5,run_sub_711c2b698d
+run_sub_52ba744399,c11-train-p-s-8c9416,group_0647,c11-train-p-sdhl-selfdistill-hiddenaux-codeimpl,1,run_sub_52ba744399
+run_sub_e810267901,c11-asymaug-g-e81adf,group_0648,c11-asymaug-graded-blur,1,run_sub_e810267901
+run_sub_abf4c745ca,c11-lit-lejep-30f107,group_0649,masking/JEPA/iBOT + KDE/uniformity,2,run_sub_901b35e104
+run_sub_e7876b01f0,c11-train-pcg-7f9d29,group_0642,LR/optimizer/grad,6,run_sub_0df1c0707a
+run_sub_bf1b5baa82,c11-p-adamuon-625eaf,group_0642,LR/optimizer/grad,6,run_sub_0df1c0707a
+run_sub_111011193b,c11-train-tea-256d9c,group_0650,teacher/EMA/temp,4,run_sub_ef09049e23
+run_sub_dc3144dacd,c11-train-p-m-addae6,group_0651,c11-train-p-md-results-miner-gscale,1,run_sub_dc3144dacd
+run_sub_66ca3e0f02,c11-p-lawa-wi-92c8cc,group_0642,LR/optimizer/grad,6,run_sub_0df1c0707a
+run_sub_43c3f92fcd,c11-train-p-c-6660c3,group_0652,architecture,2,run_sub_43c3f92fcd
+run_sub_0857fd8246,c11-train-p-c-9bd24a,group_0641,anti-collapse,3,run_sub_61fb990ba9
+run_sub_fe34bda3fb,c11-train-tea-e8cc45,group_0650,teacher/EMA/temp,4,run_sub_ef09049e23
+run_sub_24ffc40b7f,c11-sdhl-self-17878e,group_0653,warmup/schedule,2,run_sub_5f2cd945b9
+run_sub_1e1d155d2c,c11-train-p-u-64477a,group_0639,geometric aug,3,run_sub_5b5cac3af1
+run_sub_b91e12ae20,c11-p-av-bala-b6cbe4,group_0646,sampling/curation,5,run_sub_711c2b698d
+run_sub_3ae01a5cb5,c11-train-p-g-3162c1,group_0654,replication/control + anti-collapse + warmup/schedule,1,run_sub_3ae01a5cb5
+run_sub_92f1caec4b,c11-train-p-a-6deb1b,group_0655,c11-train-p-asym-student-aug,1,run_sub_92f1caec4b
+run_sub_1109953492,c11-p-av-conf-a1672c,group_0656,c11-p-av-config-first-gradient-bal-anneal2x,1,run_sub_1109953492
+run_sub_901b35e104,c11-lit-lejep-b7e712,group_0649,masking/JEPA/iBOT + KDE/uniformity,2,run_sub_901b35e104
+run_sub_076133a868,c11-asym-aug-518d71,group_0657,c11-asym-aug-student-extra,1,run_sub_076133a868
+run_sub_c02167b53a,c11-p-localcr-ce92c7,group_0658,local crops + LR/optimizer/grad,2,run_sub_c02167b53a
+run_sub_a9178893e3,c11-optimizer-286a3b,group_0642,LR/optimizer/grad,6,run_sub_0df1c0707a
+run_sub_dad51e56f4,c11-train-p-r-b75b61,group_0659,c11-train-p-rasa-posdecorr,1,run_sub_dad51e56f4
+run_sub_093d6c2ecf,c11-loss-ibot-b126bc,group_0638,masking/JEPA/iBOT + sampling/curation,2,run_sub_093d6c2ecf
+run_sub_5523458a5f,c11-train-p-v-d98ab9,group_0646,sampling/curation,5,run_sub_711c2b698d
+run_sub_e9e89a23eb,c11-train-pcg-fbb037,group_0642,LR/optimizer/grad,6,run_sub_0df1c0707a
+run_sub_9e21076653,c11-md-miner-3dd6f2,group_0660,local crops + masking/JEPA/iBOT,1,run_sub_9e21076653
+run_sub_bd05a35b71,c11-train-p-g-19cb9f,group_0661,replication/control + anti-collapse,1,run_sub_bd05a35b71
+run_sub_5d1d47f900,c11-train-p-u-0bd59b,group_0639,geometric aug,3,run_sub_5b5cac3af1
+run_sub_ef09049e23,c11-asymaug-t-110e42,group_0650,teacher/EMA/temp,4,run_sub_ef09049e23
+run_sub_c37b6bcdc2,c11-learned-o-2dd089,group_0662,c11-learned-output-head-aux,1,run_sub_c37b6bcdc2
+run_sub_e96d16a687,c11-localcrop-a5ae16,group_0658,local crops + LR/optimizer/grad,2,run_sub_c02167b53a
+run_sub_ba3c5400f5,c11-p-imbalan-ebe8e0,group_0663,teacher/EMA/temp + sampling/curation,1,run_sub_ba3c5400f5
+run_sub_5f2cd945b9,c11-train-p-r-293a45,group_0653,warmup/schedule,2,run_sub_5f2cd945b9
+run_sub_25f45071b3,c11-train-p-c-f8fda1,group_0652,architecture,2,run_sub_43c3f92fcd
+run_sub_711c2b698d,c11-lit-visua-65b4ef,group_0646,sampling/curation,5,run_sub_711c2b698d
+run_sub_30186e7f8a,c11-asymaug-t-37c463,group_0650,teacher/EMA/temp,4,run_sub_ef09049e23
+run_sub_e16832d188,c8-highfreq-e-1d57b6,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_987027354f,c11-learnedhe-f8a667,group_0664,c11-learnedhead-auxloss-dose,1,run_sub_987027354f
+run_sub_70f20fece8,c8-train-p-lo-77b2d7,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_80e34a8623,c6-spproto-k4-t1,group_0665,c6-spproto-k4,1,run_sub_80e34a8623
+run_sub_3564b849d0,c8-lejepa-sig-cd76f6,group_0666,masking/JEPA/iBOT + anti-collapse,1,run_sub_3564b849d0
+run_sub_6b8b003524,c8-augment-st-a847ba,group_0667,masking/JEPA/iBOT + stain/color aug,2,run_sub_6b8b003524
+run_sub_00bd01443f,c11-train-p-a-a96aff,group_0668,c11-train-p-asym-student-scale-crop,1,run_sub_00bd01443f
+run_sub_294025dfa8,c8-mask-stati-2d1cb6,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_d15dc06e2a,c8-localcrop-87b750,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_e6c83d34be,c8-train-p-vi-adea7a,group_0515,LR/optimizer/grad,5,run_sub_ac25073ff5
+run_sub_88612c3fdf,c8-train-p-li-72112e,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_f90a72a8ea,c8-train-p-lo-187216,group_0669,local crops + sampling/curation,1,run_sub_f90a72a8ea
+run_sub_5fbf453989,c5-l12_softeq_t1,group_0670,c5-l12-softeq,1,run_sub_5fbf453989
+run_sub_4c438eed6d,c8-train-mask-fa26a3,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_9eca065fcc,c8-train-p-gl-866fe7,group_0566,local crops + global crops,3,run_sub_ef04c57108
+run_sub_b05903ffd5,c8-anti-colla-2deac1,group_0522,KDE/uniformity,2,run_sub_e77501d0dd
+run_sub_6c1bef1928,c8-aug-staina-870ea9,group_0667,masking/JEPA/iBOT + stain/color aug,2,run_sub_6b8b003524
+run_sub_92c6f563ab,c8-datacurati-0b9d62,group_0671,sampling/curation + readout/post-train,1,run_sub_92c6f563ab
+run_sub_9936010781,c8-mask-ratio-6b1ca8,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_67c2c17b0a,c8-localcrop-1e5302,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_9ac5680f4f,c8-localcrop-c2260c,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_ec2660a995,c8-train-p-lo-3f0a1e,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_82adb5ffbf,c8-stain-aug-1fa409,group_0672,stain/color aug,3,run_sub_82adb5ffbf
+run_sub_eb6e50d94f,c8-dinov3-bas-25e33f,group_0510,masking/JEPA/iBOT + architecture,2,run_sub_f90e0fa626
+run_sub_3884868d7a,c8-lit-focal-0053bb,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_d53c62c01d,c8-train-p-li-790234,group_0571,masking/JEPA/iBOT + anti-collapse,3,run_sub_82c168b6ec
+run_sub_a49967f655,c7-train-p-ma-9b43fa,group_0469,masking/JEPA/iBOT + warmup/schedule,7,run_sub_c2479d00fc
+run_sub_6bd10fe1d6,c8-masking-st-25f156,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_14e669dda5,c8-train-p-ko-22889a,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_52d31032e6,c8-jepa-focal-602851,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_bb6f16de49,c8-hed-jitter-b5796d,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_b9ee6744c3,c8-train-p-av-c7a1d8,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_a32485b041,c8-capi-ibot-b1414d,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_29efabca11,c8-train-p-st-9d008c,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_b97af2b14c,c11-visdedup-07d3e2,group_0646,sampling/curation,5,run_sub_711c2b698d
+run_sub_5cb85417ea,c8-masking-st-0e044f,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_af66aa464b,c8-train-p-st-0f9fb9,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_59f222693b,c8-train-p-av-2cb210,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_6e3863a473,c8-loss-gram-c51ed3,group_0673,replication/control + anti-collapse,2,run_sub_6e3863a473
+run_sub_8b39348806,c8-asymmetric-cd993a,group_0513,warmup/schedule,2,run_sub_030069e56b
+run_sub_6d6d7b3e8a,c6-gram-anchoring-t2,group_0674,replication/control + anti-collapse,1,run_sub_6d6d7b3e8a
+run_sub_dfafe7742b,c8-md-ideator-eaf2ba,group_0675,anti-collapse,3,run_sub_dfafe7742b
+run_sub_bad75c8516,c8-infra-head-d5d6e8,group_0676,c8-infra-headpool-max-only,1,run_sub_bad75c8516
+run_sub_f077348c7f,c8-train-p-av-6589e2,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_a9c92f11c0,c8-train-p-av-fe2e51,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_b3aec3b945,c8-loss-gram-80cca6,group_0673,replication/control + anti-collapse,2,run_sub_6e3863a473
+run_sub_7d070be7ec,c8-anticollap-70547d,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_d144aadc6a,c8-train-p-si-c0b4f3,group_0580,replication/control + local crops,6,run_sub_4e55f683b2
+run_sub_e41f078cb6,c8-train-p-st-c83ab3,group_0672,stain/color aug,3,run_sub_82adb5ffbf
+run_sub_e1beb95dec,c8-anticollap-581b84,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_588a414a6d,c8-localcrop-3735e5,group_0507,local crops,33,run_sub_5982ab1e7d
+run_sub_0e83171010,c8-avoid-aug-7014f3,group_0672,stain/color aug,3,run_sub_82adb5ffbf
+run_sub_20de90e309,c8-ideator-mi-cf3e22,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_34b21dc16d,c8-koleo-cdis-8ff142,group_0677,anti-collapse + architecture,1,run_sub_34b21dc16d
+run_sub_68429f8774,c8-nn-neighbo-8eea94,group_0678,c8-nn-neighbor-group-loss,1,run_sub_68429f8774
+run_sub_fe47d607e0,c8-train-kole-415b19,group_0675,anti-collapse,3,run_sub_dfafe7742b
+run_sub_a0a253e72e,c8-train-p-li-0ce4cc,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_1bbeedbcf5,c8-auglite-gr-c58a46,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_4dfd9a20e5,c8-auglite-st-ee392a,group_0679,c8-auglite-strip-photometric-code,1,run_sub_4dfd9a20e5
+run_sub_70880ab42a,c8-lit-highfr-edf768,group_0531,masking/JEPA/iBOT,29,run_sub_220039688f
+run_sub_fe2b668913,c8-train-p-si-fa8829,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_5013e383ce,c8-genbio-rgb-542aeb,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_32e2afc88f,c8-genbio-rgb-e761c9,group_0573,stain/color aug,14,run_sub_9ac62f4f23
+run_sub_ce850c8a10,c8-train-p-li-c14a23,group_0675,anti-collapse,3,run_sub_dfafe7742b
+run_sub_68653431b8,c8-train-p-li-f1610b,group_0508,anti-collapse,30,run_sub_ffee99f3e1
+run_sub_ca1de83869,c7-train-loca-0efcdd,group_0491,local crops,2,run_sub_20bfd63a2b
+run_sub_06cbe8ca95,c8-sizemix-wi-09675e,group_0580,replication/control + local crops,6,run_sub_4e55f683b2
+run_sub_76a4182751,jepa-register-005,group_0680,masking/JEPA/iBOT + architecture,1,run_sub_76a4182751
+run_sub_2db2d32375,JEPA_Concat,group_0401,masking/JEPA/iBOT,5,run_sub_2db2d32375
+run_sub_74905b8d03,simclr-1m-repro,group_0681,replication/control + contrastive,2,run_sub_a7bc0cf849
+run_sub_a7bc0cf849,simclr-t0810-repro,group_0681,replication/control + contrastive,2,run_sub_a7bc0cf849
+run_sub_1e6ae46eb5,robust-norm,group_0682,readout/post-train,1,run_sub_1e6ae46eb5
+run_sub_741d5b7cff,rot180-tta,group_0683,readout/post-train,2,run_sub_741d5b7cff
+run_sub_6b2169851d,robust-norm-s160,group_0683,readout/post-train,2,run_sub_741d5b7cff
+run_sub_a1a42e9ea2,skr_cent_none,group_0684,skr-cent-none,1,run_sub_a1a42e9ea2
+run_sub_16b156161d,robust-norm-s9876,group_0685,run:run_sub_16b156161d,1,run_sub_16b156161d
+run_sub_e2cdd86b21,simclr-posttrain,group_0686,contrastive,1,run_sub_e2cdd86b21
+run_sub_e4671db242,canonical-m1,group_0687,canonical-m1,1,run_sub_e4671db242
+run_sub_72be172acd,dito-stain-s2026,group_0688,stain/color aug,1,run_sub_72be172acd
+run_sub_1229fd52b8,rot180-nofino-m1,group_0689,metadata/FINO,2,run_sub_c1c9c42d6d
+run_sub_6d299aa095,sidecar-tta-s1234,group_0690,readout/post-train,2,run_sub_5f5d564362
+run_sub_aa6cc011cd,rot180-s2024,group_0691,rot180-s2024,1,run_sub_aa6cc011cd
+run_sub_c1c9c42d6d,rot180-fino-s42,group_0689,metadata/FINO,2,run_sub_c1c9c42d6d
+run_sub_1d33ea4d1b,contraction,group_0692,contraction,1,run_sub_1d33ea4d1b
+run_sub_c63c73c201,seg-rewarp,group_0693,seg-rewarp,1,run_sub_c63c73c201
+run_sub_5f5d564362,act-readout,group_0690,readout/post-train,2,run_sub_5f5d564362
+run_sub_b89398a1a1,koleo-break,group_0694,anti-collapse,1,run_sub_b89398a1a1

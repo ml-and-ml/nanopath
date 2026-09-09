@@ -1,0 +1,32 @@
+source,target,weight,inherited_color,interpretation
+dino,lr,2.5,DINO / KDE,conceptual ingredient or development continuation
+lr,jepa_valid,3,DINO / KDE,conceptual ingredient or development continuation
+jepa,jepa_valid,3,I-JEPA,conceptual ingredient or development continuation
+jepa_valid,jf,3.5,DINO + JEPA,conceptual ingredient or development continuation
+fino,jf,3.5,FINO,conceptual ingredient or development continuation
+jf,bsc,4,JEPA + FINO,conceptual ingredient or development continuation
+readout,bsc,4,Dense readout,conceptual ingredient or development continuation
+bsc,pre,3.321928094887362,Mature merged trunk,conceptual ingredient or development continuation
+pre,search1,5.321928094887363,Mature merged trunk,conceptual ingredient or development continuation
+bsc,kde,2.2,Mature merged trunk,conceptual ingredient or development continuation
+dino,kde,1.8,DINO / KDE,conceptual ingredient or development continuation
+search1,search2,4.0,Mature merged trunk,conceptual ingredient or development continuation
+search2,search3,6.22881869049588,Mature merged trunk,conceptual ingredient or development continuation
+search3,search4,7.507794640198696,Mature merged trunk,conceptual ingredient or development continuation
+search4,search5,7.930737337562887,Mature merged trunk,conceptual ingredient or development continuation
+search4,search6,6.845490050944375,Mature merged trunk,conceptual ingredient or development continuation
+search6,search7,5.832890014164741,Mature merged trunk,conceptual ingredient or development continuation
+capi,capi_trials,4.247927513443585,CAPI,conceptual ingredient or development continuation
+molcap,molcap_merge,1.5,MolCap,conceptual ingredient or development continuation
+kde,molcap_merge,1.5,Mature merged trunk,conceptual ingredient or development continuation
+sam,sam_tuned,2.0,SAM,conceptual ingredient or development continuation
+kde,lctx,2.5,Mature merged trunk,conceptual ingredient or development continuation
+search4,lctx,2.5,Mature merged trunk,conceptual ingredient or development continuation
+lctx,lctx_valid,2.8,Mature merged trunk,conceptual ingredient or development continuation
+dino3,simclr_merge,1.6,DINOv3,conceptual ingredient or development continuation
+simclr,simclr_merge,1.6,SimCLR,conceptual ingredient or development continuation
+search7,leader,2.2,Mature merged trunk,conceptual ingredient or development continuation
+lctx_valid,leader,2.2,Mature merged trunk,conceptual ingredient or development continuation
+robust,leader,2.2,Robust norm,conceptual ingredient or development continuation
+simclr_merge,simclr_post,1.6,SimCLR + post-train,conceptual ingredient or development continuation
+leader,simclr_post,1.6,Robust leader,conceptual ingredient or development continuation

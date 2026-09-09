@@ -1,0 +1,116 @@
+record_type,source_node,target_node,source_date,target_date,source_campaign,target_campaign,source_raw_campaigns,target_raw_campaigns,kind,method,method_class,internal,run_count,group_count,edge_count,internal_edge_count
+node,0|Early manual,,2026-06-03,,Early manual,,Early manual,,,,,,6,6,,5
+node,11|Automated search,,2026-07-06,,Automated search,,Cycle 6,,,,,,14,2,,0
+node,12|Automated search,,2026-07-09,,Automated search,,Cycle 6,,,,,,44,20,,0
+node,12|Other manual,,2026-07-09,,Other manual,,Other manual,,,,,,3,3,,0
+node,13|Automated search,,2026-07-12,,Automated search,,Cycle 7,,,,,,7,5,,0
+node,13|Other manual,,2026-07-12,,Other manual,,Other manual,,,,,,2,2,,0
+node,14|Automated search,,2026-07-15,,Automated search,,Cycle 6; Cycle 7,,,,,,167,50,,1
+node,14|Other manual,,2026-07-15,,Other manual,,Other manual,,,,,,2,2,,0
+node,15|Automated search,,2026-07-18,,Automated search,,Cycle 7,,,,,,8,8,,0
+node,15|Other manual,,2026-07-18,,Other manual,,Other manual,,,,,,1,1,,0
+node,16|Automated search,,2026-07-21,,Automated search,,Cycle 8,,,,,,230,51,,0
+node,16|Other manual,,2026-07-21,,Other manual,,Other manual,,,,,,4,4,,0
+node,17|Automated search,,2026-07-24,,Automated search,,Cycle 8,,,,,,34,18,,0
+node,18|Automated search,,2026-07-27,,Automated search,,Cycle 8,,,,,,16,11,,0
+node,18|Other manual,,2026-07-27,,Other manual,,Other manual,,,,,,2,2,,0
+node,1|Early manual,,2026-06-06,,Early manual,,Early manual,,,,,,37,7,,0
+node,20|Other manual,,2026-08-02,,Other manual,,Other manual,,,,,,2,2,,0
+node,21|Other manual,,2026-08-05,,Other manual,,Other manual,,,,,,2,2,,0
+node,22|Automated search,,2026-08-08,,Automated search,,Cycle 10; Cycle 6; Cycle 8; Cycle 9,,,,,,49,26,,42
+node,23|Automated search,,2026-08-11,,Automated search,,Cycle 1; Cycle 10; Cycle 11; Cycle 2; Cycle 3; Cycle 4; Cycle 5; Cycle 6; Cycle 8,,,,,,81,58,,50
+node,24|Other manual,,2026-08-14,,Other manual,,Other manual,,,,,,1,1,,0
+node,25|Late manual,,2026-08-17,,Late manual,,Late manual,,,,,,6,4,,2
+node,26|Late manual,,2026-08-20,,Late manual,,Late manual,,,,,,2,2,,1
+node,28|Late manual,,2026-08-26,,Late manual,,Late manual,,,,,,7,5,,0
+node,29|Late manual,,2026-08-29,,Late manual,,Late manual,,,,,,2,2,,0
+node,2|Early manual,,2026-06-09,,Early manual,,Early manual,,,,,,12,5,,0
+node,30|Automated search,,2026-09-01,,Automated search,,Cycle 8,,,,,,1,1,,0
+node,3|Early manual,,2026-06-12,,Early manual,,Early manual,,,,,,206,151,,1
+node,3|Numbered search,,2026-06-12,,Numbered search,,Numbered search,,,,,,70,70,,28
+node,4|Early manual,,2026-06-15,,Early manual,,Early manual,,,,,,37,35,,0
+node,5|Automated search,,2026-06-18,,Automated search,,Cycle 1,,,,,,19,15,,0
+node,5|Pre-cycle search,,2026-06-18,,Pre-cycle search,,Pre-cycle search,,,,,,9,5,,0
+node,6|Automated search,,2026-06-21,,Automated search,,Cycle 1; Cycle 3,,,,,,20,19,,0
+node,6|Other manual,,2026-06-21,,Other manual,,Other manual,,,,,,61,37,,0
+node,7|Automated search,,2026-06-24,,Automated search,,Cycle 5,,,,,,1,1,,0
+node,7|Numbered search,,2026-06-24,,Numbered search,,Numbered search,,,,,,2,2,,0
+node,7|Other manual,,2026-06-24,,Other manual,,Other manual,,,,,,46,37,,0
+node,8|Automated search,,2026-06-27,,Automated search,,Cycle 5,,,,,,13,9,,0
+node,8|Other manual,,2026-06-27,,Other manual,,Other manual,,,,,,7,3,,0
+node,9|Automated search,,2026-06-30,,Automated search,,Cycle 5; Cycle 6,,,,,,19,11,,0
+link,0|Early manual,0|Early manual,2026-06-03,2026-06-03,Early manual,Early manual,Early manual,Early manual,primary,explicit_run_id,Named relation,True,,,1,
+link,0|Early manual,0|Early manual,2026-06-03,2026-06-03,Early manual,Early manual,Early manual,Early manual,primary,source_branch,Git/API source fork,True,,,4,
+link,0|Early manual,11|Automated search,2026-06-03,2026-07-06,Early manual,Automated search,Early manual,Cycle 6,primary,source_branch,Git/API source fork,False,,,14,
+link,0|Early manual,12|Automated search,2026-06-03,2026-07-09,Early manual,Automated search,Early manual,Cycle 6,primary,source_branch,Git/API source fork,False,,,44,
+link,0|Early manual,12|Other manual,2026-06-03,2026-07-09,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,3,
+link,0|Early manual,13|Automated search,2026-06-03,2026-07-12,Early manual,Automated search,Early manual,Cycle 7,primary,source_branch,Git/API source fork,False,,,6,
+link,0|Early manual,13|Other manual,2026-06-03,2026-07-12,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,2,
+link,0|Early manual,14|Automated search,2026-06-03,2026-07-15,Early manual,Automated search,Early manual,Cycle 6; Cycle 7,primary,source_branch,Git/API source fork,False,,,12,
+link,0|Early manual,14|Other manual,2026-06-03,2026-07-15,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,2,
+link,0|Early manual,16|Other manual,2026-06-03,2026-07-21,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,3,
+link,0|Early manual,18|Other manual,2026-06-03,2026-07-27,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,2,
+link,0|Early manual,1|Early manual,2026-06-03,2026-06-06,Early manual,Early manual,Early manual,Early manual,primary,source_branch,Git/API source fork,False,,,37,
+link,0|Early manual,20|Other manual,2026-06-03,2026-08-02,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,1,
+link,0|Early manual,21|Other manual,2026-06-03,2026-08-05,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,2,
+link,0|Early manual,24|Other manual,2026-06-03,2026-08-14,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,1,
+link,0|Early manual,25|Late manual,2026-06-03,2026-08-17,Early manual,Late manual,Early manual,Late manual,primary,source_branch,Git/API source fork,False,,,3,
+link,0|Early manual,26|Late manual,2026-06-03,2026-08-20,Early manual,Late manual,Early manual,Late manual,primary,source_branch,Git/API source fork,False,,,1,
+link,0|Early manual,28|Late manual,2026-06-03,2026-08-26,Early manual,Late manual,Early manual,Late manual,primary,source_branch,Git/API source fork,False,,,7,
+link,0|Early manual,29|Late manual,2026-06-03,2026-08-29,Early manual,Late manual,Early manual,Late manual,primary,source_branch,Git/API source fork,False,,,2,
+link,0|Early manual,2|Early manual,2026-06-03,2026-06-09,Early manual,Early manual,Early manual,Early manual,primary,source_branch,Git/API source fork,False,,,11,
+link,0|Early manual,30|Automated search,2026-06-03,2026-09-01,Early manual,Automated search,Early manual,Cycle 8,primary,source_branch,Git/API source fork,False,,,1,
+link,0|Early manual,3|Early manual,2026-06-03,2026-06-12,Early manual,Early manual,Early manual,Early manual,primary,source_branch,Git/API source fork,False,,,162,
+link,0|Early manual,3|Numbered search,2026-06-03,2026-06-12,Early manual,Numbered search,Early manual,Numbered search,primary,source_branch,Git/API source fork,False,,,50,
+link,0|Early manual,4|Early manual,2026-06-03,2026-06-15,Early manual,Early manual,Early manual,Early manual,primary,source_branch,Git/API source fork,False,,,20,
+link,0|Early manual,5|Automated search,2026-06-03,2026-06-18,Early manual,Automated search,Early manual,Cycle 1,primary,source_branch,Git/API source fork,False,,,19,
+link,0|Early manual,5|Pre-cycle search,2026-06-03,2026-06-18,Early manual,Pre-cycle search,Early manual,Pre-cycle search,primary,source_branch,Git/API source fork,False,,,9,
+link,0|Early manual,6|Automated search,2026-06-03,2026-06-21,Early manual,Automated search,Early manual,Cycle 1; Cycle 3,primary,source_branch,Git/API source fork,False,,,20,
+link,0|Early manual,6|Other manual,2026-06-03,2026-06-21,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,59,
+link,0|Early manual,7|Numbered search,2026-06-03,2026-06-24,Early manual,Numbered search,Early manual,Numbered search,primary,source_branch,Git/API source fork,False,,,2,
+link,0|Early manual,7|Other manual,2026-06-03,2026-06-24,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,46,
+link,0|Early manual,8|Automated search,2026-06-03,2026-06-27,Early manual,Automated search,Early manual,Cycle 5,primary,source_branch,Git/API source fork,False,,,8,
+link,0|Early manual,8|Other manual,2026-06-03,2026-06-27,Early manual,Other manual,Early manual,Other manual,primary,source_branch,Git/API source fork,False,,,7,
+link,0|Early manual,9|Automated search,2026-06-03,2026-06-30,Early manual,Automated search,Early manual,Cycle 5; Cycle 6,primary,source_branch,Git/API source fork,False,,,18,
+link,13|Automated search,14|Automated search,2026-07-12,2026-07-15,Automated search,Automated search,Cycle 7,Cycle 6; Cycle 7,primary,named_base,Named base,False,,,155,
+link,13|Automated search,15|Automated search,2026-07-12,2026-07-18,Automated search,Automated search,Cycle 7,Cycle 7,primary,named_base,Named base,False,,,8,
+link,13|Automated search,16|Automated search,2026-07-12,2026-07-21,Automated search,Automated search,Cycle 7,Cycle 8,primary,campaign_baseline,Campaign anchor,False,,,35,
+link,13|Automated search,16|Automated search,2026-07-12,2026-07-21,Automated search,Automated search,Cycle 7,Cycle 8,primary,named_base,Named base,False,,,105,
+link,13|Automated search,17|Automated search,2026-07-12,2026-07-24,Automated search,Automated search,Cycle 7,Cycle 8,primary,named_base,Named base,False,,,34,
+link,13|Automated search,18|Automated search,2026-07-12,2026-07-27,Automated search,Automated search,Cycle 7,Cycle 8,primary,named_base,Named base,False,,,16,
+link,13|Automated search,22|Automated search,2026-07-12,2026-08-08,Automated search,Automated search,Cycle 7,Cycle 10; Cycle 6; Cycle 8; Cycle 9,primary,campaign_baseline,Campaign anchor,False,,,4,
+link,14|Automated search,14|Automated search,2026-07-15,2026-07-15,Automated search,Automated search,Cycle 6; Cycle 7,Cycle 6; Cycle 7,secondary,cited_influence,Cited ingredient,True,,,1,
+link,15|Other manual,16|Other manual,2026-07-18,2026-07-21,Other manual,Other manual,Other manual,Other manual,primary,explicit_run_id,Named relation,False,,,1,
+link,1|Early manual,2|Early manual,2026-06-06,2026-06-09,Early manual,Early manual,Early manual,Early manual,primary,explicit_run_id,Named relation,False,,,1,
+link,22|Automated search,16|Automated search,2026-08-08,2026-07-21,Automated search,Automated search,Cycle 10; Cycle 6; Cycle 8; Cycle 9,Cycle 8,primary,campaign_baseline,Campaign anchor,False,,,83,
+link,22|Automated search,22|Automated search,2026-08-08,2026-08-08,Automated search,Automated search,Cycle 10; Cycle 6; Cycle 8; Cycle 9,Cycle 10; Cycle 6; Cycle 8; Cycle 9,primary,campaign_baseline,Campaign anchor,True,,,42,
+link,22|Automated search,23|Automated search,2026-08-08,2026-08-11,Automated search,Automated search,Cycle 10; Cycle 6; Cycle 8; Cycle 9,Cycle 1; Cycle 10; Cycle 11; Cycle 2; Cycle 3; Cycle 4; Cycle 5; Cycle 6; Cycle 8,primary,campaign_baseline,Campaign anchor,False,,,19,
+link,22|Automated search,23|Automated search,2026-08-08,2026-08-11,Automated search,Automated search,Cycle 10; Cycle 6; Cycle 8; Cycle 9,Cycle 1; Cycle 10; Cycle 11; Cycle 2; Cycle 3; Cycle 4; Cycle 5; Cycle 6; Cycle 8,primary,named_base,Named base,False,,,1,
+link,22|Automated search,23|Automated search,2026-08-08,2026-08-11,Automated search,Automated search,Cycle 10; Cycle 6; Cycle 8; Cycle 9,Cycle 1; Cycle 10; Cycle 11; Cycle 2; Cycle 3; Cycle 4; Cycle 5; Cycle 6; Cycle 8,secondary,cited_influence,Cited ingredient,False,,,3,
+link,23|Automated search,16|Automated search,2026-08-11,2026-07-21,Automated search,Automated search,Cycle 1; Cycle 10; Cycle 11; Cycle 2; Cycle 3; Cycle 4; Cycle 5; Cycle 6; Cycle 8,Cycle 8,primary,campaign_baseline,Campaign anchor,False,,,7,
+link,23|Automated search,23|Automated search,2026-08-11,2026-08-11,Automated search,Automated search,Cycle 1; Cycle 10; Cycle 11; Cycle 2; Cycle 3; Cycle 4; Cycle 5; Cycle 6; Cycle 8,Cycle 1; Cycle 10; Cycle 11; Cycle 2; Cycle 3; Cycle 4; Cycle 5; Cycle 6; Cycle 8,primary,campaign_baseline,Campaign anchor,True,,,50,
+link,25|Late manual,25|Late manual,2026-08-17,2026-08-17,Late manual,Late manual,Late manual,Late manual,primary,explicit_run_id,Named relation,True,,,2,
+link,25|Late manual,26|Late manual,2026-08-17,2026-08-20,Late manual,Late manual,Late manual,Late manual,primary,explicit_run_id,Named relation,False,,,1,
+link,26|Late manual,26|Late manual,2026-08-20,2026-08-20,Late manual,Late manual,Late manual,Late manual,secondary,cited_influence,Cited ingredient,True,,,1,
+link,3|Early manual,3|Early manual,2026-06-12,2026-06-12,Early manual,Early manual,Early manual,Early manual,primary,explicit_run_id,Named relation,True,,,1,
+link,3|Early manual,4|Early manual,2026-06-12,2026-06-15,Early manual,Early manual,Early manual,Early manual,primary,explicit_run_id,Named relation,False,,,1,
+link,3|Early manual,4|Early manual,2026-06-12,2026-06-15,Early manual,Early manual,Early manual,Early manual,secondary,cited_influence,Cited ingredient,False,,,1,
+link,3|Numbered search,3|Early manual,2026-06-12,2026-06-12,Numbered search,Early manual,Numbered search,Early manual,primary,named_relation,Named relation,False,,,43,
+link,3|Numbered search,3|Early manual,2026-06-12,2026-06-12,Numbered search,Early manual,Numbered search,Early manual,secondary,cited_influence,Cited ingredient,False,,,9,
+link,3|Numbered search,3|Numbered search,2026-06-12,2026-06-12,Numbered search,Numbered search,Numbered search,Numbered search,primary,named_relation,Named relation,True,,,20,
+link,3|Numbered search,3|Numbered search,2026-06-12,2026-06-12,Numbered search,Numbered search,Numbered search,Numbered search,secondary,cited_influence,Cited ingredient,True,,,8,
+link,3|Numbered search,4|Early manual,2026-06-12,2026-06-15,Numbered search,Early manual,Numbered search,Early manual,primary,named_relation,Named relation,False,,,16,
+link,3|Numbered search,4|Early manual,2026-06-12,2026-06-15,Numbered search,Early manual,Numbered search,Early manual,secondary,cited_influence,Cited ingredient,False,,,3,
+link,4|Early manual,15|Other manual,2026-06-15,2026-07-18,Early manual,Other manual,Early manual,Other manual,primary,explicit_run_id,Named relation,False,,,1,
+link,4|Early manual,20|Other manual,2026-06-15,2026-08-02,Early manual,Other manual,Early manual,Other manual,primary,explicit_run_id,Named relation,False,,,1,
+link,4|Early manual,25|Late manual,2026-06-15,2026-08-17,Early manual,Late manual,Early manual,Late manual,primary,named_relation,Named relation,False,,,1,
+link,5|Automated search,23|Automated search,2026-06-18,2026-08-11,Automated search,Automated search,Cycle 1,Cycle 1; Cycle 10; Cycle 11; Cycle 2; Cycle 3; Cycle 4; Cycle 5; Cycle 6; Cycle 8,primary,campaign_baseline,Campaign anchor,False,,,1,
+link,5|Automated search,6|Other manual,2026-06-18,2026-06-21,Automated search,Other manual,Cycle 1,Other manual,primary,campaign_baseline,Campaign anchor,False,,,1,
+link,5|Pre-cycle search,6|Other manual,2026-06-18,2026-06-21,Pre-cycle search,Other manual,Pre-cycle search,Other manual,primary,explicit_run_id,Named relation,False,,,1,
+link,6|Other manual,7|Automated search,2026-06-21,2026-06-24,Other manual,Automated search,Other manual,Cycle 5,primary,campaign_baseline,Campaign anchor,False,,,1,
+link,7|Automated search,23|Automated search,2026-06-24,2026-08-11,Automated search,Automated search,Cycle 5,Cycle 1; Cycle 10; Cycle 11; Cycle 2; Cycle 3; Cycle 4; Cycle 5; Cycle 6; Cycle 8,primary,named_base,Named base,False,,,2,
+link,7|Automated search,8|Automated search,2026-06-24,2026-06-27,Automated search,Automated search,Cycle 5,Cycle 5,primary,named_base,Named base,False,,,5,
+link,7|Automated search,9|Automated search,2026-06-24,2026-06-30,Automated search,Automated search,Cycle 5,Cycle 5; Cycle 6,primary,campaign_baseline,Campaign anchor,False,,,1,
+link,9|Automated search,13|Automated search,2026-06-30,2026-07-12,Automated search,Automated search,Cycle 5; Cycle 6,Cycle 7,primary,campaign_baseline,Campaign anchor,False,,,1,
+link,9|Automated search,22|Automated search,2026-06-30,2026-08-08,Automated search,Automated search,Cycle 5; Cycle 6,Cycle 10; Cycle 6; Cycle 8; Cycle 9,primary,named_base,Named base,False,,,3,
+link,9|Automated search,23|Automated search,2026-06-30,2026-08-11,Automated search,Automated search,Cycle 5; Cycle 6,Cycle 1; Cycle 10; Cycle 11; Cycle 2; Cycle 3; Cycle 4; Cycle 5; Cycle 6; Cycle 8,primary,named_base,Named base,False,,,8,
