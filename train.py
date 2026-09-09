@@ -9,6 +9,7 @@
 import atexit
 import contextlib
 import fnmatch
+import hashlib
 import io
 import json
 import math
@@ -49,7 +50,7 @@ from probe import (
 def console_prefix(): return f"{time.strftime('%H:%M:%S')} {os.environ.get('SLURM_JOB_ID', str(os.getpid()))}"
 
 
-# Read the YAML recipe and fail before any GPU work if the parquet tile dataset is absent.
+# Read the YAML recipe and fail before training if the parquet tile dataset is absent.
 # expandvars is necessary to resolve `$USER` for checked-in configs.
 def load_config():
     if len(sys.argv) < 2:
@@ -66,7 +67,7 @@ def load_config():
         else:
             raise ValueError(f"unsupported override {arg!r}; use output_dir=<path> or seed=<int>")
     dataset_dir = Path(cfg["data"]["dataset_dir"])
-    if not any(dataset_dir.glob("shard-*.parquet")):
+    if "evaluation" not in cfg and not any(dataset_dir.glob("shard-*.parquet")):
         raise FileNotFoundError(
             f"No parquet shards (shard-*.parquet) under {dataset_dir}. Pull the 4M-tile "
             f"parquet dataset from medarc/nanopath on HF by running "
@@ -222,11 +223,70 @@ def update_ema(student_module, teacher_module, momentum):
         bt.copy_(bs)
 
 
-# Orchestrates one pretraining run: setup, train+probe loop, checkpoint, summary.
+# Replay a frozen checkpoint through the fixed probes; keep inherited training costs and source provenance.
+def evaluate_frozen(cfg, repo_dir, labless_autosubmit_file):
+    checkpoint_path = Path(cfg["evaluation"]["checkpoint_path"]).expanduser().resolve()
+    output_dir = Path(cfg["project"]["output_dir"]).expanduser().resolve()
+    parent_summary = json.loads((checkpoint_path.parent / "summary.json").read_text())
+    with checkpoint_path.open("rb") as handle:
+        cfg["evaluation"]["checkpoint_sha256"] = hashlib.file_digest(handle, "sha256").hexdigest()
+    checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+    checkpoint = {key: checkpoint[key] for key in ("model", "model_ema", "step", "config")}
+    checkpoint["config"] = cfg
+    # A unit floor makes every typicality weight one; learned tensors and other readouts stay fixed.
+    for key in ("model", "model_ema"):
+        checkpoint[key]["ct_lo"].fill_(cfg["evaluation"]["gate_floor"])
+    if output_dir.exists():
+        shutil.rmtree(output_dir)
+    source_dir = output_dir / "labless_source"
+    shutil.copytree(checkpoint_path.parent / "labless_source", source_dir)
+    # Preserve the parent recipe while capturing the actual evaluator and selected runtime config.
+    for name in ("train.py", "README.md"):
+        shutil.copy2(repo_dir / name, source_dir / name)
+    cfg["config_path"] = str(source_dir / "configs" / Path(cfg["config_path"]).name)
+    Path(cfg["config_path"]).write_text(yaml.safe_dump(cfg, sort_keys=False))
+    git_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_dir, text=True).strip()
+    git_remote = subprocess.check_output(["git", "config", "--get", "remote.origin.url"], cwd=repo_dir, text=True).strip()
+    wandb_run = wandb.init(project="nanopath", name=cfg["project"]["name"], dir=cfg["project"]["wandb_dir"], config=cfg)
+    started = time.monotonic()
+    state = prepare_probe_state(cfg, output_dir)
+    step = checkpoint["step"]
+    queue_probe_job(state, checkpoint, step, parent_summary["train_flops"], parent_summary["sample_fraction"])
+    metrics_path = output_dir / "metrics.jsonl"
+    collect_probe_results(state, wandb_run, metrics_path)
+    # No further fitting: the new score includes all of the parent's optimization and calibration costs.
+    summary = {**parent_summary, **completed_probe_summary(output_dir), "project": cfg["project"]["name"],
+               "recipe_id": cfg["project"]["recipe_id"], "config_path": cfg["config_path"],
+               "evaluation_only": True, "evaluation": cfg["evaluation"], "parent_run_dir": str(checkpoint_path.parent),
+               "parent_wandb": parent_summary["wandb"], "parent_slurm_job_id": parent_summary["slurm_job_id"],
+               "slurm_job_id": os.environ.get("SLURM_JOB_ID"), "additional_train_flops": 0, "additional_tile_presentations": 0,
+               "evaluation_wall_seconds": time.monotonic() - started,
+               "wandb": {"entity": wandb_run.entity, "project": "nanopath", "id": wandb_run.id,
+                         "name": cfg["project"]["name"], "url": wandb_run.url, "source_dir": str(source_dir),
+                         "git": {"commit": git_commit, "remote": git_remote}}}
+    summary["mean_probe_score"] = sum(summary["final_probe_" + key] for key in (
+        "linear_mean_f1", "knn_mean_f1", "fewshot_mean_f1", "seg_mean_f1", "slide_mean_auc",
+        "auc_mean", "survival_mean_cindex", "robustness_mean")) / 8
+    comparison = {key: summary[key] for key in ("final_score", "mean_probe_score")}
+    comparison.update({"delta_" + key: summary[key] - parent_summary[key] for key in comparison.copy()})
+    summary.update(comparison)
+    (output_dir / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    with metrics_path.open("a") as handle:
+        handle.write(json.dumps({"event": "frozen_eval", "final": True, "step": step, **comparison}) + "\n")
+    wandb_run.summary.update(comparison)
+    wandb_run.log(comparison, step=step + 1)
+    wandb_run.finish()
+    print(json.dumps(comparison, indent=2), flush=True)
+    finish_labless_autosubmit(labless_autosubmit_file, output_dir, repo_dir)
+
+
+# Orchestrates one pretraining or frozen-evaluation run.
 def main():
     cfg = load_config()
     repo_dir = Path(__file__).resolve().parent
     labless_autosubmit_file = maybe_arm_labless_autosubmit(cfg, repo_dir)
+    if "evaluation" in cfg:
+        return evaluate_frozen(cfg, repo_dir, labless_autosubmit_file)
     train_cfg = cfg["train"]
     dino_cfg = cfg["dino"]
     fino_cfg = cfg["fino"] if (cfg.get("fino") or {}).get("enabled") else None
@@ -354,7 +414,7 @@ def main():
     artifact_ignore = [
         line.strip() for line in (repo_dir / ".gitignore").read_text().splitlines()
         if line.strip() and not line.startswith("#")
-    ] + [".git/", "baselines/", "slurm/", "evaluate.py", "AGENTS.md", "CLAUDE.md"]
+    ] + [".git/", "baselines/", "slurm/", "AGENTS.md", "CLAUDE.md"]
     ignored_roots = [output_dir.resolve(), wandb_dir.resolve()]
 
     def artifact_ignored(path):
