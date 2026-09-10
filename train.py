@@ -480,6 +480,11 @@ def main():
     global_grid = train_cfg["global_size"] // student_backbone.patch_size
     global_patches = global_grid ** 2
     local_patches = (train_cfg["local_size"] // student_backbone.patch_size) ** 2
+    if dino_cfg["jepa_relation_weight"]:
+        # Sparse horizontal/vertical edges never cross image or row boundaries.
+        grid = torch.arange(global_patches, device=device).view(global_grid, global_grid)
+        relation_i, relation_j = torch.cat([torch.stack([g[:, :-d].flatten(), g[:, d:].flatten()])
+                                          for g in (grid, grid.T) for d in (1, 2, 4)], dim=1)
     last_time = time.time()
     last_examples = examples_seen
     last_visible_patch_presentations = visible_patch_presentations
@@ -538,12 +543,39 @@ def main():
         L = train_cfg["local_views"]
         local_loss = sum(dino_ce(x, y) for x in sl_cls.chunk(L) for y in t_prob) / (2 * L + 2)
         global_loss = dino_ce(sg_cls, t_prob.flatten(0, 1)) * 2 / (2 * L + 2)
-        patch_target = F.layer_norm(t["patches"].flatten(0, 1), (student_backbone.embed_dim,))[mask_idx]
+        patch_targets = F.layer_norm(t["patches"].flatten(0, 1), (student_backbone.embed_dim,)).view_as(t["patches"])
+        patch_target = patch_targets.flatten(0, 1)[mask_idx]
         # The masked student's CLS can exchange global context with patches inside the predictor.
         context = int(dino_cfg["jepa_cls_context"])
         patch_input = torch.cat([sg["cls"][:, None], sg["patches"]], 1) if context else sg["patches"]
-        patch_prediction = student_predictor(patch_input)[:, context:].flatten(0, 1)[mask_idx]
+        patch_predictions = student_predictor(patch_input)[:, context:]
+        patch_prediction = patch_predictions.flatten(0, 1)[mask_idx]
         jepa_loss = F.smooth_l1_loss(patch_prediction, patch_target, reduction="none").mean(-1).mul(mask_w).sum() / max(1, b * 2)
+        if dino_cfg["jepa_relation_weight"]:
+            keep = masks[:, relation_i] & masks[:, relation_j]
+            left, right = relation_i.expand(len(masks), -1), relation_j.expand(len(masks), -1)
+            if dino_cfg["jepa_relation_pairs"] == "random":
+                # A fresh private stream makes pairing reproducible without perturbing training/validation RNG.
+                generator = torch.Generator(device=device).manual_seed(train_cfg["seed"] + step)
+                perm = torch.rand(masks.shape, device=device, generator=generator).masked_fill(~masks, 2).argsort(1)
+                perm = perm.gather(1, (masks.cumsum(1) - 1).clamp_min(0))
+                left, right = perm[:, relation_i], perm[:, relation_j]
+            with torch.autocast(device_type="cuda", enabled=False):
+                rp, rt = F.normalize(patch_predictions.float(), dim=-1), F.normalize(patch_targets.float(), dim=-1)
+                views = torch.arange(len(masks), device=device)[:, None]
+                # Fixed-size einsums count every pair's FLOPs; validity weighting follows the dot products.
+                pred_sim = torch.einsum("bed,bed->be", rp[views, left], rp[views, right])
+                target_sim = torch.einsum("bed,bed->be", rt[views, left], rt[views, right])
+                counts = keep.sum(1).clamp_min(1)
+                relation_loss = ((pred_sim - target_sim).square().mul(keep).sum(1) / counts).mean()
+                if diagnostics is not None:
+                    target_mean = target_sim.mul(keep).sum(1) / counts
+                    target_std = (target_sim.square().mul(keep).sum(1) / counts - target_mean.square()).clamp_min(0).sqrt()
+                    diagnostics.update(jepa_absolute=jepa_loss.detach(), relation_loss=relation_loss.detach(),
+                                       relation_weighted_loss=dino_cfg["jepa_relation_weight"] * relation_loss.detach(),
+                                       relation_pairs_per_view=keep.sum(1).float().mean(), relation_target_mean=target_mean.mean(), relation_target_std=target_std.mean())
+                    rp.register_hook(lambda grad: diagnostics.update(relation_feature_grad_norm=grad.detach().norm()))
+                jepa_loss = jepa_loss + dino_cfg["jepa_relation_weight"] * relation_loss
         kde = dino_cfg["kde_loss_weight"] * k_scale * sum(kde_loss(x, dino_cfg["kde_concentration"]) for x in sg["cls"].chunk(train_cfg["global_views"]))
         meta_loss = sg["cls"].new_zeros(())
         if meta is not None:
@@ -720,10 +752,10 @@ def main():
                     gamma = fino_cfg["gamma_max"] * (2 / (1 + math.exp(-10 * sample_fraction)) - 1) if fino_cfg else 0.0
                     meta = ((gamma, batch["meta_disc"].to(device, non_blocking=True),
                              {factor: batch[f"mc_{factor}"].to(device, non_blocking=True) for factor, _ in fino_cont}) if fino_cfg else None)
-                    expression_metrics = {}
+                    loss_diagnostics = {}
                     dino_loss_value, jepa_loss, kde, meta_loss = compute_losses(
                         gf, lf, batch_size, masks, mask_idx, mask_w, teacher_temp, kde_scale,
-                        ckpt=activation_checkpointing, meta=meta, diagnostics=expression_metrics if should_log else None,
+                        ckpt=activation_checkpointing, meta=meta, diagnostics=loss_diagnostics if should_log else None,
                     )
                     total_loss = dino_loss_value + jepa_loss + kde + meta_loss
                 opt.zero_grad(set_to_none=True)
@@ -802,7 +834,7 @@ def main():
                     "gpu_peak_mem_gb": gpu_peak_mem_gb,
                     "grad_norm": float(grad_norm.detach()),
                 }
-                train_log.update({key: float(value) for key, value in expression_metrics.items()})
+                train_log.update({key: float(value) for key, value in loss_diagnostics.items()})
                 train_log.update(unique_counts)
                 print(
                     f"{console_prefix()} Training  "

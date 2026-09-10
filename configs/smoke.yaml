@@ -70,6 +70,8 @@ dino:
   kde_loss_weight: 0.1
   kde_concentration: 10.0
   # Contiguous block masking and the predictor for I-JEPA patch regression.
+  jepa_relation_weight: 0.0 # auxiliary cosine-relation MSE; zero preserves ordinary JEPA
+  jepa_relation_pairs: spatial # spatial or random masked-patch pairs
   jepa_cls_context: true
   jepa_pred_depth: 4
   jepa_pred_width: 0
