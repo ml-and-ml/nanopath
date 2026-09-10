@@ -5,7 +5,7 @@ project:
   name: spatial-rel-fast
   family: nanopath
   recipe_id: dinov2-vits14-reg-robust-norm-spatial-rel-jepa
-  output_dir: /data/$USER/nanopath/spatial-rel-fast-20260910/full
+  output_dir: /data/$USER/nanopath/spatial-rel-fast-20260910/full-layout
   wandb_dir: /data/$USER/nanopath/wandb
 
 data:

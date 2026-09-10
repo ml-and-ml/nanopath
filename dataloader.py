@@ -80,7 +80,7 @@ class HEDJitter(nn.Module):
         self.register_buffer("hed_from_rgb", HED_FROM_RGB)
         self.register_buffer("rgb_from_hed", RGB_FROM_HED)
 
-    # NumPy keeps CPU stain math compact; Torch still draws independent per-view shifts/scales.
+    # NumPy stain math keeps Torch's RNG draws; contiguous output speeds the following CHW transforms.
     def forward(self, x):
         rgb = np.maximum(x.permute(1, 2, 0).numpy(), 1e-6)
         hed = np.maximum((np.log(rgb) / LOG_1E6) @ self.hed_from_rgb.numpy(), 0.0)
@@ -88,7 +88,7 @@ class HEDJitter(nn.Module):
         scale = 1.0 + torch.randn((1, 1, 3), dtype=x.dtype).numpy() * self.sigma
         hed = hed * scale + shift
         log_rgb = -(hed * (-LOG_1E6)) @ self.rgb_from_hed.numpy()
-        return torch.from_numpy(np.clip(np.exp(log_rgb), 0.0, 1.0)).permute(2, 0, 1)
+        return torch.from_numpy(np.clip(np.exp(log_rgb), 0.0, 1.0)).permute(2, 0, 1).contiguous()
 
 
 # Separable nine-tap CPU blur retains torchvision's sigma draw and reflected boundaries.
