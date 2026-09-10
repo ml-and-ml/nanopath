@@ -57,6 +57,8 @@ def load_config():
         raise ValueError("usage: python train.py <config.yaml> [output_dir=<path>] [seed=<int>]")
     cfg = yaml.safe_load(os.path.expandvars(Path(sys.argv[1]).read_text()))
     cfg["config_path"] = str(Path(sys.argv[1]).resolve())
+    if cfg["data"]["spatial_dir"]:
+        cfg["data"]["spatial_manifest_sha256"] = hashlib.sha256((Path(cfg["data"]["spatial_dir"]) / "manifest.json").read_bytes()).hexdigest()
     # Run identity and confirmation seed are the only CLI overrides; recipes stay in YAML.
     for arg in sys.argv[2:]:
         key, _, value = arg.partition("=")
@@ -174,16 +176,18 @@ def kde_loss(x, concentration):
 
 # I-JEPA masks contiguous square blocks to infer missing tissue context.
 def make_block_mask(batch, grid, device, n_blocks, block_scale):
-    masks = torch.zeros(batch, grid, grid, dtype=torch.bool, device=device)
+    # Keep the random rectangles without CUDA slice launches or CPU thread-pool contention.
+    masks = np.zeros((batch, grid, grid), dtype=bool)
     side = max(1, round(grid * block_scale ** 0.5))
     for i in range(batch):
         for _ in range(n_blocks):
             top, left = random.randint(0, grid - side), random.randint(0, grid - side)
             masks[i, top : top + side, left : left + side] = True
-    masks = masks.flatten(1)
-    idx = masks.flatten().nonzero().flatten()
-    weights = (1 / masks.sum(-1).clamp(min=1)).unsqueeze(-1).expand_as(masks)[masks]
-    return masks, idx, weights
+    masks = masks.reshape(batch, -1)
+    idx = np.flatnonzero(masks)
+    counts = masks.sum(-1)
+    weights = np.repeat(1 / counts.clip(min=1).astype(np.float32), counts)
+    return tuple(torch.from_numpy(x).to(device) for x in (masks, idx, weights))
 
 
 # AdamW parameter groups with layer-wise LR decay on the backbone:
@@ -480,6 +484,11 @@ def main():
     global_grid = train_cfg["global_size"] // student_backbone.patch_size
     global_patches = global_grid ** 2
     local_patches = (train_cfg["local_size"] // student_backbone.patch_size) ** 2
+    if dino_cfg["jepa_neighbor_context"]:
+        # Gather other tiles in each contiguous group, preserving view and neighbor order.
+        n = cfg["data"]["connected_tiles"]
+        neighbor_index = torch.arange(n, device=device).expand(n, -1)[~torch.eye(n, dtype=torch.bool, device=device)].view(n, n - 1)
+        spatial_frequency = 10000 ** (-torch.arange(student_backbone.embed_dim // 4, device=device) / (student_backbone.embed_dim // 4))
     if dino_cfg["jepa_relation_weight"]:
         # Sparse horizontal/vertical edges never cross image or row boundaries.
         grid = torch.arange(global_patches, device=device).view(global_grid, global_grid)
@@ -532,22 +541,39 @@ def main():
         }
 
     # Compute DINO, JEPA, KDE, and optional FINO; validation omits FINO.
-    def compute_losses(gf, lf, b, masks, mask_idx, mask_w, t_temp, k_scale, ckpt=False, meta=None, diagnostics=None):
+    def compute_losses(gf, lf, b, masks, mask_idx, mask_w, t_temp, k_scale, ckpt=False, meta=None, diagnostics=None, neighbor_offsets=None):
         with torch.no_grad():
-            t = teacher_backbone(gf)
+            t = teacher_backbone(gf, pretrain=True)
             t_cls = teacher_dino_head(t["cls"]).chunk(train_cfg["global_views"])
             t_prob = sinkhorn(torch.cat((t_cls[1], t_cls[0])), t_temp).view(2, b, -1)
-        sg = student_backbone(gf, masks=masks, checkpoint=ckpt)
-        sl = student_backbone(lf, checkpoint=ckpt)
+        sg = student_backbone(gf, masks=masks, checkpoint=ckpt, pretrain=True)
+        sl = student_backbone(lf, checkpoint=ckpt, pretrain=True)
         sg_cls, sl_cls = student_dino_head(sg["cls"]), student_dino_head(sl["cls"])
         L = train_cfg["local_views"]
-        local_loss = sum(dino_ce(x, y) for x in sl_cls.chunk(L) for y in t_prob) / (2 * L + 2)
+        # Both teacher views supervise the same local logits; normalize them once.
+        local_loss = 0
+        for x in sl_cls.chunk(L):
+            log_prob = F.log_softmax(x / 0.1, dim=-1)
+            for y in t_prob:
+                local_loss += -(y * log_prob).sum(-1).mean()
+        local_loss /= 2 * L + 2
         global_loss = dino_ce(sg_cls, t_prob.flatten(0, 1)) * 2 / (2 * L + 2)
         patch_targets = F.layer_norm(t["patches"].flatten(0, 1), (student_backbone.embed_dim,)).view_as(t["patches"])
         patch_target = patch_targets.flatten(0, 1)[mask_idx]
         # The masked student's CLS can exchange global context with patches inside the predictor.
         context = int(dino_cfg["jepa_cls_context"])
         patch_input = torch.cat([sg["cls"][:, None], sg["patches"]], 1) if context else sg["patches"]
+        if dino_cfg["jepa_neighbor_context"]:
+            # Predict this tile's missing patches using its neighbors' masked-student CLS tokens.
+            neighbors = sg["cls"].view(train_cfg["global_views"], b // n, n, -1)[:, :, neighbor_index].flatten(0, 2)
+            offsets = neighbor_offsets.transpose(0, 1).flatten(0, 1)
+            angles = (offsets[..., None] * spatial_frequency).flatten(-2)
+            position = torch.cat([angles.sin(), angles.cos()], -1).to(neighbors.dtype)
+            patch_input = torch.cat([neighbors + position, patch_input], 1)
+            context += n - 1
+            if diagnostics is not None:
+                diagnostics.update(neighbor_distance=offsets.norm(dim=-1).mean())
+                neighbors.register_hook(lambda grad: diagnostics.update(neighbor_feature_grad_norm=grad.detach().norm()))
         patch_predictions = student_predictor(patch_input)[:, context:]
         patch_prediction = patch_predictions.flatten(0, 1)[mask_idx]
         jepa_loss = F.smooth_l1_loss(patch_prediction, patch_target, reduction="none").mean(-1).mul(mask_w).sum() / max(1, b * 2)
@@ -648,8 +674,9 @@ def main():
             with torch.no_grad(), autocast:
                 gf, lf = vg.transpose(0, 1).flatten(0, 1), vl.transpose(0, 1).flatten(0, 1)
                 masks, mask_idx, mask_w = make_block_mask(b * train_cfg["global_views"], global_grid, device, int(dino_cfg["jepa_blocks"]), float(dino_cfg["jepa_block_scale"]))
-                dino_l, jepa_l, kde_v, _ = compute_losses(gf, lf, b, masks, mask_idx, mask_w, eval_teacher_temp, eval_kde_scale)
-            sums += torch.tensor([float(dino_l), float(jepa_l), float(kde_v), float(dino_l + jepa_l + kde_v)], device=device)
+                offsets = vbatch["neighbor_offsets"].to(device, non_blocking=True) if dino_cfg["jepa_neighbor_context"] else None
+                dino_l, jepa_l, kde_v, _ = compute_losses(gf, lf, b, masks, mask_idx, mask_w, eval_teacher_temp, eval_kde_scale, neighbor_offsets=offsets)
+            sums += torch.stack([dino_l, jepa_l, kde_v, dino_l + jepa_l + kde_v])
             n_batches += 1
         random.setstate(py_rng)
         torch.random.set_rng_state(cpu_rng)
@@ -756,6 +783,7 @@ def main():
                     dino_loss_value, jepa_loss, kde, meta_loss = compute_losses(
                         gf, lf, batch_size, masks, mask_idx, mask_w, teacher_temp, kde_scale,
                         ckpt=activation_checkpointing, meta=meta, diagnostics=loss_diagnostics if should_log else None,
+                        neighbor_offsets=batch["neighbor_offsets"].to(device, non_blocking=True) if dino_cfg["jepa_neighbor_context"] else None,
                     )
                     total_loss = dino_loss_value + jepa_loss + kde + meta_loss
                 opt.zero_grad(set_to_none=True)
@@ -1008,6 +1036,7 @@ def main():
         "config_path": cfg["config_path"],
         "train_seed": int(train_cfg["seed"]),
         "data_split_seed": int(cfg["data"]["split_seed"]),
+        **({"spatial_manifest_sha256": cfg["data"]["spatial_manifest_sha256"], "connected_tiles": cfg["data"]["connected_tiles"]} if cfg["data"]["spatial_dir"] else {}),
         "wandb": wandb_meta,
         "slurm_job_id": slurm_job_id,
         "backbone_activated_params": backbone_activated_params,

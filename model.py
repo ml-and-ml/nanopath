@@ -194,8 +194,9 @@ class ViT(nn.Module):
     # Return semantic token groups used by train.py and probe.py.
     # `checkpoint=True` re-runs each block under torch.utils.checkpoint to trade compute for memory;
     # useful when a configured 1-GPU batch does not fit in 80 GB.
-    def forward(self, x, masks=None, checkpoint=False):
-        if not self.training and self.rn_fitted and masks is None:
+    def forward(self, x, masks=None, checkpoint=False, pretrain=False):
+        # Pretraining precedes calibration; skip its CUDA-to-Python flag checks.
+        if not pretrain and not self.training and self.rn_fitted and masks is None:
             # Post-training embedding: average the model over the tile's symmetry group. Each view's
             # patch grid is mapped back to the canonical orientation before averaging token-wise.
             side = x.shape[-1] // self.patch_size
@@ -211,9 +212,9 @@ class ViT(nn.Module):
                 "registers": outs[0]["registers"],
                 "patches": torch.stack(patch_maps).mean(0).flatten(1, 2),
             }
-        return self._forward_tokens(x, masks, checkpoint)
+        return self._forward_tokens(x, masks, checkpoint, pretrain)
 
-    def _forward_tokens(self, x, masks, checkpoint):
+    def _forward_tokens(self, x, masks, checkpoint, pretrain=False):
         x = self._prepare_tokens(x, masks)
         for blk in self.blocks:
             if checkpoint and self.training:
@@ -222,7 +223,7 @@ class ViT(nn.Module):
                 x = blk(x)
         x = self.norm(x)
         cls, patches = x[:, 0], x[:, 1 + self.registers :]
-        if not self.training and self.rn_fitted:
+        if not pretrain and not self.training and self.rn_fitted:
             cls = self._suppress(cls, self.rn_mu[0], self.rn_v[0])
             patch_mean = patches.mean(1)
             patch_mean = self._suppress(patch_mean, self.rn_mu[1], self.rn_v[1])

@@ -1,22 +1,24 @@
-# Shared Huelocal recipe; named experiment configs change only the declared intervention.
+# Four connected source tiles share spatial context in the JEPA predictor.
+# Starts from spatial-rel-jepa; every tile occurrence still counts toward the cap.
 # Keep the fixed v2 probe suite identical across all arms.
 project:
-  name: noble-case-control
+  name: connected-jepa4
   family: nanopath
-  recipe_id: dinov2-vits14-reg-robust-norm
-  output_dir: /data/$USER/nanopath/noble-20260909/case-control
+  recipe_id: dinov2-vits14-reg-robust-norm-connected-jepa4
+  output_dir: /data/$USER/nanopath/connected-context-20260910/connected-jepa4
   wandb_dir: /data/$USER/nanopath/wandb
 
 data:
-  # dataset_dir holds the parquet shards (shard-NNNNN.parquet) that train.py reads.
-  # `prepare.py … download=True` populates it from the medarc/nanopath training mirror.
+  # Original reference pool supplies FINO metadata and calibration images.
+  # spatial_dir supplies the connected training/validation tiles.
   dataset_dir: /data/nanopath_parquet
-  spatial_dir: null # optional coordinate-aware connected Parquet pool
-  connected_tiles: 0 # distinct adjacent tiles per group; zero uses ordinary sampling
+  spatial_dir: /data/$USER/nanopath/connected-context-20260910/spatial-parquet
+  connected_source_dir: /data/hassan/embeddings/OM-temp # reads only coords/geometry, never features
+  connected_tiles: 4 # distinct eight-connected tiles from one slide per group
   input_mode: parquet # wsi reads the preserved live-slide path instead
   wsi_dir: /block/TCGA
   target_mpp_range: [0.25, 2.0]
-  case_bag_size: 4
+  case_bag_size: 1
   case_map: /data/hassan/tcga-rnaseq/tpm/dx_slide_to_patient_target.csv
   split_seed: 7777
   val_fraction: 0.05
@@ -72,9 +74,9 @@ dino:
   kde_loss_weight: 0.1
   kde_concentration: 10.0
   # Contiguous block masking and the predictor for I-JEPA patch regression.
-  jepa_relation_weight: 0.0 # auxiliary cosine-relation MSE; zero preserves ordinary JEPA
+  jepa_relation_weight: 0.1 # auxiliary cosine-relation MSE; zero preserves ordinary JEPA
   jepa_relation_pairs: spatial # spatial or random masked-patch pairs
-  jepa_neighbor_context: false
+  jepa_neighbor_context: true
   jepa_cls_context: false
   jepa_pred_depth: 4
   jepa_pred_width: 0

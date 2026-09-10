@@ -11,6 +11,8 @@ data:
   # dataset_dir holds the parquet shards (shard-NNNNN.parquet) that train.py reads.
   # `prepare.py … download=True` populates it from the medarc/nanopath training mirror.
   dataset_dir: /data/nanopath_parquet
+  spatial_dir: null # optional coordinate-aware connected Parquet pool
+  connected_tiles: 0 # distinct adjacent tiles per group; zero uses ordinary sampling
   input_mode: parquet # wsi reads the preserved live-slide path instead
   wsi_dir: /block/TCGA
   target_mpp_range: [0.25, 2.0]
@@ -72,6 +74,7 @@ dino:
   # Contiguous block masking and the predictor for I-JEPA patch regression.
   jepa_relation_weight: 0.1 # auxiliary cosine-relation MSE; zero preserves ordinary JEPA
   jepa_relation_pairs: spatial # spatial or random masked-patch pairs
+  jepa_neighbor_context: false
   jepa_cls_context: false
   jepa_pred_depth: 4
   jepa_pred_width: 0

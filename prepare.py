@@ -18,8 +18,11 @@
 # `pack_from_jpeg_dir` are kept in this file so a contributor revising tile
 # selection can decode a fresh JPEG dataset and pack it into parquet shards
 # (see README "Regenerating the tile dataset"); main() does not call them.
+# A configured data.spatial_dir is rebuilt from H5 coordinates and raw WSIs
+# with download=True; the original dataset_dir remains FINO/calibration input.
 
 import hashlib
+import io
 import json
 import multiprocessing as mp
 import os
@@ -209,6 +212,129 @@ def pack_from_jpeg_dir(jpeg_dir, manifest_path, out_dir):
         for done, (name, n, sz) in enumerate(pool.imap_unordered(_pack_one_shard, args_list), start=1):
             elapsed = time.monotonic() - started
             print(f"[{done}/{len(args_list)}]  {name}: {n:,} rows  {sz/(1<<20):.0f} MB  ({elapsed:.0f}s)", flush=True)
+
+
+# Build one spatial shard from coordinate metadata only; pretrained embeddings never enter this path.
+def _connected_shard(args):
+    import h5py
+    shard, sources, out_dir, seed = args
+    schema = pa.schema([("path", pa.string()), ("jpeg", pa.binary()), *[(k, pa.int32()) for k in ("x", "y", "spacing")]])
+    out = Path(out_dir) / f"shard-{shard:05d}.parquet"
+    provenance, rows = [], []
+    with pq.ParquetWriter(out.with_suffix(".tmp"), schema, compression="none") as writer:
+        for source, slide_path, quota in sources:
+            with h5py.File(source, "r") as h:
+                g = h["224_0.50"]
+                coords = g["coords"][:].astype(np.int32)
+                spacing, mpp = int(g.attrs["level0_tile_size"]), float(h.attrs["mpp"])
+                assert g.attrs["coord_type"] == "center" and float(g.attrs["overlap"]) == 0
+                assert int(g.attrs["tile_size"]) == TILE_SIZE and float(g.attrs["target_mpp"]) == 0.5
+                assert spacing == round(TILE_SIZE * 0.5 / mpp)
+            # Exact integer grid neighbors preserve holes and never connect separate tissue fragments.
+            assert np.all((coords - coords[0]) % spacing == 0)
+            lookup = {tuple(p): i for i, p in enumerate(coords.tolist())}
+            assert len(lookup) == len(coords)
+            rng = np.random.default_rng(seed + int.from_bytes(hashlib.blake2b(Path(source).name.encode(), digest_size=4).digest(), "little"))
+            seen, selected, regions = set(), [], []
+            for start in rng.permutation(len(coords)):
+                if quota - len(selected) < 4:
+                    break
+                if int(start) in seen:
+                    continue
+                frontier, region = [int(start)], []
+                seen.add(int(start))
+                # Small independently seeded regions cover several neighborhoods within each slide.
+                while frontier and len(region) < min(64, quota - len(selected)):
+                    index = frontier.pop(int(rng.integers(len(frontier))))
+                    region.append(index)
+                    x, y = coords[index]
+                    for dx, dy in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
+                        neighbor = lookup.get((int(x) + dx * spacing, int(y) + dy * spacing))
+                        if neighbor is not None and neighbor not in seen:
+                            seen.add(neighbor)
+                            frontier.append(neighbor)
+                # Unused frontier tiles remain available for a later connected region.
+                seen.difference_update(frontier)
+                if len(region) >= 4:
+                    selected.extend(region)
+                    regions.append(len(region))
+            chosen = coords[selected]
+            chosen = chosen[np.lexsort((chosen[:, 0], chosen[:, 1]))]
+            slide = _get_slide(slide_path)
+            width, height = slide.dimensions
+            left = chosen.astype(np.int64) - spacing // 2
+            assert np.all(left >= 0) and np.all(left + spacing <= (width, height))
+            stem = Path(slide_path).stem
+            for (x, y), (left_x, top_y) in zip(chosen, left):
+                tile = slide.read_region((int(left_x), int(top_y)), 0, (spacing, spacing)).convert("RGB")
+                tile = tile.resize((TILE_SIZE, TILE_SIZE), Image.Resampling.BOX)
+                encoded = io.BytesIO()
+                tile.save(encoded, "JPEG", quality=JPEG_QUALITY)
+                rows.append({"path": f"{stem}/{x}_{y}_0.jpg", "jpeg": encoded.getvalue(), "x": int(x), "y": int(y), "spacing": spacing})
+            # Keep row groups full across slide boundaries so global row // 64 remains valid.
+            complete = len(rows) // PARQUET_ROW_GROUP_SIZE * PARQUET_ROW_GROUP_SIZE
+            if complete:
+                writer.write_table(pa.Table.from_pylist(rows[:complete], schema=schema), row_group_size=PARQUET_ROW_GROUP_SIZE)
+                del rows[:complete]
+            provenance.append({"slide": stem, "source": str(source), "coords_sha256": hashlib.sha256(coords.tobytes()).hexdigest(),
+                               "available": len(coords), "quota": quota, "selected": len(selected), "regions": regions,
+                               "spacing": spacing, "native_mpp": mpp, "selected_coords_sha256": hashlib.sha256(chosen.tobytes()).hexdigest()})
+        if rows:
+            writer.write_table(pa.Table.from_pylist(rows, schema=schema), row_group_size=PARQUET_ROW_GROUP_SIZE)
+    os.replace(out.with_suffix(".tmp"), out)
+    return out.name, provenance, out.stat().st_size
+
+
+# Re-extract a reproducible pool with many connected regions; original data still supplies FINO/calibration.
+def prepare_connected_pool(cfg, target_tiles=TARGET_TILE_COUNT, max_slides=None):
+    import h5py
+    data = cfg["data"]
+    reference = {p.split("/", 1)[0] for shard in sorted(Path(data["dataset_dir"]).glob("shard-*.parquet"))
+                 for p in pq.read_table(shard, columns=["path"])["path"].to_pylist()}
+    sources = [(p, Path(data["wsi_dir"]) / p.name.removesuffix(".h5"))
+               for p in sorted(Path(data["connected_source_dir"]).glob("*.svs.h5"))
+               if p.name.removesuffix(".svs.h5") in reference]
+    matched_sources = len(sources)
+    sources = [(p, slide) for p, slide in sources if slide.is_file()][:max_slides]
+    capacities = []
+    for p, _ in sources:
+        with h5py.File(p, "r") as h:
+            capacities.append(h["224_0.50/coords"].shape[0] // 4 * 4)
+    capacities = np.asarray(capacities, dtype=np.int64)
+    quotas = np.zeros_like(capacities)
+    # Equal slide quotas avoid concentrating a 4M pool in the largest tissue specimens.
+    remaining = min(int(target_tiles) // 4 * 4, int(capacities.sum()))
+    while remaining >= 4:
+        eligible = np.flatnonzero(quotas < capacities)
+        allocation = min(remaining // 4, len(eligible))
+        quotas[eligible[:allocation]] += 4
+        remaining -= allocation * 4
+    out = Path(data["spatial_dir"])
+    out.mkdir(parents=True, exist_ok=True)
+    sources = [(str(p), str(slide), int(quota)) for (p, slide), quota in zip(sources, quotas) if quota >= 4]
+    chunks = np.array_split(np.arange(len(sources)), min(NUM_SHARDS, len(sources)))
+    jobs = [(i, [sources[j] for j in chunk], str(out), int(data["split_seed"])) for i, chunk in enumerate(chunks)]
+    print(f"spatial pool: {len(sources)} allowed slides; target={sum(s[2] for s in sources):,}; workers={PREPARE_WORKERS}", flush=True)
+    started, records, byte_count = time.monotonic(), [], 0
+    with mp.Pool(PREPARE_WORKERS) as pool:
+        for name, slides, size in pool.imap_unordered(_connected_shard, jobs):
+            records.extend(slides)
+            byte_count += size
+            count = sum(s["selected"] for s in records)
+            print(f"{name}: {len(records)}/{len(sources)} slides, {count:,} tiles, {count / (time.monotonic() - started):.1f} tiles/s", flush=True)
+    records.sort(key=lambda row: row["slide"])
+    from dataloader import patient_in_val, patient_id_from_relpath
+    split = {name: [s for s in records if s["selected"] and patient_in_val(patient_id_from_relpath(s["slide"]), data["split_seed"], data["val_fraction"]) == val]
+             for name, val in (("train", False), ("val", True))}
+    manifest = {"target_tiles": int(target_tiles), "tiles": sum(s["selected"] for s in records), "bytes": byte_count,
+                "wall_seconds": time.monotonic() - started, "reference_dir": data["dataset_dir"], "coordinate_source": data["connected_source_dir"],
+                "reference_slides": len(reference), "h5_matched_slides": matched_sources, "h5_and_wsi_selected_slides": len(sources), "split_seed": data["split_seed"], "val_fraction": data["val_fraction"],
+                "geometry": "H5 level0 integer centers; top-left=center-floor(spacing/2); level0 square spacing; BOX resize224; JPEG95; target0.5MPP",
+                "selection": "equal slide quotas; random8-neighbor frontier regions up to64; discard regions below4; no replacement",
+                "split": {k: {"tiles": sum(s["selected"] for s in v), "slides": len(v), "patients": len({patient_id_from_relpath(s["slide"]) for s in v})} for k, v in split.items()},
+                "slides": records}
+    (out / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    print(json.dumps({k: v for k, v in manifest.items() if k != "slides"}, indent=2), flush=True)
 
 
 # Pull every shard-NNNNN.parquet from the medarc/nanopath HF dataset into
@@ -492,6 +618,12 @@ def main():
         dataset_dir.mkdir(parents=True, exist_ok=True)
         fetch_tiles_from_hf(dataset_dir)
         assert sum(1 for _ in dataset_dir.glob("shard-*.parquet")) == NUM_SHARDS, f"tiles still incomplete after fetch: {dataset_dir}"
+
+    # Spatial selection needs the original allowed slide set even on a fresh install.
+    if cfg["data"].get("spatial_dir") and not (Path(cfg["data"]["spatial_dir"]) / "manifest.json").exists():
+        if not download:
+            raise SystemExit(f"missing spatial pool manifest; run {prepare_cmd}")
+        prepare_connected_pool(cfg)
 
     # Stage 1b — FINO patient metadata.
     fino_path = dataset_dir / "fino_meta.json"

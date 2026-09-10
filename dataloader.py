@@ -1,6 +1,6 @@
 # TCGA input uses historical Parquet JPEGs, or reads the same coordinates from
 # live WSIs at a sampled MPP. Worker-local row-group and slide caches bound RAM;
-# four-tile patient bags use mapped DX slides and retain the historical split.
+# patient bags and connected spatial neighborhoods retain the historical split.
 #
 # Patients (not tiles) are hashed by TCGA barcode and the bottom `val_fraction`
 # of the hash space is held out from training; train.py instantiates the dataset
@@ -10,6 +10,8 @@
 #
 # Augmentation per view: RandomResizedCrop -> optional HEDJitter -> horizontal/
 # vertical flips -> ColorJitter -> occasional grayscale/blur -> Normalize.
+# Spatial globals share crop geometry and flips, with independent photometrics;
+# neighbor offsets describe source-center separations in tile-stride units.
 #
 # This file is the *pretraining* input pipeline only. The downstream probes
 # (probe.py) do not import anything from here.
@@ -28,6 +30,10 @@ import pyarrow.parquet as pq
 import torch
 import torch.nn as nn
 from PIL import Image
+from scipy.ndimage import gaussian_filter
+from scipy.sparse import csr_matrix
+from scipy.sparse.csgraph import connected_components
+from threadpoolctl import threadpool_limits
 from torch.utils.data import Dataset, get_worker_info
 from torchvision.transforms import v2
 
@@ -67,23 +73,28 @@ def patient_id_from_relpath(rel):
 
 # Lightweight stain-space jitter; this is the stain augmentation hook for pretraining tiles.
 class HEDJitter(nn.Module):
-    # Store conversion matrices as buffers so transforms move with the module dtype/device if needed.
+    # Fixed stain matrices are shared by CPU augmentation calls within each worker.
     def __init__(self, sigma):
         super().__init__()
         self.sigma = sigma
         self.register_buffer("hed_from_rgb", HED_FROM_RGB)
         self.register_buffer("rgb_from_hed", RGB_FROM_HED)
 
-    # Perturb HED channels, then convert back to RGB while the crop is still in [0, 1].
+    # NumPy keeps CPU stain math compact; Torch still draws independent per-view shifts/scales.
     def forward(self, x):
-        rgb = x.permute(1, 2, 0).clamp_min(1e-6)
-        hed = (torch.log(rgb) / LOG_1E6) @ self.hed_from_rgb.to(dtype=x.dtype)
-        hed = hed.clamp_min(0.0)
-        shift = torch.randn((1, 1, 3), dtype=x.dtype) * self.sigma
-        scale = 1.0 + torch.randn((1, 1, 3), dtype=x.dtype) * self.sigma
+        rgb = np.maximum(x.permute(1, 2, 0).numpy(), 1e-6)
+        hed = np.maximum((np.log(rgb) / LOG_1E6) @ self.hed_from_rgb.numpy(), 0.0)
+        shift = torch.randn((1, 1, 3), dtype=x.dtype).numpy() * self.sigma
+        scale = 1.0 + torch.randn((1, 1, 3), dtype=x.dtype).numpy() * self.sigma
         hed = hed * scale + shift
-        log_rgb = -(hed * (-LOG_1E6)) @ self.rgb_from_hed.to(dtype=x.dtype)
-        return torch.exp(log_rgb).clamp_(0.0, 1.0).permute(2, 0, 1)
+        log_rgb = -(hed * (-LOG_1E6)) @ self.rgb_from_hed.numpy()
+        return torch.from_numpy(np.clip(np.exp(log_rgb), 0.0, 1.0)).permute(2, 0, 1)
+
+
+# Separable nine-tap CPU blur retains torchvision's sigma draw and reflected boundaries.
+class GaussianBlur(v2.GaussianBlur):
+    def transform(self, image, params):
+        return torch.from_numpy(gaussian_filter(image.numpy(), sigma=(0, *params["sigma"]), radius=(0, 4, 4), mode="mirror"))
 
 
 # Map-style TCGA tile dataset that emits global/local multi-view stacks for train.py.
@@ -95,10 +106,13 @@ class TCGATileDataset(Dataset):
         data = cfg["data"]
         train = cfg["train"]
         self.is_train, self.input_mode = is_train, data["input_mode"]
+        self.connected_tiles = int(data["connected_tiles"])
         self.case_bag_size = int(data["case_bag_size"]) if is_train else 1
         self.tissue_thresh = float(data["tissue_thresh"]) if is_train else 0.0
+        assert not self.connected_tiles or (self.connected_tiles >= 2 and train["batch_size"] % self.connected_tiles == 0
+                                           and self.input_mode == "parquet" and self.tissue_thresh == 0 and self.case_bag_size == 1)
         dataset_dir = Path(data["dataset_dir"])
-        self.shards = sorted(dataset_dir.glob("shard-*.parquet"))
+        self.shards = sorted(Path(data["spatial_dir"] or dataset_dir).glob("shard-*.parquet"))
         if not self.shards:
             raise FileNotFoundError(
                 f"No parquet shards (shard-*.parquet) under {dataset_dir}. Run "
@@ -116,16 +130,18 @@ class TCGATileDataset(Dataset):
         if self.case_bag_size > 1:
             with open(data["case_map"]) as handle:
                 mapped = {row["slide_id_stem"] for row in csv.DictReader(handle)}
-        # Pull just the path column from each shard once to build the train index;
-        # the JPEG bytes column stays on disk until __getitem__.
-        in_split_shard = []
-        in_split_row = []
+        # Read paths and optional coordinates once for indexing; JPEG bytes remain on disk.
+        in_split_shard, in_split_row, spatial = [], [], {}
         for shard_idx, shard_path in enumerate(self.shards):
-            paths = pq.read_table(str(shard_path), columns=["path"], memory_map=True)["path"].to_pylist()
+            columns = ["path", "x", "y", "spacing"] if self.connected_tiles else ["path"]
+            table = pq.read_table(str(shard_path), columns=columns, memory_map=True).to_pydict()
+            paths = table["path"]
             for row_idx, p in enumerate(paths):
                 # XOR with is_train: training keeps tiles where patient_in_val is False,
                 # validation keeps the complement.
                 if patient_in_val(patient_id_from_relpath(p), data["split_seed"], data["val_fraction"]) != is_train:
+                    if self.connected_tiles:
+                        spatial.setdefault(p.split("/", 1)[0], []).append((len(in_split_shard), table["x"][row_idx], table["y"][row_idx], table["spacing"][row_idx]))
                     if p.split("/", 1)[0] in mapped:
                         cases.setdefault(patient_id_from_relpath(p), []).append(len(in_split_shard))
                     in_split_shard.append(shard_idx)
@@ -135,6 +151,23 @@ class TCGATileDataset(Dataset):
         # Two parallel int32 arrays (~32 MB total for 4M tiles) shared COW across DataLoader fork-workers.
         self.shard_of = np.asarray(in_split_shard, dtype=np.int32)
         self.row_of = np.asarray(in_split_row, dtype=np.int32)
+        if self.connected_tiles:
+            # Build eight-neighbor graphs once; workers inherit compact arrays, never JPEGs or embeddings.
+            self.neighbors = np.full((len(self), 8), -1, dtype=np.int32)
+            self.xy_spacing = np.empty((len(self), 3), dtype=np.int32)
+            self.spatial_slides = []
+            for points in spatial.values():
+                rows = np.asarray(points, dtype=np.int32)
+                lookup = {(x, y): i for i, (_, x, y, _) in enumerate(points)}
+                adjacency = np.asarray([[lookup.get((x + dx * s, y + dy * s), -1) for dy in (-1, 0, 1) for dx in (-1, 0, 1) if dx or dy]
+                                        for _, x, y, s in points], dtype=np.int32)
+                source, column = np.nonzero(adjacency >= 0)
+                graph = csr_matrix((np.ones(len(source)), (source, adjacency[source, column])), shape=(len(rows), len(rows)))
+                _, components = connected_components(graph, directed=False)
+                eligible = rows[np.bincount(components)[components] >= self.connected_tiles, 0]
+                if len(eligible): self.spatial_slides.append(eligible)
+                self.neighbors[rows[:, 0]] = np.where(adjacency >= 0, rows[adjacency.clip(min=0), 0], -1)
+                self.xy_spacing[rows[:, 0]] = rows[:, 1:]
         # FINO metadata is patient-keyed and shared copy-on-write by loader workers.
         self.fino = (cfg.get("fino") or {}).get("enabled")
         if self.fino:
@@ -155,17 +188,18 @@ class TCGATileDataset(Dataset):
         # Global and local views differ only in crop scale/size; the stochastic tail is shared.
         # Hue jitter is applied to the local crops only: the teacher sees globals, so the DINO target
         # stays colour-faithful while the student's inputs are perturbed.
-        def augment(hue):
+        def augment(hue, flips=True):
             return [
                 *([HEDJitter(data["hed_jitter"])] if data["hed_jitter"] > 0 else []),
-                v2.RandomHorizontalFlip(), v2.RandomVerticalFlip(),
+                *([v2.RandomHorizontalFlip(), v2.RandomVerticalFlip()] if flips else []),
                 v2.ColorJitter(data["color_jitter"], data["color_jitter"], data["color_jitter_saturation"], hue),
                 v2.RandomGrayscale(p=0.1),
-                v2.RandomApply([v2.GaussianBlur(9, sigma=(0.1, 1.8))], p=0.35),
+                v2.RandomApply([GaussianBlur(9, sigma=(0.1, 1.8))], p=0.35),
                 v2.Normalize(mean=mean, std=std),
             ]
         self.global_aug = v2.Compose([v2.RandomResizedCrop(train["global_size"], scale=tuple(data["global_crop_scale"]), antialias=True), *augment(0.0)])
         self.local_aug = v2.Compose([v2.RandomResizedCrop(train["local_size"], scale=tuple(data["local_crop_scale"]), antialias=True), *augment(data["aug_hue_local"])])
+        self.global_photo = v2.Compose(augment(0.0, flips=False))
 
     # Dataset length is the number of tiles in this train/val split.
     def __len__(self):
@@ -174,6 +208,26 @@ class TCGATileDataset(Dataset):
     # DataLoader invokes this once per batch: groups stay contiguous through collation.
     # Sharing one candidate permutation across each bag also makes tissue retries distinct.
     def __getitems__(self, indices):
+        if self.connected_tiles:
+            batch = []
+            crop = self.global_aug.transforms[0]
+            for slide in random.choices(self.spatial_slides, k=len(indices) // self.connected_tiles):
+                group = [int(random.choice(slide))]
+                frontier = set(self.neighbors[group[0]]) - {-1}
+                while len(group) < self.connected_tiles:
+                    group.append(random.choice(sorted(frontier)))
+                    frontier.update(self.neighbors[group[-1]])
+                    frontier.difference_update([*group, -1])
+                # Shared crop/flip geometry keeps source centers coherent; color and all local views stay independent.
+                geometry = [(v2.RandomResizedCrop.get_params(torch.empty(3, TILE_SIZE, TILE_SIZE), crop.scale, crop.ratio),
+                             bool(torch.rand(()) < .5), bool(torch.rand(()) < .5)) for _ in range(self.global_views)]
+                positions = self.xy_spacing[group, :2]
+                for i, index in enumerate(group):
+                    item = self.__getitem__(index, geometry)
+                    offsets = torch.tensor((positions[np.arange(len(group)) != i] - positions[i]) / self.xy_spacing[index, 2], dtype=torch.float32)
+                    item["neighbor_offsets"] = torch.stack([offsets * torch.tensor([-1 if hf else 1, -1 if vf else 1]) for _, hf, vf in geometry])
+                    batch.append(item)
+            return batch
         if self.case_bag_size == 1:
             return [self[index] for index in indices]
         batch = []
@@ -183,10 +237,13 @@ class TCGATileDataset(Dataset):
         return batch
 
     # Decode stored JPEGs or their live WSI coordinates; reject tissue within the same bag.
-    def __getitem__(self, idx):
+    def __getitem__(self, idx, geometry=None):
         idx, candidates = idx if isinstance(idx, tuple) else (idx, None)
         idx = int(idx)
         worker = get_worker_info()
+        # Each of the 16 loader workers owns one BLAS thread; leave main-process calibration unchanged.
+        if worker is not None and not hasattr(self, "_blas_limit"):
+            self._blas_limit = threadpool_limits(limits=1, user_api="blas")
         lo = 0 if worker is None else len(self) * worker.id // worker.num_workers
         hi = len(self) if worker is None else len(self) * (worker.id + 1) // worker.num_workers
         wsi_info = {}
@@ -258,7 +315,16 @@ class TCGATileDataset(Dataset):
                 value = self.meta_cont[factor].get(patient_id, [float("nan")] * self.cont_dim[factor])
                 fino[f"mc_{factor}"] = torch.tensor(value if isinstance(value, list) else [value], dtype=torch.float32)
         # Augmentations are stochastic per view; reproducibility comes from worker seeds.
-        global_views = torch.stack([self.global_aug(tile) for _ in range(self.global_views)])
+        if geometry is None:
+            global_views = torch.stack([self.global_aug(tile) for _ in range(self.global_views)])
+        else:
+            global_views = []
+            for params, hf, vf in geometry:
+                view = v2.functional.resized_crop(tile, *params, self.global_aug.transforms[0].size, antialias=True)
+                if hf: view = v2.functional.horizontal_flip(view)
+                if vf: view = v2.functional.vertical_flip(view)
+                global_views.append(self.global_photo(view))
+            global_views = torch.stack(global_views)
         local_views = torch.stack([self.local_aug(tile) for _ in range(self.local_views)])
         return {
             "global_views": global_views,
