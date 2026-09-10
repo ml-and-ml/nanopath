@@ -1,10 +1,11 @@
 # JEPA relation supervision from the Huelocal reference: spatial masked-patch pairs.
 # Keep the fixed v2 probe suite identical across all arms.
+# Runtime rerun with speed fixes; sampling, objective, seed and validation stay fixed.
 project:
-  name: spatial-rel-jepa
+  name: spatial-rel-fast
   family: nanopath
   recipe_id: dinov2-vits14-reg-robust-norm-spatial-rel-jepa
-  output_dir: /data/$USER/nanopath/relations-jepa-20260909/spatial-rel-jepa
+  output_dir: /data/$USER/nanopath/spatial-rel-fast-20260910/full
   wandb_dir: /data/$USER/nanopath/wandb
 
 data:
