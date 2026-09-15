@@ -33,7 +33,7 @@ RUN_DIR=$PWD/data/main/my-run
 # or directly on a GPU machine: python train.py configs/main.yaml output_dir=$RUN_DIR
 ```
 
-`pyproject.toml` pins `torch` / `torchvision` against the CUDA 12.9 wheel index. If your GPU/driver needs a different CUDA build, edit the `torch` and `torchvision` lines in `pyproject.toml` before `uv sync`.
+`pyproject.toml` pins PyTorch 2.8.0 and torchvision 0.23.0 against the CUDA 12.9 wheel index. By default `uv sync` installs Pillow-SIMD. For Apple Silicon, other ARM CPUs, or x86 CPUs without AVX2, see [Installation](#installation). If your GPU/driver needs a different CUDA build, edit the `torch` and `torchvision` lines in `pyproject.toml` before `uv sync`.
 
 A successful model training prints periodic train lines, appends metrics to `metrics.jsonl`, and writes the final comparison artifact to `summary.json`. `configs/smoke.yaml` runs four full-size training steps without calibration or probes; full configurations run the unchanged downstream suite.
 
@@ -54,11 +54,16 @@ This worktree uses the saved `robust-norm-huelocal` recipe (`run_sub_8a160bb2d9`
 | `configs/expr-uncertainty.yaml` | Expression regression with one learned log variance per tile | Main + global variance control | 0.674756 |
 | `configs/expr-global-var.yaml` | Expression regression with one learned log variance shared by all tiles | Main | 0.675725 |
 | Original `spatial-rel-jepa` snapshot | Auxiliary JEPA cosine relationships between nearby masked patches | Main + random-pair control | 0.677383 |
-| `configs/spatial-rel-jepa.yaml` | Spatial relation JEPA with faster loading and CPU transforms | Original spatial recipe | 0.676941 |
+| Published `spatial-rel-fast` snapshot | Spatial relation JEPA with faster loading and CPU transforms | Original spatial recipe | 0.676941 |
+| `configs/spatial-rel-jepa.yaml` | Spatial relation JEPA with upstream compilation, fused AdamW and GPU augmentation | Published speed rerun | Pending |
 | `configs/random-rel-jepa.yaml` | Same relation loss with masked-token identities permuted consistently for student and teacher | Main | 0.675486 |
 | `configs/connected-jepa4.yaml` | Four connected tiles with relative-position neighbor CLS context in JEPA | Original spatial recipe | 0.651808 |
 
-`configs/spatial-rel-jepa.yaml` launches [`spatial-rel-fast`](https://labless.dev/runs/run_sub_14d75537bb). The completed rerun scores **0.676941** on weighted v2 (−0.000442 versus the original), with **99.43 minutes** for training, validation, and calibration versus 132.90 originally; full probes add 18.80 minutes. It meets the two-hour maintainer training target in this local run, using one H100 and 16 CPUs. Training prefetch is four batches per worker; validation retains four workers, prefetch one, and the original 200-step/16-batch cadence. The seed, original tile pool, objective, and probe suite stay fixed. Contiguous stain-jitter output accelerates subsequent CPU transforms: a paired 400-step H100 check took 323.23 seconds versus 350.98, including both validations. A prefetch-four comparison without that layout fix scored 0.676500 in 122.79 training/calibration minutes and remains local. The completed output is `/data/$USER/nanopath/spatial-rel-fast-20260910/full-layout`, from source commit `d502a155`. Both full speed runs retain 999,973 total tile presentations and 2.87563e17 FLOPs. Public submissions have no wall-clock cap; the two-hour condition applies to maintainer reproduction.
+The previous config produced [`spatial-rel-fast`](https://labless.dev/runs/run_sub_14d75537bb). The completed rerun scores **0.676941** on weighted v2 (−0.000442 versus the original), with **99.43 minutes** for training, validation, and calibration versus 132.90 originally; full probes add 18.80 minutes. It meets the two-hour maintainer training target in this local run, using one H100 and 16 CPUs. Training prefetch is four batches per worker; validation retains four workers, prefetch one, and the original 200-step/16-batch cadence. The seed, original tile pool, objective, and probe suite stay fixed. Contiguous stain-jitter output accelerates subsequent CPU transforms: a paired 400-step H100 check took 323.23 seconds versus 350.98, including both validations. A prefetch-four comparison without that layout fix scored 0.676500 in 122.79 training/calibration minutes and remains local. The completed output is `/data/$USER/nanopath/spatial-rel-fast-20260910/full-layout`, from source commit `d502a155`. Both full speed runs retain 999,973 total tile presentations and 2.87563e17 FLOPs. Public submissions have no wall-clock cap; the two-hour condition applies to maintainer reproduction.
+
+`configs/spatial-rel-jepa.yaml` now launches `spatial-rel-turbo` under `/data/$USER/nanopath/spatial-rel-upstream-20260915/full`, integrating upstream `07e3027`. It uses one H100, eight CPUs/eight training workers and prefetch two; validation keeps four workers, prefetch one, and 16 batches every 200 steps. Pillow-SIMD performs PIL crop/resize/flips, uint8 crops transfer to batched GPU photometrics, model modules compile in place, and AdamW uses its fused implementation. Local hue remains ±0.2 and participates in each view's random jitter order; upstream's default GPU transform omits this custom step. The spatial relation objective, seed, original tile pool, FINO targets, calibration and weighted v2 probes remain fixed. PIL rounding and GPU random streams change the exact training trajectory. Initial eager FLOP measurement includes GPU augmentation; startup and augmentation compilation are reported separately from training/validation/calibration and probes. Full measured results are pending.
+
+`train.compile`, `train.fused_adamw` and `train.gpu_augment` enable the upstream performance path in main, smoke and the spatial speed config. Other historical experiment configs leave them disabled. The disabled augmentation path retains the previous tensor crop, NumPy HED and SciPy blur implementation. Use a current uv release supporting package-scoped dependency exclusions; `uv sync` installs the locked Kornia and Pillow-SIMD groups.
 
 Completed rows are unvalidated seed-7777 results on the full 20-dataset suite. CLS context changes v2 by -0.000036 versus the reference; bag-mean supervision gains +0.001550 over its sampling control. Molecular register routing changes v2 by +0.000097 versus the reference, with its progression gain largely offset by lower survival. Tile-dependent expression uncertainty changes v2 by -0.000796 versus the reference and -0.000969 versus its global-variance control; the global control changes v2 by +0.000173. This single-seed comparison provides no evidence of a transfer benefit from tile-dependent weighting. Original spatial relation JEPA gains +0.001831 versus the reference and +0.001897 versus its random-pair control; the control changes v2 by -0.000065. Classification, segmentation, and mutation drive the spatial gain, partly offset by lower survival. Both relation arms preserve reference sample coverage and add 7,914,928,472,064 counted FLOPs; replication is needed, and the arms also differ in target similarity distributions and gradient strength. The frozen ablation preserves the original checkpoint and gives identical segmentation and CRoMa scores; its classification gains are offset by lower progression and mutation scores.
 
@@ -66,7 +71,7 @@ Completed rows are unvalidated seed-7777 results on the full 20-dataset suite. C
 
 `fino.expression_variance` selects `fixed` (original MSE), `global`, or `tile` for expression supervision. The two uncertainty configs start from Main with CLS molecular features and ordinary tile sampling. Their expression loss is `0.03 * mean(exp(-s) * mean_gene_squared_error + s)`, where `s` is a scalar log variance shared across the tile's 512 genes. Zero initialization preserves the initial MSE scale and existing RNG stream; frozen zero weights make the global head a learned intercept only. Subtype/FGA, inference, and all other training settings stay fixed. The added head participates in optimization/checkpointing and the existing FINO gradient scaling, with no extra backbone pass. Logs include expression MSE, log-variance range, precision mean/spread, and the expression gradient norm at the normalized FINO input after signed gradient scaling (not a backbone parameter-gradient norm). Learned precision can strengthen or weaken supervision; the global control tests adaptive overall weighting. These per-tile uncertainty arms do not use case-bag loss. Outputs live under `/data/$USER/nanopath/uncertainty-fino-20260909/`.
 
-Case bags use the TCGA-clinical DX-slide mapping and existing expr512 targets, preserving NanoPath's patient split and target encoding. This is patient-level bulk supervision; the mapping does not establish same-section RNA measurements. Subtype FINO, DINO, KDE, hue augmentation, and model readouts stay fixed. All arms follow the standard 16-CPU, 16-training-worker allocation; four validation workers limit competing prefetch. Calibration reserves its actual source-tile presentations before optimization; its views contribute compute without multiplying tile counts.
+Case bags use the TCGA-clinical DX-slide mapping and existing expr512 targets, preserving NanoPath's patient split and target encoding. This is patient-level bulk supervision; the mapping does not establish same-section RNA measurements. Subtype FINO, DINO, KDE, hue augmentation, and model readouts stay fixed. Historical arms followed the standard 16-CPU, 16-training-worker allocation; four validation workers limit competing prefetch. Calibration reserves its actual source-tile presentations before optimization; its views contribute compute without multiplying tile counts.
 
 `dino.jepa_relation_weight` adds a cosine-similarity MSE to ordinary masked-patch JEPA; zero preserves the original loss. Both relation configs use weight 0.1 and the original Huelocal recipe with fixed expression MSE. `jepa_relation_pairs: spatial` selects horizontal/vertical separations of 1, 2, and 4 patch positions, requiring both endpoints masked. `random` permutes masked-token identities identically for student and teacher within each view, preserving valid targets and pair counts; a private generator seeded by training seed plus step leaves the training RNG unchanged. Float32 pair losses are averaged within each view, then across views. Both reuse existing predictor outputs and detached teacher targets, with no new parameters, images, or backbone passes. All 1,312 candidate pairs per 16×16 view are computed before masking, keeping the measured FLOP increment fixed. Logs separate absolute JEPA, relation loss, pair count, target similarity variation, and the relation gradient norm at normalized predictor outputs. Inference and the full v2 suite stay fixed. Original relation outputs live under `/data/$USER/nanopath/relations-jepa-20260909/`.
 
@@ -112,15 +117,16 @@ Upstream `main` uses the `lr-and-curation` recipe; this experiment branch uses H
 
 | # | Description | final score | classification | segmentation | progression | mutation | survival | robustness | Contributors |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| 1 | [GuruTurbo1.0](https://github.com/MedARC-AI/nanopath/tree/GuruTurbo1.0) | **0.6597** | 0.7518 | 0.6030 | 0.6365 | 0.6289 | 0.6301 | 0.6046 | [@aajing](https://github.com/aajing) |
-| 2 | [pathway-tta](https://github.com/MedARC-AI/nanopath/tree/pathway-tta) | 0.6491 | 0.7557 | 0.6020 | 0.5993 | 0.6128 | 0.6242 | 0.5896 | [@achi2023](https://github.com/achi2023) |
-| 3 | [jepa-fino](https://github.com/MedARC-AI/nanopath/tree/jepa-fino-v2) | 0.6483 | 0.7384 | 0.6016 | 0.6010 | 0.6190 | 0.6210 | 0.6132 | [@ml-and-ml](https://github.com/ml-and-ml) |
-| 4 | [robust-norm](https://github.com/MedARC-AI/nanopath/tree/robust-norm-v2) | 0.6465 | 0.7507 | 0.6024 | 0.6073 | 0.5885 | 0.6010 | 0.6088 | [@anishdulal](https://github.com/anishdulal) |
-| 5 | I-JEPA contig patch | 0.6463 | 0.7219 | 0.5993 | 0.6238 | 0.6148 | 0.6172 | 0.6143 | @NimaAsh |
-| 6 | block-strided-cls | 0.6448 | 0.7477 | 0.6039 | 0.5738 | 0.6066 | 0.6335 | 0.6069 | @RyanKim17920 |
-| 7 | [lr-and-curation](https://github.com/MedARC-AI/nanopath) | 0.6349 | 0.7048 | 0.5940 | 0.6045 | 0.6025 | 0.6199 | 0.6114 | @nevasini1 |
+| 1 | [robust-huelocal](https://github.com/MedARC-AI/nanopath/tree/robust-huelocal) | **0.6675** | 0.7350 | 0.5986 | 0.6884 | 0.6455 | 0.6131 | 0.6261 | [@anishdulal](https://github.com/anishdulal) |
+| 2 | [GuruTurbo1.0](https://github.com/MedARC-AI/nanopath/tree/GuruTurbo1.0) | 0.6597 | 0.7518 | 0.6030 | 0.6365 | 0.6289 | 0.6301 | 0.6046 | [@aajing](https://github.com/aajing) |
+| 3 | [pathway-tta](https://github.com/MedARC-AI/nanopath/tree/pathway-tta) | 0.6491 | 0.7557 | 0.6020 | 0.5993 | 0.6128 | 0.6242 | 0.5896 | [@achi2023](https://github.com/achi2023) |
+| 4 | [jepa-fino](https://github.com/MedARC-AI/nanopath/tree/jepa-fino-v2) | 0.6483 | 0.7384 | 0.6016 | 0.6010 | 0.6190 | 0.6210 | 0.6132 | [@ml-and-ml](https://github.com/ml-and-ml) |
+| 5 | [robust-norm](https://github.com/MedARC-AI/nanopath/tree/robust-norm-v2) | 0.6465 | 0.7507 | 0.6024 | 0.6073 | 0.5885 | 0.6010 | 0.6088 | [@anishdulal](https://github.com/anishdulal) |
+| 6 | I-JEPA contig patch | 0.6463 | 0.7219 | 0.5993 | 0.6238 | 0.6148 | 0.6172 | 0.6143 | @NimaAsh |
+| 7 | block-strided-cls | 0.6448 | 0.7477 | 0.6039 | 0.5738 | 0.6066 | 0.6335 | 0.6069 | @RyanKim17920 |
+| 8 | [lr-and-curation](https://github.com/MedARC-AI/nanopath) | 0.6349 | 0.7048 | 0.5940 | 0.6045 | 0.6025 | 0.6199 | 0.6114 | @nevasini1 |
 
-The [GuruTurbo1.0](https://labless.dev/runs/run_sub_cb8d49013b) and [pathway-tta](https://labless.dev/runs/run_sub_92673d64ef) scores are validated medians of three independent training seeds.
+The [robust-huelocal](https://labless.dev/runs/run_sub_2e5c3d80c6), [GuruTurbo1.0](https://labless.dev/runs/run_sub_cb8d49013b), and [pathway-tta](https://labless.dev/runs/run_sub_92673d64ef) scores are validated medians of three independent training seeds.
 
 ### Baselines
 
@@ -295,6 +301,16 @@ Full main `nanopath` recipe:
 `submit/train_1gpu.sbatch` is a prompt-aware launcher when run directly: it collects Labless run name, notes, and GitHub device login before submitting itself to SLURM, then auto-submits eligible completed full runs. Calling `sbatch submit/train_1gpu.sbatch ...` bypasses that prompt and trains without auto-submit. `configs/main.yaml` is sized for an 80 GB H100 at `train.batch_size: 128`. On smaller cards you can set `train.activation_checkpointing: true` and lower `train.batch_size` if you OOM.
 
 The checked-in `#SBATCH` lines are specific to our MedARC cluster. On another SLURM cluster, edit those header lines once to match your queue, or run `python train.py ...` directly on an allocated GPU.
+
+## Installation
+
+Pillow-SIMD requires an x86 CPU with AVX2 and libjpeg, zlib, and libtiff development headers and libraries.
+
+On Apple Silicon, other ARM CPUs, or x86 CPUs without AVX2, exclude Pillow-SIMD with the following install command:
+
+```bash
+uv sync --no-group simd --group pillow
+```
 
 ## Outputs
 

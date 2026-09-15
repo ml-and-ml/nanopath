@@ -23,6 +23,7 @@ from copy import deepcopy
 from pathlib import Path
 
 import numpy as np
+import PIL
 import pyarrow.parquet as pq
 import torch
 import torch.nn as nn
@@ -35,7 +36,7 @@ from torch.utils.flop_counter import FlopCounterMode
 from torchvision import transforms
 from torchvision.transforms import functional as TF
 
-from dataloader import patient_in_val, TCGATileDataset, TILE_SIZE
+from dataloader import GPUAugment, patient_in_val, TCGATileDataset, TILE_SIZE
 from model import DINOHead, GradScale, JEPAPredictor, ViT, load_pretrained
 from probe import (
     completed_probe_summary,
@@ -286,6 +287,7 @@ def evaluate_frozen(cfg, repo_dir, labless_autosubmit_file):
 
 # Orchestrates one pretraining or frozen-evaluation run.
 def main():
+    setup_started_at = time.monotonic()
     cfg = load_config()
     repo_dir = Path(__file__).resolve().parent
     labless_autosubmit_file = maybe_arm_labless_autosubmit(cfg, repo_dir)
@@ -333,7 +335,7 @@ def main():
     param_groups = build_param_groups(student_backbone, student_dino_head, student_predictor, dino_cfg["layerwise_decay"], dino_cfg["patch_embed_lr_mult"])
     if predictors:
         param_groups.append({"params": [p for model in predictors.values() for p in model.parameters()], "lr_mult": 1.0, "wd_mult": 1.0, "last_layer": False})
-    opt = torch.optim.AdamW(param_groups, lr=1.0, betas=(0.9, dino_cfg["adam_beta2"]))
+    opt = torch.optim.AdamW(param_groups, lr=1.0, betas=(0.9, dino_cfg["adam_beta2"]), fused=train_cfg["fused_adamw"])
     # One EMA-updated unit-vector bank supplies the FINO target for each discrete factor.
     prototypes = {factor: F.normalize(torch.randn(fino_meta["n"][factor], student_backbone.embed_dim, device=device), dim=-1) for factor, _ in fino_disc}
     step = 0
@@ -357,6 +359,13 @@ def main():
     train_flops = 0
     output_dir = Path(cfg["project"]["output_dir"])
     wandb_dir = Path(cfg["project"]["wandb_dir"])
+    for key, name in [("TORCHINDUCTOR_CACHE_DIR", "inductor"), ("TRITON_CACHE_DIR", "triton")]:
+        os.environ.setdefault(key, str(wandb_dir.parent / name))
+    # Compile calls in place so checkpoint keys and parameter ownership stay unchanged.
+    for module in (student_backbone, teacher_backbone, student_dino_head, teacher_dino_head, student_predictor, *predictors.values()):
+        module.compile(dynamic=not isinstance(module, (ViT, JEPAPredictor)), disable=not train_cfg["compile"])
+    sinkhorn_fn = torch.compile(sinkhorn, dynamic=True, disable=not train_cfg["compile"])
+    dino_ce_fn = torch.compile(dino_ce, dynamic=True, disable=not train_cfg["compile"])
     wandb_name = cfg["project"]["name"]
     if labless_autosubmit_file:
         wandb_name = json.loads(Path(labless_autosubmit_file).read_text()).get("run_name") or wandb_name
@@ -382,6 +391,11 @@ def main():
         student_dino_head.load_state_dict(checkpoint["dino_head"])
         teacher_dino_head.load_state_dict(checkpoint["dino_head_ema"])
         student_predictor.load_state_dict(checkpoint["predictor"])
+        # The requested backend owns step placement, even when the saved backend differs.
+        for group in checkpoint["opt"]["param_groups"]:
+            group.update(fused=train_cfg["fused_adamw"], foreach=None)
+        for state in checkpoint["opt"]["state"].values():
+            state["step"] = state["step"].to(device if train_cfg["fused_adamw"] else "cpu")
         opt.load_state_dict(checkpoint["opt"])
         if fino_cfg:
             prototypes = {factor: value.to(device) for factor, value in checkpoint["protos"].items()}
@@ -406,6 +420,7 @@ def main():
         wandb_init["id"] = wandb_meta["id"]
         wandb_init["resume"] = "must"
     wandb_run = wandb.init(**wandb_init)
+    wandb_run.config.update({"pillow": {"version": PIL.__version__, "path": PIL.__file__}}, allow_val_change=True)
     for key in ("probe/target_flops", "probe/wall_seconds"):
         wandb_run.define_metric(key, hidden=True, overwrite=True)
     print(
@@ -416,7 +431,7 @@ def main():
         f"probe_count: {cfg['probe']['count']}  warmup_fraction: {dino_cfg['warmup_fraction']}  "
         f"lr: {dino_cfg['lr']}  adam_beta2: {dino_cfg['adam_beta2']}  kde_loss_weight: {dino_cfg['kde_loss_weight']}  "
         f"kde_concentration: {dino_cfg['kde_concentration']}  drop_path: {dino_cfg['drop_path_rate']}  "
-        f"layerwise_decay: {dino_cfg['layerwise_decay']}",
+        f"layerwise_decay: {dino_cfg['layerwise_decay']}  pillow: {PIL.__version__} ({PIL.__file__})",
         flush=True,
     )
     git_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_dir, text=True).strip()
@@ -460,6 +475,19 @@ def main():
     wandb_meta = {"entity": wandb_run.entity, "project": "nanopath", "id": wandb_run.id, "name": wandb_name, "url": wandb_run.url,
                   "mode": getattr(wandb_run.settings, "mode", ""), "source_artifact": source_id,
                   "source_dir": str(source_snapshot_dir), "git": {"commit": git_commit, "remote": git_remote}}
+    augmentation_warmup_seconds = 0.0
+    if train_cfg["gpu_augment"]:
+        augment = GPUAugment(cfg["data"]).to(device)
+        if train_cfg["compile"]:
+            augment.compile()
+            # Record the upstream augmentation warmup separately; preserve training RNG.
+            warmup_started_at = time.monotonic()
+            rng = torch.cuda.get_rng_state(device)
+            for views, size, hue in [(train_cfg["global_views"], train_cfg["global_size"], 0.0), (train_cfg["local_views"], train_cfg["local_size"], cfg["data"]["aug_hue_local"])]:
+                augment(torch.zeros(batch_size, views, 3, size, size, dtype=torch.uint8, device=device), hue=hue)
+            torch.cuda.synchronize(device)
+            torch.cuda.set_rng_state(rng, device)
+            augmentation_warmup_seconds = time.monotonic() - warmup_started_at
     train_ds = TCGATileDataset(cfg, is_train=True)
     val_ds = TCGATileDataset(cfg, is_train=False)
 
@@ -542,22 +570,28 @@ def main():
 
     # Compute DINO, JEPA, KDE, and optional FINO; validation omits FINO.
     def compute_losses(gf, lf, b, masks, mask_idx, mask_w, t_temp, k_scale, ckpt=False, meta=None, diagnostics=None, neighbor_offsets=None):
+        # A tensor schedule avoids compiling Sinkhorn again for every temperature.
+        if train_cfg["compile"]:
+            t_temp = torch.tensor(t_temp, device=gf.device)
         with torch.no_grad():
             t = teacher_backbone(gf, pretrain=True)
             t_cls = teacher_dino_head(t["cls"]).chunk(train_cfg["global_views"])
-            t_prob = sinkhorn(torch.cat((t_cls[1], t_cls[0])), t_temp).view(2, b, -1)
+            t_prob = sinkhorn_fn(torch.cat((t_cls[1], t_cls[0])), t_temp).view(2, b, -1)
         sg = student_backbone(gf, masks=masks, checkpoint=ckpt, pretrain=True)
         sl = student_backbone(lf, checkpoint=ckpt, pretrain=True)
         sg_cls, sl_cls = student_dino_head(sg["cls"]), student_dino_head(sl["cls"])
         L = train_cfg["local_views"]
-        # Both teacher views supervise the same local logits; normalize them once.
-        local_loss = 0
-        for x in sl_cls.chunk(L):
-            log_prob = F.log_softmax(x / 0.1, dim=-1)
-            for y in t_prob:
-                local_loss += -(y * log_prob).sum(-1).mean()
+        # CE is linear in its targets; retain the historical reduction for eager runs.
+        if train_cfg["compile"]:
+            local_loss = dino_ce_fn(sl_cls.view(L, b, -1), t_prob.sum(0)) * L
+        else:
+            local_loss = 0
+            for x in sl_cls.chunk(L):
+                log_prob = F.log_softmax(x / 0.1, dim=-1)
+                for y in t_prob:
+                    local_loss += -(y * log_prob).sum(-1).mean()
         local_loss /= 2 * L + 2
-        global_loss = dino_ce(sg_cls, t_prob.flatten(0, 1)) * 2 / (2 * L + 2)
+        global_loss = dino_ce_fn(sg_cls, t_prob.flatten(0, 1)) * 2 / (2 * L + 2)
         patch_targets = F.layer_norm(t["patches"].flatten(0, 1), (student_backbone.embed_dim,)).view_as(t["patches"])
         patch_target = patch_targets.flatten(0, 1)[mask_idx]
         # The masked student's CLS can exchange global context with patches inside the predictor.
@@ -669,7 +703,9 @@ def main():
         for vb_idx, vbatch in enumerate(val_loader):
             if vb_idx >= int(train_cfg["val_batches"]):
                 break
-            vg, vl = vbatch["global_views"].to(device, non_blocking=True), vbatch["local_views"].to(device, non_blocking=True)
+            vg, vl = [vbatch[key].to(device, non_blocking=True) for key in ("global_views", "local_views")]
+            if train_cfg["gpu_augment"]:
+                vg, vl = augment(vg), augment(vl, hue=cfg["data"]["aug_hue_local"])
             b = vg.shape[0]
             with torch.no_grad(), autocast:
                 gf, lf = vg.transpose(0, 1).flatten(0, 1), vl.transpose(0, 1).flatten(0, 1)
@@ -722,15 +758,18 @@ def main():
         completed = [round(float(json.loads(p.read_text()).get("target_fraction", -1)) * max_train_samples) for p in probe_state["paths"]["results_dir"].glob("step_*.json")]
         if completed:
             next_probe_idx = sum(target <= max(completed) for target in probe_targets)
+    setup_wall_seconds = time.monotonic() - setup_started_at
+    print(f"{console_prefix()} Setup  {setup_wall_seconds:.2f}s including {augmentation_warmup_seconds:.2f}s augmentation warmup; model compilation remains inside training time", flush=True)
+    wandb_run.log({"timing/setup_seconds": setup_wall_seconds, "timing/augmentation_warmup_seconds": augmentation_warmup_seconds}, step=step)
     train_loop_started_at = time.monotonic()
     last_saved_step = step
     last_console_step = step
     last_console_monotonic = time.monotonic()
     data_wait_started_at = time.monotonic()
     autocast = torch.autocast(device_type="cuda", dtype=torch.bfloat16) if train_cfg["bf16"] else contextlib.nullcontext()
-    # Per-step FLOPs are measured once via FlopCounterMode on the first wrapped step (forward +
-    # backward + opt.step) and reused for every subsequent step since the shapes don't change.
-    # Counts the EMA teacher forward + all objective heads, not just the backbone, so the
+    # Per-step FLOPs are measured once for GPU augmentation, forward, backward, and opt.step,
+    # then reused for every subsequent step since the shapes don't change.
+    # Counts the EMA teacher forward and all objective heads as well as the backbone, so the
     # 1e18 leaderboard cap reflects real GPU work.
     measured_flops_per_step = None
 
@@ -766,10 +805,13 @@ def main():
                 group["weight_decay"] = wd * group["wd_mult"]
             masks, mask_idx, mask_w = make_block_mask(batch_size * train_cfg["global_views"], global_grid, device, int(dino_cfg["jepa_blocks"]), float(dino_cfg["jepa_block_scale"]))
             kde_scale = min(1.0, max(0.0, (frac - 0.1) / 0.4))
-            # Wrap forward + backward + opt.step in FlopCounterMode on the first step only;
+            # Count GPU augmentation, forward, backward, and opt.step on the first step;
             # subsequent steps reuse measured_flops_per_step (fixed shapes => fixed cost).
             flop_ctx = FlopCounterMode(display=False) if measured_flops_per_step is None else contextlib.nullcontext()
-            with flop_ctx:
+            # Compiled kernels are opaque to the counter; measure the first step eagerly.
+            with flop_ctx, torch.compiler.set_stance("force_eager" if measured_flops_per_step is None else "default"):
+                if train_cfg["gpu_augment"]:
+                    global_views, local_views = augment(global_views), augment(local_views, hue=cfg["data"]["aug_hue_local"])
                 with autocast:
                     # Crop-major flatten: collate shape is (B, V, 3, H, W) but DINO wants per-crop chunks
                     # so [crop0_img0, crop0_img1, ..., crop1_img0, ...] for clean teacher/student alignment.
@@ -801,7 +843,6 @@ def main():
                 m = cosine_schedule(0.994, 1.0, frac)
                 update_ema(student_backbone, teacher_backbone, m)
                 update_ema(student_dino_head, teacher_dino_head, m)
-            step_seconds = time.monotonic() - batch_started_at
             examples_seen += batch_size
             visible_patch_presentations += visible_now
             train_flops += step_train_flops
@@ -813,6 +854,7 @@ def main():
                     "fino": float(meta_loss.detach()),
                     "total": float(total_loss.detach()),
                 }
+                step_seconds = time.monotonic() - batch_started_at  # Loss transfers wait for GPU completion.
                 unique_counts = flush_unique_counts()
                 now = time.time()
                 elapsed = max(1e-6, now - last_time)
@@ -920,7 +962,7 @@ def main():
         if train_cfg["calibrate"]:
             torch.cuda.synchronize(device)
             calibration_started_at = time.monotonic()
-            with FlopCounterMode(display=False) as calibration_counter:
+            with FlopCounterMode(display=False) as calibration_counter, torch.compiler.set_stance("force_eager"):
                 # Fit scanner-response directions after optimization so the training trajectory is unchanged.
                 started = time.monotonic()
                 data_dir = Path(cfg["data"]["dataset_dir"])
@@ -1043,6 +1085,8 @@ def main():
         "batch_size": batch_size,
         "max_train_samples": max_train_samples,
         "max_train_flops": max_train_flops,
+        "setup_wall_seconds": setup_wall_seconds,
+        "augmentation_warmup_seconds": augmentation_warmup_seconds,
         "train_loop_wall_seconds": train_loop_wall_seconds + calibration_wall_seconds,
         "optimizer_wall_seconds": train_loop_wall_seconds,
         "calibration_wall_seconds": calibration_wall_seconds,

@@ -40,6 +40,9 @@ train:
   seed: 7777
   bf16: true
   activation_checkpointing: false
+  compile: false
+  fused_adamw: false
+  gpu_augment: false
   batch_size: 128
   num_workers: 16
   prefetch_factor: 2

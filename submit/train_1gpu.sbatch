@@ -25,7 +25,7 @@ source "${REPO_DIR}/.venv/bin/activate"
 export TORCH_HOME="/data/${USER}/nanopath/torch"
 export TORCHINDUCTOR_CACHE_DIR="/data/${USER}/nanopath/cache/inductor"
 export TRITON_CACHE_DIR="/data/${USER}/nanopath/cache/triton"
-export OMP_NUM_THREADS=16
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-16}"
 mkdir -p slurm
 
 LAUNCH_INFO="$(python - "${CONFIG_FILE}" "$@" <<'PY'
@@ -45,13 +45,14 @@ eligible = (
     and int(cfg["train"]["max_train_samples"]) == 1_000_000
     and int(cfg["train"]["max_train_flops"]) == 1_000_000_000_000_000_000
 )
-print(json.dumps({"output_dir": output_dir, "eligible": eligible}))
+print(json.dumps({"output_dir": output_dir, "eligible": eligible, "cpus": cfg["train"]["num_workers"]}))
 PY
 )"
 OUTPUT_DIR="$(python -c 'import json, sys; print(json.load(sys.stdin)["output_dir"])' <<<"${LAUNCH_INFO}")"
 LABLESS_ELIGIBLE="$(python -c 'import json, sys; print("1" if json.load(sys.stdin)["eligible"] else "0")' <<<"${LAUNCH_INFO}")"
 
 if [[ -z "${SLURM_JOB_ID:-}" ]]; then
+  TRAIN_CPUS="$(python -c 'import json, sys; print(json.load(sys.stdin)["cpus"])' <<<"${LAUNCH_INFO}")"
   AUTOSUBMIT_FILE=""
   if ! command -v sbatch >/dev/null; then
     echo "sbatch not found; run python train.py on a GPU machine or adapt submit/train_1gpu.sbatch for your scheduler." >&2
@@ -80,7 +81,7 @@ if [[ -z "${SLURM_JOB_ID:-}" ]]; then
   fi
   if [[ -n "${AUTOSUBMIT_FILE}" ]]; then
     set +e
-    sbatch --export=ALL,LABLESS_AUTOSUBMIT_FILE="${AUTOSUBMIT_FILE}" "$0" "${CONFIG_FILE}" "$@"
+    sbatch --cpus-per-task="${TRAIN_CPUS}" --export=ALL,LABLESS_AUTOSUBMIT_FILE="${AUTOSUBMIT_FILE}" "$0" "${CONFIG_FILE}" "$@"
     SBATCH_STATUS=$?
     set -e
     if [[ "${SBATCH_STATUS}" != "0" ]]; then
@@ -88,7 +89,7 @@ if [[ -z "${SLURM_JOB_ID:-}" ]]; then
     fi
     exit "${SBATCH_STATUS}"
   fi
-  exec sbatch "$0" "${CONFIG_FILE}" "$@"
+  exec sbatch --cpus-per-task="${TRAIN_CPUS}" "$0" "${CONFIG_FILE}" "$@"
 fi
 
 echo "CONFIG_FILE=${CONFIG_FILE}"

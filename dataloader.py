@@ -8,8 +8,8 @@
 # lightweight DINO/I-JEPA/KDE validation pass), so the held-out patient slice
 # stays cleanly out-of-distribution from optimization.
 #
-# Augmentation per view: RandomResizedCrop -> optional HEDJitter -> horizontal/
-# vertical flips -> ColorJitter -> occasional grayscale/blur -> Normalize.
+# CPU augmentation keeps the historical tensor crop/HED/flip/photo pipeline.
+# GPU augmentation uses PIL crop/flips, then uint8 transfer and batched photometrics.
 # Spatial globals share crop geometry and flips, with independent photometrics;
 # neighbor offsets describe source-center separations in tile-stride units.
 #
@@ -80,8 +80,16 @@ class HEDJitter(nn.Module):
         self.register_buffer("hed_from_rgb", HED_FROM_RGB)
         self.register_buffer("rgb_from_hed", RGB_FROM_HED)
 
-    # NumPy stain math keeps Torch's RNG draws; contiguous output speeds the following CHW transforms.
+    # Batched CUDA stain math follows main; single CPU crops keep the historical fast NumPy path.
     def forward(self, x):
+        if x.is_cuda:
+            rgb = x.movedim(-3, -1).clamp_min(1e-6)
+            hed = ((torch.log(rgb) / LOG_1E6) @ self.hed_from_rgb.to(dtype=x.dtype)).clamp_min(0.0)
+            shape = (*x.shape[:-3], 1, 1, 3)
+            shift = torch.randn(shape, dtype=x.dtype, device=x.device) * self.sigma
+            scale = 1.0 + torch.randn(shape, dtype=x.dtype, device=x.device) * self.sigma
+            log_rgb = -((hed * scale + shift) * (-LOG_1E6)) @ self.rgb_from_hed.to(dtype=x.dtype)
+            return torch.exp(log_rgb).clamp_(0.0, 1.0).movedim(-1, -3)
         rgb = np.maximum(x.permute(1, 2, 0).numpy(), 1e-6)
         hed = np.maximum((np.log(rgb) / LOG_1E6) @ self.hed_from_rgb.numpy(), 0.0)
         shift = torch.randn((1, 1, 3), dtype=x.dtype).numpy() * self.sigma
@@ -97,6 +105,42 @@ class GaussianBlur(v2.GaussianBlur):
         return torch.from_numpy(gaussian_filter(image.numpy(), sigma=(0, *params["sigma"]), radius=(0, 4, 4), mode="mirror"))
 
 
+# Main's batched GPU photometrics, with local-only hue retained from the spatial JEPA recipe.
+class GPUAugment(nn.Module):
+    def __init__(self, data):
+        super().__init__()
+        self.hed = HEDJitter(data["hed_jitter"]) if data["hed_jitter"] > 0 else nn.Identity()
+        for name, value in [("mean", data["mean"]), ("std", data["std"]),
+                            ("jitter", [data["color_jitter"], data["color_jitter"], data["color_jitter_saturation"]])]:
+            self.register_buffer(name, torch.tensor(value).view(1, 3, 1, 1))
+
+    @torch.no_grad()
+    def forward(self, views, hue=0.0):
+        import kornia as K
+        shape = views.shape
+        x = self.hed(views.flatten(0, 1).float() / 255)
+        n = x.shape[0]
+        factors = 1 + (torch.rand(n, 3, 1, 1, device=x.device) * 2 - 1) * self.jitter
+        order = torch.rand(n, 4 if hue else 3, device=x.device).argsort(1)
+        if hue:
+            hue_factor = (torch.rand(n, device=x.device) * 2 - 1) * (hue * 2 * np.pi)
+        # Every view has its own order; local hue participates alongside brightness/contrast/saturation.
+        for position in range(4 if hue else 3):
+            brightness = K.enhance.adjust_brightness_accumulative(x, factors[:, 0, 0, 0])
+            contrast = K.enhance.adjust_contrast_with_mean_subtraction(x, factors[:, 1, 0, 0])
+            saturation = K.enhance.adjust_saturation_with_gray_subtraction(x, factors[:, 2, 0, 0])
+            op = order[:, position, None, None, None]
+            adjusted = torch.where(op == 0, brightness, torch.where(op == 1, contrast, saturation))
+            if hue:
+                adjusted = torch.where(op == 3, K.enhance.adjust_hue(x, hue_factor), adjusted)
+            x = adjusted
+        x = torch.where(torch.rand(n, 1, 1, 1, device=x.device) < 0.1, K.color.rgb_to_grayscale(x), x)
+        sigma = (0.1 + torch.rand(n, 1, device=x.device) * 1.7).expand(-1, 2)
+        blurred = K.filters.gaussian_blur2d(x, (9, 9), sigma, border_type="reflect", separable=True)
+        x = torch.where(torch.rand(n, 1, 1, 1, device=x.device) < 0.35, blurred, x)
+        return ((x - self.mean) / self.std).reshape(shape)
+
+
 # Map-style TCGA tile dataset that emits global/local multi-view stacks for train.py.
 class TCGATileDataset(Dataset):
     # Glob shards, build a (shard_idx, row_in_shard) index over the requested patient
@@ -106,6 +150,7 @@ class TCGATileDataset(Dataset):
         data = cfg["data"]
         train = cfg["train"]
         self.is_train, self.input_mode = is_train, data["input_mode"]
+        self.gpu_augment = train["gpu_augment"]
         self.connected_tiles = int(data["connected_tiles"])
         self.case_bag_size = int(data["case_bag_size"]) if is_train else 1
         self.tissue_thresh = float(data["tissue_thresh"]) if is_train else 0.0
@@ -189,6 +234,8 @@ class TCGATileDataset(Dataset):
         # Hue jitter is applied to the local crops only: the teacher sees globals, so the DINO target
         # stays colour-faithful while the student's inputs are perturbed.
         def augment(hue, flips=True):
+            if self.gpu_augment:
+                return [*([v2.RandomHorizontalFlip(), v2.RandomVerticalFlip()] if flips else []), v2.ToImage()]
             return [
                 *([HEDJitter(data["hed_jitter"])] if data["hed_jitter"] > 0 else []),
                 *([v2.RandomHorizontalFlip(), v2.RandomVerticalFlip()] if flips else []),
@@ -241,7 +288,7 @@ class TCGATileDataset(Dataset):
         idx, candidates = idx if isinstance(idx, tuple) else (idx, None)
         idx = int(idx)
         worker = get_worker_info()
-        # Each of the 16 loader workers owns one BLAS thread; leave main-process calibration unchanged.
+        # Each loader worker owns one BLAS thread; leave main-process calibration unchanged.
         if worker is not None and not hasattr(self, "_blas_limit"):
             self._blas_limit = threadpool_limits(limits=1, user_api="blas")
         lo = 0 if worker is None else len(self) * worker.id // worker.num_workers
@@ -263,8 +310,7 @@ class TCGATileDataset(Dataset):
             if reader is None:
                 reader = pq.ParquetFile(str(self.shards[shard_idx]), memory_map=True)
                 self._readers[shard_idx] = reader
-            # Each shard has uniform-size row groups (PARQUET_ROW_GROUP_SIZE in
-            # prepare.py); reading one group is ~2 MB and ~2-3 ms incl. JPEG decode.
+            # Read the actual group size so repacked shards retain the same sample indices.
             rg_size = reader.metadata.row_group(0).num_rows
             rg_idx = row_idx // rg_size
             row_in_rg = row_idx % rg_size
@@ -278,7 +324,7 @@ class TCGATileDataset(Dataset):
             rel = table["path"][row_in_rg].as_py()
             if self.input_mode == "parquet":
                 with Image.open(io.BytesIO(table["jpeg"][row_in_rg].as_py())) as img:
-                    tile = self.to_tensor(img.convert("RGB"))
+                    tile = img.convert("RGB")
             else:
                 stem, spec = rel.split("/", 1)
                 slide = self._slides.pop(stem, None)
@@ -294,11 +340,13 @@ class TCGATileDataset(Dataset):
                 tile = slide.read_region((x, y), level, (src, src)).convert("RGB")
                 if src != TILE_SIZE:
                     tile = tile.resize((TILE_SIZE, TILE_SIZE), Image.Resampling.LANCZOS)
-                tile = self.to_tensor(tile)
                 wsi_info = {"target_mpp": torch.tensor(target_mpp), "source_level": torch.tensor(level, dtype=torch.int8)}
+            if not self.gpu_augment:
+                tile = self.to_tensor(tile)
             if self.tissue_thresh <= 0:
                 break
-            sat = (tile.amax(0) - tile.amin(0)) / (tile.amax(0) + 1e-6)
+            rgb = self.to_tensor(tile) if self.gpu_augment else tile
+            sat = (rgb.amax(0) - rgb.amin(0)) / (rgb.amax(0) + 1e-6)
             if float((sat > 0.07).float().mean()) >= self.tissue_thresh:
                 break
             idx = int(next(candidates)) if candidates is not None else random.randrange(lo, hi) if self.input_mode == "wsi" else random.randint(0, len(self) - 1)

@@ -1,11 +1,11 @@
 # JEPA relation supervision from the Huelocal reference: spatial masked-patch pairs.
 # Keep the fixed v2 probe suite identical across all arms.
-# Runtime rerun with speed fixes; sampling, objective, seed and validation stay fixed.
+# Upstream compilation, fused AdamW, Pillow-SIMD and GPU photometrics; retain local hue and validation.
 project:
-  name: spatial-rel-fast
+  name: spatial-rel-turbo
   family: nanopath
   recipe_id: dinov2-vits14-reg-robust-norm-spatial-rel-jepa
-  output_dir: /data/$USER/nanopath/spatial-rel-fast-20260910/full-layout
+  output_dir: /data/$USER/nanopath/spatial-rel-upstream-20260915/full
   wandb_dir: /data/$USER/nanopath/wandb
 
 data:
@@ -41,9 +41,12 @@ train:
   seed: 7777
   bf16: true
   activation_checkpointing: false
+  compile: true
+  fused_adamw: true
+  gpu_augment: true
   batch_size: 128
-  num_workers: 16
-  prefetch_factor: 4 # fill a larger training queue during the unchanged validation pauses
+  num_workers: 8
+  prefetch_factor: 2 # upstream GPU augmentation sends compact uint8 views
   persistent_workers: true
   max_train_samples: 1000000 # tile presentations; global/local crops still count as one sample
   max_train_flops: 1000000000000000000 # 1.0e18, the leaderboard FLOP budget
