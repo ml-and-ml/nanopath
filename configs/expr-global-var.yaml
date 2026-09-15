@@ -65,6 +65,7 @@ dino:
   lr_min: 1.0e-6
   adam_beta2: 0.999
   warmup_fraction: 0.0909
+  lr_sample_decay: false # true cools LR to lr_min within the optimizer tile budget
   freeze_last_layer_fraction: 0.0091
   layerwise_decay: 0.7
   patch_embed_lr_mult: 0.2

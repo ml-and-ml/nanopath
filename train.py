@@ -789,13 +789,16 @@ def main():
                 pending_ids[key].update(int(x) for x in batch[batch_key].tolist())
             global_views, local_views = [batch[key].to(device, non_blocking=True) for key in ("global_views", "local_views")]
             visible_now = batch_size * (train_cfg["global_views"] * global_patches + train_cfg["local_views"] * local_patches)
-            # LR warmup uses the 1M-tile sample cap; decay/WD/teacher/freeze/KDE stay on the public FLOP budget.
+            # LR can cool down by the last optimizer batch, excluding reserved calibration tiles.
+            # Warmup stays sample-based; WD/teacher/freeze/KDE always use the public FLOP budget.
             frac = min(1.0, train_flops / max_train_flops)
             warmup = min(1.0, examples_seen / max(1, warmup_train_samples))
             if warmup < 1.0:
                 lr = dino_cfg["lr"] * warmup
             else:
-                lr = cosine_schedule(dino_cfg["lr"], dino_cfg["lr_min"], (frac - dino_cfg["warmup_fraction"]) / max(1e-9, 1 - dino_cfg["warmup_fraction"]))
+                decay = ((examples_seen - warmup_train_samples) / max(1, (train_sample_budget // batch_size - 1) * batch_size - warmup_train_samples)
+                         if dino_cfg["lr_sample_decay"] else (frac - dino_cfg["warmup_fraction"]) / max(1e-9, 1 - dino_cfg["warmup_fraction"]))
+                lr = cosine_schedule(dino_cfg["lr"], dino_cfg["lr_min"], decay)
             wd = cosine_schedule(0.04, 0.2, frac)
             teacher_temp = 0.04 + min(1.0, frac / 0.2727) * (0.07 - 0.04)
             last_layer_lr = 0.0 if frac < dino_cfg["freeze_last_layer_fraction"] else lr
@@ -1107,6 +1110,7 @@ def main():
         "visible_patches_per_sec": visible_patch_presentations / max(1.0, train_loop_wall_seconds),
         "warmup_fraction": dino_cfg["warmup_fraction"],
         "warmup_train_samples": warmup_train_samples,
+        "lr_sample_decay": dino_cfg["lr_sample_decay"],
         "lr": dino_cfg["lr"],
         "adam_beta2": dino_cfg["adam_beta2"],
         "kde_loss_weight": dino_cfg["kde_loss_weight"],
